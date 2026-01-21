@@ -1,0 +1,150 @@
+.hero-section {
+  padding: 1.5rem 0; /* Reduced padding */
+  background-color: #f3f4f6;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr; /* Changed to 2 columns: Sidebar + Main */
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* LEFT SIDEBAR */
+.category-sidebar {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  height: 100%; /* Fill height */
+  display: flex;
+  flex-direction: column;
+}
+
+.cat-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px; /* Reduced padding */
+  color: #334155;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cat-menu-item:hover {
+  background-color: #f8fafc;
+  color: #2563eb;
+  padding-left: 20px;
+}
+
+.cat-menu-item:last-child {
+  border-bottom: none;
+}
+
+/* CENTER BANNER (Now takes remaining space) */
+.main-banner {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 380px; /* Slightly reduced height */
+}
+
+/* RIGHT BANNERS - HIDDEN/REMOVED for "1/2" Layout */
+.right-banners {
+  display: none; 
+}
+
+.banner-content {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  max-width: 60%;
+}
+
+.banner-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #fff;
+}
+
+.banner-sub {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+.banner-btn {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: bg 0.2s;
+}
+
+.banner-btn:hover {
+  background: #1d4ed8;
+}
+
+/* BOTTOM 4 GRID */
+.promo-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+}
+
+.promo-box {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  position: relative;
+  height: 100px; /* Reduced height */
+  display: flex;
+  align-items: center;
+  padding: 0 1.25rem;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.promo-box:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 220px 1fr;
+  }
+  .promo-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+  .category-sidebar {
+    display: none;
+  }
+  .main-banner {
+    min-height: 300px;
+  }
+  .promo-grid {
+    grid-template-columns: 1fr;
+  }
+}
