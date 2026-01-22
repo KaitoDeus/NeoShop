@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiMonitor, FiDollarSign } from 'react-icons/fi';
+import { formatUSDtoVND } from '../../../utils/formatPrice';
 import './TrendingProducts.css';
 
 const products = [
@@ -34,7 +35,7 @@ const TrendingProducts = () => {
                  <h3 className="trending-name">{p.name}</h3>
                  <div className="trending-meta">
                    <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Giao ngay</span>
-                   <span className="trending-price">${p.price}</span>
+                   <span className="trending-price">{formatUSDtoVND(p.price)}</span>
                  </div>
                </div>
              </div>

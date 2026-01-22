@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiZap, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
+import { formatUSDtoVND } from '../../../utils/formatPrice';
 import './FlashSale.css';
 
 const products = [
@@ -13,7 +14,7 @@ const products = [
   },
   {
     id: 2,
-    name: "PSN Gift Card $50",
+    name: "Thẻ quà tặng PSN 500K",
     discount: "-40%",
     price: 30.00,
     oldPrice: 50.00,
@@ -21,7 +22,7 @@ const products = [
   },
   {
     id: 3,
-    name: "Spotify Premium 1Y",
+    name: "Spotify Premium 1 Năm",
     discount: "-25%",
     price: 74.25,
     oldPrice: 99.00,
@@ -29,7 +30,7 @@ const products = [
   },
   {
     id: 4,
-    name: "Netflix 4K 6 Months",
+    name: "Netflix 4K 6 Tháng",
     discount: "-50%",
     price: 60.00,
     oldPrice: 120.00,
@@ -71,8 +72,8 @@ const FlashSale = () => {
                 </div>
                 <div className="price-row">
                   <div>
-                    <span className="old-price">${product.oldPrice}</span>
-                    <div className="new-price">${product.price}</div>
+                    <span className="old-price">{formatUSDtoVND(product.oldPrice)}</span>
+                    <div className="new-price">{formatUSDtoVND(product.price)}</div>
                   </div>
                   <button className="add-btn">
                     <FiShoppingCart />

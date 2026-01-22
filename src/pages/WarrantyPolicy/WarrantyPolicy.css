@@ -1,0 +1,307 @@
+.warranty-page {
+  padding: 2rem 0 4rem;
+  min-height: 100vh;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 2rem;
+}
+
+.breadcrumb a:hover {
+  color: var(--primary);
+}
+
+/* Header */
+.policy-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.header-icon {
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.policy-header h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.policy-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Highlights */
+.highlights {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.highlight-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.highlight-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hl-icon {
+  font-size: 2rem;
+  margin-bottom: 0.75rem;
+}
+
+.hl-icon.green { color: #10b981; }
+.hl-icon.blue { color: #3b82f6; }
+.hl-icon.orange { color: #f59e0b; }
+.hl-icon.purple { color: #8b5cf6; }
+
+.highlight-card h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.highlight-card p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+/* Policy Content */
+.policy-content {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.policy-section {
+  margin-bottom: 3rem;
+}
+
+.policy-section h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.policy-section > p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+/* Info Boxes */
+.info-box {
+  border-radius: var(--radius-md);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.info-box.success {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+}
+
+.info-box.error {
+  background: #fef2f2;
+  border: 1px solid #ef4444;
+}
+
+.info-box h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+}
+
+.info-box.success h4 {
+  color: #059669;
+}
+
+.info-box.error h4 {
+  color: #dc2626;
+}
+
+.info-box ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.5rem;
+}
+
+.info-box li {
+  position: relative;
+}
+
+.info-box li::before {
+  content: '•';
+  position: absolute;
+  left: -1rem;
+}
+
+.info-box.success li {
+  color: #065f46;
+}
+
+.info-box.error li {
+  color: #7f1d1d;
+}
+
+/* Warranty Table */
+.warranty-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.warranty-table th,
+.warranty-table td {
+  padding: 1rem;
+  text-align: left;
+  border: 1px solid var(--border-color);
+}
+
+.warranty-table th {
+  background: var(--bg-primary);
+  font-weight: 600;
+}
+
+.warranty-table tr:hover {
+  background: var(--bg-primary);
+}
+
+/* Steps List */
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.step {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.step-num {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.step-content h4 {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.step-content p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Commitment List */
+.commitment-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.commitment-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1rem;
+  color: var(--text-primary);
+}
+
+.commitment-list svg {
+  color: #10b981;
+  font-size: 1.25rem;
+}
+
+/* CTA Section */
+.cta-section {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  margin-top: 2rem;
+}
+
+.cta-section p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1.5rem;
+  background: var(--gradient-primary);
+  color: white;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .policy-header h1 {
+    font-size: 1.75rem;
+  }
+
+  .highlights {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .warranty-table {
+    font-size: 0.9rem;
+  }
+
+  .warranty-table th,
+  .warranty-table td {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .highlights {
+    grid-template-columns: 1fr;
+  }
+}
