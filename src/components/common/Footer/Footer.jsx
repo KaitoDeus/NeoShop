@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FiCode, FiLock } from 'react-icons/fi';
 import './Footer.css';
 
@@ -20,20 +21,20 @@ const Footer = () => {
           <div className="footer-col">
             <h4>Cửa hàng</h4>
             <ul className="footer-links">
-              <li><a href="#">Hệ điều hành</a></li>
-              <li><a href="#">Phần mềm văn phòng</a></li>
-              <li><a href="#">Games</a></li>
-              <li><a href="#">Thẻ quà tặng</a></li>
+              <li><Link to="/category?type=os">Hệ điều hành</Link></li>
+              <li><Link to="/category?type=office">Phần mềm văn phòng</Link></li>
+              <li><Link to="/category?type=games">Games</Link></li>
+              <li><Link to="/category?type=giftcard">Thẻ quà tặng</Link></li>
             </ul>
           </div>
 
           <div className="footer-col">
             <h4>Hỗ trợ</h4>
             <ul className="footer-links">
-              <li><a href="#">Trung tâm trợ giúp</a></li>
-              <li><a href="#">Hướng dẫn kích hoạt</a></li>
-              <li><a href="#">Chính sách bảo hành</a></li>
-              <li><a href="#">Liên hệ</a></li>
+              <li><Link to="/help">Trung tâm trợ giúp</Link></li>
+              <li><Link to="/activation-guide">Hướng dẫn kích hoạt</Link></li>
+              <li><Link to="/warranty">Chính sách bảo hành</Link></li>
+              <li><Link to="/contact">Liên hệ</Link></li>
             </ul>
           </div>
 
@@ -54,8 +55,8 @@ const Footer = () => {
         <div className="footer-bottom">
           <p>&copy; 2026 NeoShop LLC. Bảo lưu mọi quyền.</p>
           <div style={{ display: 'flex', gap: '1.5rem' }}>
-            <a href="#">Chính sách bảo mật</a>
-            <a href="#">Điều khoản dịch vụ</a>
+            <Link to="/privacy">Chính sách bảo mật</Link>
+            <Link to="/terms">Điều khoản dịch vụ</Link>
           </div>
         </div>
       </div>
@@ -64,3 +65,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

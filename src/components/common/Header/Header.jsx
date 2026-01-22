@@ -28,10 +28,10 @@ const Header = () => {
 
         {/* User & Cart */}
         <div className="header-actions">
-           <button className="user-btn">
+           <Link to="/login" className="user-btn">
               <div className="user-icon-circle"><FiUser /></div>
               <span>Đăng nhập / Đăng ký</span>
-           </button>
+           </Link>
            
            <Link to="/cart" className="cart-box">
               <FiShoppingCart size={20} />
