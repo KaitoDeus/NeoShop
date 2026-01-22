@@ -1,8 +1,11 @@
 import React, { useState, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import SidebarFilter from '../../components/sections/SidebarFilter/SidebarFilter';
 import ProductList from '../../components/sections/ProductList/ProductList';
 import { MOCK_PRODUCTS } from '../../data/mockProducts';
 import './ProductCategory.css';
+
+const PRODUCTS_PER_LOAD = 8;
 
 const ProductCategory = () => {
   // Filter State
@@ -15,10 +18,15 @@ const ProductCategory = () => {
   // Sort & View State
   const [sortBy, setSortBy] = useState('popular');
   const [viewMode, setViewMode] = useState('grid');
+  
+  // Load More State
+  const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_LOAD);
+  const [isLoading, setIsLoading] = useState(false);
 
   // Filter Handler
   const handleFilterChange = (group, value) => {
     setFilters(prev => ({ ...prev, [group]: value }));
+    setVisibleCount(PRODUCTS_PER_LOAD); // Reset when filter changes
   };
 
   const handleResetFilters = () => {
@@ -27,6 +35,7 @@ const ProductCategory = () => {
       priceRange: [0, 1000],
       features: []
     });
+    setVisibleCount(PRODUCTS_PER_LOAD);
   };
 
   // Filter Logic
@@ -34,7 +43,6 @@ const ProductCategory = () => {
     return MOCK_PRODUCTS.filter(product => {
       // Platform Filter
       if (filters.platforms.length > 0) {
-        // Map UI labels to data values (simple mapping for now)
         const platformMap = {
           'Steam': 'steam',
           'Xbox Live': 'xbox',
@@ -55,17 +63,10 @@ const ProductCategory = () => {
         const featureMap = {
           'Instant Delivery': 'instant',
           'Subscription': 'subscription',
-          'Global Key': 'global', // Assuming mock data has this or similar
+          'Global Key': 'global',
           'Pre-order': 'preorder'
         };
-        // Check if product has ALL selected features (AND logic)
-        // Or ANY (OR logic). Usually filters are AND across groups, OR within groups.
-        // Let's assume features are tags in data.
-        // For simplicity, let's check if product.features includes ANY of selected
         const selectedFeatures = filters.features.map(f => featureMap[f]);
-        // Simple check: does product have any of the selected features?
-        // Note: Mock data needs 'features' array.
-        // If product.features is undefined, skip if filter active
         if (!product.features) return false;
         
         const hasFeature = selectedFeatures.some(f => product.features.includes(f));
@@ -86,28 +87,51 @@ const ProductCategory = () => {
         return products.sort((a, b) => b.price - a.price);
       case 'newest':
         return products.sort((a, b) => new Date(b.date) - new Date(a.date));
+      case 'best_sellers':
+        return products.sort((a, b) => (b.sales || 0) - (a.sales || 0));
       case 'popular':
       default:
-        return products; // Mock "popular" as default order
+        return products;
     }
   }, [filteredProducts, sortBy]);
+
+  // Visible Products
+  const visibleProducts = useMemo(() => {
+    return sortedProducts.slice(0, visibleCount);
+  }, [sortedProducts, visibleCount]);
+
+  // Has More Products
+  const hasMore = visibleCount < sortedProducts.length;
+
+  // Load More Handler
+  const handleLoadMore = () => {
+    setIsLoading(true);
+    // Simulate loading delay
+    setTimeout(() => {
+      setVisibleCount(prev => prev + PRODUCTS_PER_LOAD);
+      setIsLoading(false);
+    }, 500);
+  };
+
+  // Handle Sort Change
+  const handleSortChange = (newSort) => {
+    setSortBy(newSort);
+    setVisibleCount(PRODUCTS_PER_LOAD); // Reset visible count when sort changes
+  };
 
   return (
     <div className="category-page container">
       {/* Breadcrumbs */}
       <div className="breadcrumb">
-        Trang chủ <span>/</span> Games <span>/</span> Nhập vai (RPG)
+        <Link to="/">Trang chủ</Link> <span>/</span> <span style={{ color: '#0f172a', fontWeight: '500' }}>Tất cả sản phẩm</span>
       </div>
 
       {/* Header */}
       <div className="category-header">
-        <h1 className="category-title">
-          Game Nhập Vai (RPG)
-          <span className="product-count">{sortedProducts.length} sản phẩm</span>
-        </h1>
+        <h1 className="category-title">Tất cả sản phẩm</h1>
         <p className="category-desc">
-          Khám phá thế giới, xây dựng nhân vật và tạo nên câu chuyện của riêng bạn.
-          Sản phẩm kỹ thuật số được giao hàng ngay lập tức.
+          Khám phá hàng ngàn sản phẩm số: Game, phần mềm, subscription và nhiều hơn nữa.
+          Giao hàng tức thì qua email.
         </p>
       </div>
 
@@ -122,11 +146,15 @@ const ProductCategory = () => {
         </aside>
         <section className="product-content">
           <ProductList 
-            products={sortedProducts}
+            products={visibleProducts}
             sortBy={sortBy}
-            onSortChange={setSortBy}
+            onSortChange={handleSortChange}
             viewMode={viewMode}
             onViewChange={setViewMode}
+            hasMore={hasMore}
+            onLoadMore={handleLoadMore}
+            totalProducts={sortedProducts.length}
+            isLoading={isLoading}
           />
         </section>
       </div>

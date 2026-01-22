@@ -1,9 +1,20 @@
 import React from 'react';
-import { FiGrid, FiList, FiZap, FiShoppingCart, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
+import { FiGrid, FiList, FiZap, FiShoppingCart, FiChevronDown } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
+import { formatUSDtoVND } from '../../../utils/formatPrice';
 import './ProductList.css';
 
-const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange }) => {
+const ProductList = ({ 
+  products, 
+  sortBy, 
+  onSortChange, 
+  viewMode, 
+  onViewChange,
+  hasMore = false,
+  onLoadMore,
+  totalProducts = 0,
+  isLoading = false
+}) => {
   const navigate = useNavigate();
 
   const handleProductClick = (id) => {
@@ -27,6 +38,12 @@ const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange })
             Phổ biến
           </button>
           <button 
+            className={`sort-btn ${sortBy === 'best_sellers' ? 'active' : ''}`}
+            onClick={() => onSortChange('best_sellers')}
+          >
+            Bán chạy
+          </button>
+          <button 
             className={`sort-btn ${sortBy === 'newest' ? 'active' : ''}`}
             onClick={() => onSortChange('newest')}
           >
@@ -36,13 +53,13 @@ const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange })
             className={`sort-btn ${sortBy === 'price_asc' ? 'active' : ''}`}
             onClick={() => onSortChange('price_asc')}
           >
-            Giá: Thấp đến Cao
+            Giá: Thấp → Cao
           </button>
           <button 
             className={`sort-btn ${sortBy === 'price_desc' ? 'active' : ''}`}
             onClick={() => onSortChange('price_desc')}
           >
-            Giá: Cao đến Thấp
+            Giá: Cao → Thấp
           </button>
         </div>
         <div className="view-options">
@@ -60,6 +77,8 @@ const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange })
           </button>
         </div>
       </div>
+
+
 
       {/* Product Grid */}
       <div className={`product-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
@@ -80,8 +99,8 @@ const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange })
                 <p className="card-desc">{prod.desc}</p>
                 <div className="card-footer">
                   <div className="price-box">
-                    {prod.oldPrice && <span className="price-old">${prod.oldPrice}</span>}
-                    <span className="price-new">{prod.price.toLocaleString('us-US', { style: 'currency', currency: 'USD' })}</span>
+                    {prod.oldPrice && <span className="price-old">{formatUSDtoVND(prod.oldPrice)}</span>}
+                    <span className="price-new">{formatUSDtoVND(prod.price)}</span>
                   </div>
                   <button className="cart-btn" onClick={(e) => handleAddToCart(e, prod.title)}>
                     <FiShoppingCart />
@@ -97,16 +116,34 @@ const ProductList = ({ products, sortBy, onSortChange, viewMode, onViewChange })
         )}
       </div>
 
-      {/* Pagination */}
-      <div className="pagination">
-        <button className="page-btn"><FiChevronLeft /></button>
-        <button className="page-btn active">1</button>
-        <button className="page-btn">2</button>
-        <button className="page-btn">3</button>
-        <button className="page-btn">...</button>
-        <button className="page-btn">12</button>
-        <button className="page-btn"><FiChevronRight /></button>
-      </div>
+      {/* Load More Button */}
+      {hasMore && (
+        <div className="load-more-wrapper">
+          <button 
+            className={`btn-load-more ${isLoading ? 'loading' : ''}`}
+            onClick={onLoadMore}
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner"></span>
+                Đang tải...
+              </>
+            ) : (
+              <>
+                <FiChevronDown /> Xem thêm sản phẩm
+              </>
+            )}
+          </button>
+        </div>
+      )}
+
+      {/* All Loaded Message */}
+      {!hasMore && products.length > 0 && products.length === totalProducts && (
+        <div className="all-loaded">
+          Đã hiển thị tất cả sản phẩm
+        </div>
+      )}
     </div>
   );
 };
