@@ -1,103 +1,210 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { 
   FiMonitor, FiBriefcase, FiBookOpen, FiGlobe, 
   FiVideo, FiLayout, FiHardDrive, FiCpu, FiShield, FiGift,
-  FiArrowRight 
+  FiArrowRight, FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 import './Hero.css';
 
+const SLIDES = [
+  {
+    id: 1,
+    badge: "🔥 Hot Deal",
+    title: "eSIM Du Lịch Quốc Tế",
+    subtitle: "Kết nối internet tốc độ cao tại hơn 200 quốc gia. Không cần tháo lắp SIM.",
+    gradient: "linear-gradient(135deg, #2563eb, #1d4ed8)",
+    icon: "🌏",
+    link: "/category?type=esim"
+  },
+  {
+    id: 2,
+    badge: "🤖 AI Hot",
+    title: "ChatGPT Plus & Midjourney",
+    subtitle: "Truy cập GPT-4, tạo hình ảnh AI chất lượng cao. Kích hoạt tức thì.",
+    gradient: "linear-gradient(135deg, #059669, #10b981)",
+    icon: "🧠",
+    link: "/category?category=ai"
+  },
+  {
+    id: 3,
+    badge: "🎮 Best Seller",
+    title: "Steam Game Keys",
+    subtitle: "Hàng ngàn game bản quyền với giá ưu đãi. Giao key tự động 24/7.",
+    gradient: "linear-gradient(135deg, #1e3a8a, #3b82f6)",
+    icon: "🎯",
+    link: "/category?platform=steam"
+  },
+  {
+    id: 4,
+    badge: "💼 Office",
+    title: "Microsoft 365 & Windows",
+    subtitle: "Key bản quyền vĩnh viễn. Hỗ trợ cài đặt và bảo hành trọn đời.",
+    gradient: "linear-gradient(135deg, #ea580c, #f97316)",
+    icon: "📊",
+    link: "/category?category=office"
+  },
+  {
+    id: 5,
+    badge: "🎬 Streaming",
+    title: "Netflix, Spotify, YouTube",
+    subtitle: "Tài khoản Premium giá rẻ. Xem phim, nghe nhạc không giới hạn.",
+    gradient: "linear-gradient(135deg, #dc2626, #ef4444)",
+    icon: "📺",
+    link: "/category?category=entertainment"
+  }
+];
+
 const Hero = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
   const categories = [
-    { icon: <FiMonitor />, label: "Giải trí" },
-    { icon: <FiBriefcase />, label: "Làm việc" },
-    { icon: <FiBookOpen />, label: "Học tập" },
-    { icon: <FiGlobe />, label: "eSIM du lịch" },
-    { icon: <FiVideo />, label: "Edit Ảnh - Video" },
-    { icon: <FiLayout />, label: "Windows, Office" },
-    { icon: <FiHardDrive />, label: "Google Drive" },
-    { icon: <FiCpu />, label: "Thế giới AI" },
-    { icon: <FiShield />, label: "VPN, bảo mật" },
-    { icon: <FiGift />, label: "Gift Card" },
+    { icon: <FiMonitor />, label: "Giải trí", link: "/category?category=entertainment" },
+    { icon: <FiBriefcase />, label: "Làm việc", link: "/category?category=office" },
+    { icon: <FiBookOpen />, label: "Học tập", link: "/category?category=learning" },
+    { icon: <FiGlobe />, label: "eSIM du lịch", link: "/category?type=esim" },
+    { icon: <FiVideo />, label: "Edit Ảnh - Video", link: "/category?type=design" },
+    { icon: <FiLayout />, label: "Windows, Office", link: "/category?category=os" },
+    { icon: <FiHardDrive />, label: "Google Drive", link: "/category?type=storage" },
+    { icon: <FiCpu />, label: "Thế giới AI", link: "/category?category=ai" },
+    { icon: <FiShield />, label: "VPN, bảo mật", link: "/category?type=security" },
+    { icon: <FiGift />, label: "Gift Card", link: "/category?type=giftcard" },
   ];
+
+  // Auto slide
+  useEffect(() => {
+    if (!isAutoPlay) return;
+    
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, [isAutoPlay]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % SLIDES.length);
+    setIsAutoPlay(false);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + SLIDES.length) % SLIDES.length);
+    setIsAutoPlay(false);
+  };
+
+  const goToSlide = (index) => {
+    setCurrentSlide(index);
+    setIsAutoPlay(false);
+  };
+
+  const currentSlideData = SLIDES[currentSlide];
 
   return (
     <section className="hero-section">
       <div className="container">
-        {/* Top Grid: Sidebar + Main Banner (2 Columns) */}
+        {/* Top Grid: Sidebar + Main Banner */}
         <div className="hero-grid">
           
           {/* Left Sidebar */}
           <div className="category-sidebar">
-            <h3 style={{ padding: '12px 16px', margin: 0, fontSize: '0.95rem', borderBottom: '1px solid #eee', display: 'flex', alignItems: 'center', gap: '8px', background: '#f8fafc' }}>
+            <h3 className="sidebar-header">
               <FiLayout /> Danh mục sản phẩm
             </h3>
-            <div style={{ padding: '0.5rem 0' }}>
+            <div className="sidebar-menu">
               {categories.map((cat, idx) => (
-                <div key={idx} className="cat-menu-item">
-                  <span style={{ color: '#64748b' }}>{cat.icon}</span>
+                <Link to={cat.link} key={idx} className="cat-menu-item">
+                  <span className="cat-icon">{cat.icon}</span>
                   <span>{cat.label}</span>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
 
-          {/* Center Main Banner */}
-          <div className="main-banner" style={{background: 'linear-gradient(135deg, #2563eb, #1d4ed8)'}}>
-             <div style={{ position: 'absolute', inset: 0, opacity: 0.15, backgroundImage: 'radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px)', backgroundSize: '32px 32px' }}></div>
-             
-             <div className="banner-content">
-               <span style={{ background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: '20px', fontSize: '0.85rem', marginBottom: '1rem', display: 'inline-block', backdropFilter: 'blur(4px)' }}>
-                 🔥 Hot Deal
-               </span>
-               <h2 className="banner-title">eSIM Du Lịch Quốc Tế</h2>
-               <p className="banner-sub">Kết nối internet tốc độ cao tại hơn 200 quốc gia. Không cần tháo lắp SIM.</p>
-               <button className="banner-btn">Mua ngay <FiArrowRight /></button>
-             </div>
-             {/* Visual Element */}
-             <div style={{ position: 'absolute', right: '5%', top: '50%', transform: 'translateY(-50%)', width: '40%', height: '80%', background: 'rgba(255,255,255,0.1)', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', backdropFilter: 'blur(10px)' }}>
-                <span style={{ fontSize: '8rem' }}>🌏</span>
-             </div>
+          {/* Center Main Banner - Carousel */}
+          <div className="main-banner-wrapper">
+            <div 
+              className="main-banner" 
+              style={{ background: currentSlideData.gradient }}
+            >
+              <div className="banner-pattern"></div>
+              
+              <div className="banner-content">
+                <span className="banner-badge">
+                  {currentSlideData.badge}
+                </span>
+                <h2 className="banner-title">{currentSlideData.title}</h2>
+                <p className="banner-sub">{currentSlideData.subtitle}</p>
+                <Link to={currentSlideData.link} className="banner-btn">
+                  Mua ngay <FiArrowRight />
+                </Link>
+              </div>
+
+              {/* Visual Element */}
+              <div className="banner-visual">
+                <span className="banner-icon">{currentSlideData.icon}</span>
+              </div>
+
+              {/* Navigation Arrows */}
+              <button className="slide-arrow slide-prev" onClick={prevSlide}>
+                <FiChevronLeft />
+              </button>
+              <button className="slide-arrow slide-next" onClick={nextSlide}>
+                <FiChevronRight />
+              </button>
+
+              {/* Slide Indicators - Inside Banner */}
+              <div className="slide-indicators">
+                {SLIDES.map((_, idx) => (
+                  <button 
+                    key={idx}
+                    className={`indicator ${idx === currentSlide ? 'active' : ''}`}
+                    onClick={() => goToSlide(idx)}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
 
         </div>
 
         {/* Bottom Promos (4 Columns) */}
         <div className="promo-grid">
-           <div className="promo-box" style={{ background: '#0f172a' }}>
-              <div>
-                <h4 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.25rem' }}>STEAM</h4>
-                <span style={{ color: '#bae6fd', fontSize: '0.85rem' }}>Wallet Code</span>
-                <span className="badge" style={{ display: 'block', width: 'fit-content', marginTop: '0.5rem', background: '#ef4444', color: 'white', border: 'none', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>Hot Trend</span>
-              </div>
-              <div style={{ fontSize: '2rem' }}>🎮</div>
-           </div>
+          <Link to="/category?platform=steam" className="promo-box" style={{ background: '#0f172a' }}>
+            <div>
+              <h4 className="promo-title">STEAM</h4>
+              <span className="promo-sub">Wallet Code</span>
+              <span className="promo-badge hot">Hot Trend</span>
+            </div>
+            <div className="promo-icon">🎮</div>
+          </Link>
 
-           <div className="promo-box" style={{ background: '#991b1b' }}>
-              <div>
-                <h4 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.25rem' }}>THIẾT KẾ</h4>
-                <span style={{ color: '#fecaca', fontSize: '0.85rem' }}>Adobe / Canva</span>
-                <span className="badge" style={{ display: 'block', width: 'fit-content', marginTop: '0.5rem', background: 'white', color: '#991b1b', border: 'none', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>Nâng cấp</span>
-              </div>
-              <div style={{ fontSize: '2rem' }}>🎨</div>
-           </div>
+          <Link to="/category?type=design" className="promo-box" style={{ background: '#991b1b' }}>
+            <div>
+              <h4 className="promo-title">THIẾT KẾ</h4>
+              <span className="promo-sub" style={{ color: '#fecaca' }}>Adobe / Canva</span>
+              <span className="promo-badge upgrade">Nâng cấp</span>
+            </div>
+            <div className="promo-icon">🎨</div>
+          </Link>
 
-           <div className="promo-box" style={{ background: '#075985' }}>
-              <div>
-                <h4 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.25rem' }}>GIẢI TRÍ</h4>
-                <span style={{ color: '#bae6fd', fontSize: '0.85rem' }}>Netflix / Spotify</span>
-                <span className="badge" style={{ display: 'block', width: 'fit-content', marginTop: '0.5rem', background: '#eab308', color: 'black', border: 'none', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>Giá rẻ</span>
-              </div>
-              <div style={{ fontSize: '2rem' }}>🎬</div>
-           </div>
+          <Link to="/category?category=entertainment" className="promo-box" style={{ background: '#075985' }}>
+            <div>
+              <h4 className="promo-title">GIẢI TRÍ</h4>
+              <span className="promo-sub">Netflix / Spotify</span>
+              <span className="promo-badge cheap">Giá rẻ</span>
+            </div>
+            <div className="promo-icon">🎬</div>
+          </Link>
 
-           <div className="promo-box" style={{ background: '#9a3412' }}>
-               <div>
-                <h4 style={{ color: 'white', fontWeight: 'bold', marginBottom: '0.25rem' }}>OFFICE</h4>
-                <span style={{ color: '#fed7aa', fontSize: '0.85rem' }}>Key Bản quyền</span>
-                <span className="badge" style={{ display: 'block', width: 'fit-content', marginTop: '0.5rem', background: 'white', color: '#9a3412', border: 'none', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem' }}>Vĩnh viễn</span>
-              </div>
-              <div style={{ fontSize: '2rem' }}>📂</div>
-           </div>
+          <Link to="/category?category=office" className="promo-box" style={{ background: '#9a3412' }}>
+            <div>
+              <h4 className="promo-title">OFFICE</h4>
+              <span className="promo-sub" style={{ color: '#fed7aa' }}>Key Bản quyền</span>
+              <span className="promo-badge forever">Vĩnh viễn</span>
+            </div>
+            <div className="promo-icon">📂</div>
+          </Link>
         </div>
       </div>
     </section>
