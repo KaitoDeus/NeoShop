@@ -1,5 +1,5 @@
 export const MOCK_PRODUCTS = [
-  // === GAMES ===
+  // === TRÒ CHƠI ===
   {
     id: 1,
     title: "Cyberpunk 2077: Phantom Liberty",
@@ -90,7 +90,7 @@ export const MOCK_PRODUCTS = [
     sales: 2800
   },
 
-  // === SUBSCRIPTIONS ===
+  // === GÓI ĐĂNG KÝ ===
   {
     id: 7,
     title: "Xbox Game Pass Ultimate - 3 Tháng",
@@ -150,7 +150,7 @@ export const MOCK_PRODUCTS = [
     sales: 2200
   },
 
-  // === SOFTWARE - AI ===
+  // === PHẦN MỀM - AI ===
   {
     id: 11,
     title: "ChatGPT Plus 1 Tháng",
@@ -195,7 +195,7 @@ export const MOCK_PRODUCTS = [
     sales: 1200
   },
 
-  // === SOFTWARE - OFFICE & PRODUCTIVITY ===
+  // === PHẦN MỀM - VĂN PHÒNG ===
   {
     id: 14,
     title: "Microsoft Office 365 1 Năm",
@@ -242,7 +242,7 @@ export const MOCK_PRODUCTS = [
     sales: 1650
   },
 
-  // === SOFTWARE - OS ===
+  // === PHẦN MỀM - HỆ ĐIỀU HÀNH ===
   {
     id: 17,
     title: "Windows 11 Pro Key",
@@ -274,7 +274,7 @@ export const MOCK_PRODUCTS = [
     sales: 4800
   },
 
-  // === LEARNING ===
+  // === HỌC TẬP ===
   {
     id: 19,
     title: "Coursera Plus 1 Năm",
@@ -307,7 +307,7 @@ export const MOCK_PRODUCTS = [
   }
 ];
 
-// Trending keywords for homepage
+// Từ khóa xu hướng cho trang chủ
 export const TRENDING_KEYWORDS = [
   { id: 1, keyword: "ChatGPT", icon: "🤖", count: 2450 },
   { id: 2, keyword: "Windows 11", icon: "🪟", count: 1820 },
@@ -321,7 +321,7 @@ export const TRENDING_KEYWORDS = [
   { id: 10, keyword: "Canva Pro", icon: "✨", count: 680 }
 ];
 
-// Category definitions
+// Định nghĩa danh mục
 export const CATEGORIES = {
   games: { name: "Games", icon: "🎮" },
   ai: { name: "Sản phẩm AI", icon: "🤖" },
@@ -332,27 +332,27 @@ export const CATEGORIES = {
   subscription: { name: "Gói đăng ký", icon: "🔄" }
 };
 
-// Get products by category
+// Lấy sản phẩm theo danh mục
 export const getProductsByCategory = (category) => {
   return MOCK_PRODUCTS.filter(p => p.category === category);
 };
 
-// Get best selling products
+// Lấy sản phẩm bán chạy nhất
 export const getBestSellers = (limit = 6) => {
   return [...MOCK_PRODUCTS].sort((a, b) => b.sales - a.sales).slice(0, limit);
 };
 
-// Get newest products
+// Lấy sản phẩm mới nhất
 export const getNewestProducts = (limit = 6) => {
   return [...MOCK_PRODUCTS].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
 };
 
-// Get Steam games
+// Lấy game Steam
 export const getSteamGames = (limit = 6) => {
   return MOCK_PRODUCTS.filter(p => p.platform === 'steam').slice(0, limit);
 };
 
-// Get AI products
+// Lấy sản phẩm AI
 export const getAIProducts = (limit = 6) => {
   return MOCK_PRODUCTS.filter(p => p.category === 'ai').slice(0, limit);
 };

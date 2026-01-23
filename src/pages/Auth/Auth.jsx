@@ -9,23 +9,23 @@ import { FaFacebook } from 'react-icons/fa';
 import './Auth.css';
 
 const Auth = () => {
-  // View State: 'login', 'register', 'forgot'
+  // Trạng thái view: 'login', 'register', 'forgot'
   const [view, setView] = useState('login');
   
-  // Form States
+  // Trạng thái form
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: '', text: '' });
 
-  // Login Form
+  // Form đăng nhập
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
     remember: false
   });
 
-  // Register Form
+  // Form đăng ký
   const [registerData, setRegisterData] = useState({
     username: '',
     emailOrPhone: '',
@@ -34,16 +34,16 @@ const Auth = () => {
     agreeTerms: false
   });
 
-  // Forgot Password Form
+  // Form quên mật khẩu
   const [forgotEmail, setForgotEmail] = useState('');
 
-  // Handlers
+  // Các hàm xử lý
   const handleLogin = (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage({ type: '', text: '' });
     
-    // Simulate API call
+    // Giả lập gọi API
     setTimeout(() => {
       setIsLoading(false);
       setMessage({ type: 'success', text: 'Đăng nhập thành công! Đang chuyển hướng...' });
@@ -54,7 +54,7 @@ const Auth = () => {
     e.preventDefault();
     setMessage({ type: '', text: '' });
 
-    // Validation
+    // Kiểm tra validation
     if (registerData.password !== registerData.confirmPassword) {
       setMessage({ type: 'error', text: 'Mật khẩu nhập lại không khớp!' });
       return;

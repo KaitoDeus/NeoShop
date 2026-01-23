@@ -1,46 +1,10 @@
-import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FiTrash2, FiZap, FiLock, FiHeadphones, FiArrowLeft, FiKey, FiShoppingBag, FiRotateCcw, FiShield } from 'react-icons/fi';
-import { MOCK_PRODUCTS } from '../../data/mockProducts';
+import { FiTrash2, FiZap, FiLock, FiHeadphones, FiArrowLeft, FiKey, FiShoppingBag, FiRotateCcw, FiShield, FiPlus, FiMinus } from 'react-icons/fi';
+import { useCart } from '../../context/CartContext';
 import './Cart.css';
 
-// Mock Cart Data (In real app, use Context/Redux)
-const INITIAL_CART = [
-  {
-    ...MOCK_PRODUCTS[0], // Cyberpunk
-    qty: 1,
-    type: 'Key kỹ thuật số',
-    priceVND: 375000 // Fixed for demo
-  },
-  {
-    ...MOCK_PRODUCTS[2], // Xbox Pass
-    qty: 1,
-    type: 'Subscription',
-    priceVND: 625000
-  },
-  {
-    ...MOCK_PRODUCTS[5], // Adobe
-    qty: 1,
-    type: 'Subscription',
-    priceVND: 8725000
-  }
-];
-
 const Cart = () => {
-  const [cartItems, setCartItems] = useState(INITIAL_CART);
-
-  const handleRemove = (id) => {
-    setCartItems(prev => prev.filter(item => item.id !== id));
-  };
-
-  const calculateSubtotal = () => {
-    return cartItems.reduce((acc, item) => acc + item.priceVND, 0);
-  };
-
-  const subtotal = calculateSubtotal();
-  const tax = 0; // Digital tax
-  const total = subtotal + tax;
-
+  const { cartItems, totalPrice, removeFromCart, updateQuantity } = useCart();
   const navigate = useNavigate();
 
   const handleCheckout = () => {
@@ -72,10 +36,15 @@ const Cart = () => {
         </div>
 
         <div className="cart-layout">
-          {/* LEFT COLUMN: Cart Items */}
+          {/* Cột trái: Danh sách sản phẩm */}
           <div className="cart-items-list">
             {cartItems.map(item => (
-              <CartItem key={item.id} item={item} onRemove={handleRemove} />
+              <CartItem 
+                key={item.id} 
+                item={item} 
+                onRemove={removeFromCart}
+                onUpdateQty={updateQuantity}
+              />
             ))}
             
             <Link to="/category" className="back-link">
@@ -83,13 +52,13 @@ const Cart = () => {
             </Link>
           </div>
 
-          {/* RIGHT COLUMN: Summary */}
+          {/* Cột phải: Tóm tắt đơn hàng */}
           <div className="cart-summary">
             <h3 className="summary-title">Tóm tắt đơn hàng</h3>
             
             <div className="summary-row">
               <span>Tạm tính</span>
-              <span>{subtotal.toLocaleString('vi-VN')}₫</span>
+              <span>{totalPrice.toLocaleString('vi-VN')}₫</span>
             </div>
             <div className="summary-row">
               <span>Giảm giá</span>
@@ -102,7 +71,7 @@ const Cart = () => {
             
             <div className="summary-row total">
               <span>Tổng thanh toán</span>
-              <span className="summary-total-price">{total.toLocaleString('vi-VN')}₫</span>
+              <span className="summary-total-price">{totalPrice.toLocaleString('vi-VN')}₫</span>
             </div>
 
             <div className="promo-box">
@@ -139,8 +108,8 @@ const Cart = () => {
   );
 };
 
-// Sub-component: Cart Item
-const CartItem = ({ item, onRemove }) => {
+// Component con: Sản phẩm trong giỏ
+const CartItem = ({ item, onRemove, onUpdateQty }) => {
   const navigate = useNavigate();
 
   const handleItemClick = () => {
@@ -149,17 +118,16 @@ const CartItem = ({ item, onRemove }) => {
 
   return (
     <div className="cart-item">
-      {/* Visual */}
+      {/* Hình ảnh */}
       <div 
         className="item-visual" 
         style={{background: item.imageColor || '#333', cursor: 'pointer'}}
         onClick={handleItemClick}
       >
-         {/* Fallback to simple icon if no image */}
          {!item.thumbnail && <FiKey style={{opacity: 0.5}} />}
       </div>
 
-      {/* Content */}
+      {/* Nội dung */}
       <div className="item-content">
          <div>
             <div className="item-header">
@@ -187,7 +155,21 @@ const CartItem = ({ item, onRemove }) => {
                    {item.type === 'Subscription' ? <FiRotateCcw size={14} /> : <FiKey size={14} />} 
                    {item.type}
                </span>
-               <span>Qty: {item.qty}</span>
+               <div className="qty-control">
+                  <button 
+                    className="qty-btn" 
+                    onClick={() => onUpdateQty(item.id, item.qty - 1)}
+                  >
+                    <FiMinus size={12} />
+                  </button>
+                  <span className="qty-value">{item.qty}</span>
+                  <button 
+                    className="qty-btn" 
+                    onClick={() => onUpdateQty(item.id, item.qty + 1)}
+                  >
+                    <FiPlus size={12} />
+                  </button>
+               </div>
             </div>
             <button className="remove-btn" onClick={() => onRemove(item.id)}>
                <FiTrash2 /> Xóa

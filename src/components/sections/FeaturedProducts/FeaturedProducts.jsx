@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiStar, FiShoppingCart, FiArrowRight, FiZap } from 'react-icons/fi';
+import { FiStar, FiShoppingCart, FiArrowRight } from 'react-icons/fi';
 import { formatUSDtoVND } from '../../../utils/formatPrice';
 import { getBestSellers } from '../../../data/mockProducts';
 import './FeaturedProducts.css';
