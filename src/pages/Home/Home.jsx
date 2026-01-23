@@ -15,7 +15,7 @@ import {
 import './Home.css';
 
 const Home = () => {
-  // Get products for each section
+  // Lấy sản phẩm cho từng section
   const bestSellers = getBestSellers(4);
   const newestProducts = getNewestProducts(4);
   const steamGames = getSteamGames(4);

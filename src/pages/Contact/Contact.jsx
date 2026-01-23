@@ -23,11 +23,11 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // In real app, send to backend
+    // Trong ứng dụng thực tế, gửi đến backend
     console.log('Form submitted:', formData);
     setSubmitted(true);
     
-    // Reset after 3 seconds
+    // Reset sau 3 giây
     setTimeout(() => {
       setSubmitted(false);
       setFormData({

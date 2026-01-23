@@ -471,6 +471,10 @@
 }
 
 @media (max-width: 600px) {
+  .product-detail-page {
+    padding: 1rem 0;
+  }
+  
   .features-grid {
     grid-template-columns: 1fr;
   }
@@ -480,6 +484,42 @@
   }
   
   .pd-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
+  
+  .pd-subtitle {
+    font-size: 0.95rem;
+  }
+  
+  .product-banner {
+    min-height: 220px;
+  }
+  
+  .banner-overlay {
+    padding: 1.25rem;
+  }
+  
+  .current-price {
+    font-size: 2rem;
+  }
+  
+  .pd-meta-bar {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .pd-section {
+    padding: 1.25rem;
+  }
+  
+  .section-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Button Added State */
+.btn-add-cart.added {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #16a34a;
 }

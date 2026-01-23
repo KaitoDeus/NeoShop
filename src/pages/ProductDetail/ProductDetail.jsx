@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { 
-  FiCheckCircle, FiGlobe, FiStar, FiZap, FiShield, FiDownload, 
-  FiMonitor, FiLayers, FiFileText, FiKey, FiShoppingCart, FiArrowRight, FiClock 
+  FiCheckCircle, FiGlobe, FiStar, FiZap, FiShield, 
+  FiMonitor, FiFileText, FiKey, FiShoppingCart, FiArrowRight, FiClock, FiCheck 
 } from 'react-icons/fi';
 import { MOCK_PRODUCTS } from '../../data/mockProducts';
+import { useCart } from '../../context/CartContext';
 import './ProductDetail.css';
 
 const RELATED_PRODUCTS = MOCK_PRODUCTS.slice(0, 4).map(p => ({
@@ -15,7 +16,10 @@ const RELATED_PRODUCTS = MOCK_PRODUCTS.slice(0, 4).map(p => ({
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
   const [product, setProduct] = useState(null);
+  const [rawProduct, setRawProduct] = useState(null);
   const [duration, setDuration] = useState(12);
 
   useEffect(() => {
@@ -23,6 +27,7 @@ const ProductDetail = () => {
 
     const found = MOCK_PRODUCTS.find(p => p.id.toString() === id);
     if (found) {
+        setRawProduct(found);
         setProduct({
             id: found.id,
             name: found.title,
@@ -195,13 +200,24 @@ const ProductDetail = () => {
                 </div>
              </div>
 
-             {/* CTAs */}
+             {/* Nút hành động */}
              <div className="action-buttons">
-                <button className="btn-buy-now">
+                <button 
+                  className="btn-buy-now"
+                  onClick={() => {
+                    if (rawProduct) addToCart(rawProduct);
+                    navigate('/checkout');
+                  }}
+                >
                    Mua ngay <FiArrowRight />
                 </button>
-                <button className="btn-add-cart">
-                   <FiShoppingCart /> Thêm vào giỏ
+                <button 
+                  className={`btn-add-cart ${rawProduct && isInCart(rawProduct.id) ? 'added' : ''}`}
+                  onClick={() => rawProduct && addToCart(rawProduct)}
+                >
+                   {rawProduct && isInCart(rawProduct.id) 
+                     ? <><FiCheck /> Đã thêm vào giỏ</>
+                     : <><FiShoppingCart /> Thêm vào giỏ</>}
                 </button>
              </div>
 
@@ -247,7 +263,7 @@ const ProductDetail = () => {
   );
 };
 
-// Sub-component for features
+// Component con hiển thị tính năng
 const FeatureCard = ({ icon, title, desc }) => (
   <div className="feature-card">
      <div className="feature-icon-box">{icon}</div>

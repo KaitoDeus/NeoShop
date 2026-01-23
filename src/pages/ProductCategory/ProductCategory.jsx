@@ -8,25 +8,25 @@ import './ProductCategory.css';
 const PRODUCTS_PER_LOAD = 8;
 
 const ProductCategory = () => {
-  // Filter State
+  // Trạng thái bộ lọc
   const [filters, setFilters] = useState({
     platforms: [],
     priceRange: [0, 1000],
     features: []
   });
 
-  // Sort & View State
+  // Trạng thái sắp xếp & hiển thị
   const [sortBy, setSortBy] = useState('popular');
   const [viewMode, setViewMode] = useState('grid');
   
-  // Load More State
+  // Trạng thái tải thêm
   const [visibleCount, setVisibleCount] = useState(PRODUCTS_PER_LOAD);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Filter Handler
+  // Xử lý bộ lọc
   const handleFilterChange = (group, value) => {
     setFilters(prev => ({ ...prev, [group]: value }));
-    setVisibleCount(PRODUCTS_PER_LOAD); // Reset when filter changes
+    setVisibleCount(PRODUCTS_PER_LOAD); // Reset khi thay đổi bộ lọc
   };
 
   const handleResetFilters = () => {
@@ -38,10 +38,10 @@ const ProductCategory = () => {
     setVisibleCount(PRODUCTS_PER_LOAD);
   };
 
-  // Filter Logic
+  // Logic lọc sản phẩm
   const filteredProducts = useMemo(() => {
     return MOCK_PRODUCTS.filter(product => {
-      // Platform Filter
+      // Lọc theo nền tảng
       if (filters.platforms.length > 0) {
         const platformMap = {
           'Steam': 'steam',
@@ -53,12 +53,12 @@ const ProductCategory = () => {
         if (!selectedPlatforms.includes(product.platform)) return false;
       }
 
-      // Price Filter
+      // Lọc theo giá
       if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) {
         return false;
       }
 
-      // Feature Filter
+      // Lọc theo tính năng
       if (filters.features.length > 0) {
         const featureMap = {
           'Instant Delivery': 'instant',
@@ -77,7 +77,7 @@ const ProductCategory = () => {
     });
   }, [filters]);
 
-  // Sort Logic
+  // Logic sắp xếp
   const sortedProducts = useMemo(() => {
     const products = [...filteredProducts];
     switch (sortBy) {
@@ -95,28 +95,28 @@ const ProductCategory = () => {
     }
   }, [filteredProducts, sortBy]);
 
-  // Visible Products
+  // Sản phẩm hiển thị
   const visibleProducts = useMemo(() => {
     return sortedProducts.slice(0, visibleCount);
   }, [sortedProducts, visibleCount]);
 
-  // Has More Products
+  // Còn sản phẩm chưa hiển thị
   const hasMore = visibleCount < sortedProducts.length;
 
-  // Load More Handler
+  // Xử lý tải thêm
   const handleLoadMore = () => {
     setIsLoading(true);
-    // Simulate loading delay
+    // Giả lập độ trễ tải
     setTimeout(() => {
       setVisibleCount(prev => prev + PRODUCTS_PER_LOAD);
       setIsLoading(false);
     }, 500);
   };
 
-  // Handle Sort Change
+  // Xử lý thay đổi sắp xếp
   const handleSortChange = (newSort) => {
     setSortBy(newSort);
-    setVisibleCount(PRODUCTS_PER_LOAD); // Reset visible count when sort changes
+    setVisibleCount(PRODUCTS_PER_LOAD); // Reset số lượng hiển thị khi thay đổi sắp xếp
   };
 
   return (
