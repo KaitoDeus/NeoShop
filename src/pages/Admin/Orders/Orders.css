@@ -1,0 +1,119 @@
+/* Orders Page Styles */
+.orders-page {
+    /* reuse generic layout */
+  }
+  
+  .search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 400px;
+  }
+  
+  .filter-tabs {
+    display: flex;
+    background: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 8px;
+    gap: 0.25rem;
+  }
+  
+  .filter-tab {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    background: transparent;
+    transition: all 0.2s;
+  }
+  
+  .filter-tab.active {
+    background: #4f46e5; /* Purple-600 */
+    color: white;
+    box-shadow: 0 4px 6px -1px rgba(79, 70, 229, 0.2);
+  }
+  
+  .filter-tab:hover:not(.active) {
+    color: #4f46e5;
+    background: #e0e7ff;
+  }
+
+  .id-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .copy-icon {
+    color: #94a3b8;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+
+  .copy-icon:hover {
+    color: #6366f1;
+  }
+  
+  .date-picker-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+  
+  .order-id {
+    font-weight: 700;
+    color: #1e293b;
+  }
+  
+  .order-product {
+    font-weight: 600;
+    color: #1e293b;
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+  
+  .order-customer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+  
+  .payment-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: #334155;
+  }
+  
+  .payment-icon {
+    font-size: 1.1rem;
+  }
+  
+  .btn-outline {
+    background: white;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .btn-outline:hover {
+    border-color: #cbd5e1;
+    color: #1e293b;
+  }
