@@ -72,7 +72,7 @@ const Hero = () => {
     { icon: <FiGift />, label: "Gift Card", link: "/category?type=giftcard" },
   ];
 
-  // Auto slide
+  // Tự động chuyển slide
   useEffect(() => {
     if (!isAutoPlay) return;
     

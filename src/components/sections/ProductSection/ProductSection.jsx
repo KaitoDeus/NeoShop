@@ -1,10 +1,18 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiShoppingCart, FiArrowRight, FiZap } from 'react-icons/fi';
+import { FiShoppingCart, FiArrowRight, FiZap, FiCheck } from 'react-icons/fi';
 import { formatUSDtoVND } from '../../../utils/formatPrice';
+import { useCart } from '../../../context/CartContext';
 import './ProductSection.css';
 
 const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor }) => {
+  const { addToCart, isInCart } = useCart();
+
+  const handleAddToCart = (e, product) => {
+    e.preventDefault();
+    e.stopPropagation();
+    addToCart(product);
+  };
+
   return (
     <section className={`product-section ${bgColor || ''}`}>
       <div className="container">
@@ -39,8 +47,11 @@ const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor
                     )}
                     <span className="price-new">{formatUSDtoVND(product.price)}</span>
                   </div>
-                  <button className="cart-btn" onClick={(e) => e.preventDefault()}>
-                    <FiShoppingCart />
+                  <button 
+                    className={`cart-btn ${isInCart(product.id) ? 'in-cart' : ''}`}
+                    onClick={(e) => handleAddToCart(e, product)}
+                  >
+                    {isInCart(product.id) ? <FiCheck /> : <FiShoppingCart />}
                   </button>
                 </div>
               </div>

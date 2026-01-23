@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FiTrendingUp, FiArrowRight } from 'react-icons/fi';
+import { FiTrendingUp } from 'react-icons/fi';
 import { TRENDING_KEYWORDS } from '../../../data/mockProducts';
 import './TrendingKeywords.css';
 
@@ -12,7 +12,7 @@ const TrendingKeywords = () => {
           <h2 className="section-title">
             <FiTrendingUp style={{ color: '#10b981' }} /> Từ khóa nổi bật
           </h2>
-          <p className="section-subtitle">Những gì mọi người đang tìm kiếm</p>
+
         </div>
 
         <div className="keywords-wrapper">

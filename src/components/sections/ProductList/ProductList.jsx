@@ -1,7 +1,8 @@
 import React from 'react';
-import { FiGrid, FiList, FiZap, FiShoppingCart, FiChevronDown } from 'react-icons/fi';
+import { FiGrid, FiList, FiZap, FiShoppingCart, FiChevronDown, FiCheck } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { formatUSDtoVND } from '../../../utils/formatPrice';
+import { useCart } from '../../../context/CartContext';
 import './ProductList.css';
 
 const ProductList = ({ 
@@ -16,14 +17,15 @@ const ProductList = ({
   isLoading = false
 }) => {
   const navigate = useNavigate();
+  const { addToCart, isInCart } = useCart();
 
   const handleProductClick = (id) => {
     navigate(`/product/${id}`);
   };
 
-  const handleAddToCart = (e, title) => {
+  const handleAddToCart = (e, product) => {
     e.stopPropagation();
-    alert(`Đã thêm ${title} vào giỏ!`);
+    addToCart(product);
   };
 
   return (
@@ -102,8 +104,11 @@ const ProductList = ({
                     {prod.oldPrice && <span className="price-old">{formatUSDtoVND(prod.oldPrice)}</span>}
                     <span className="price-new">{formatUSDtoVND(prod.price)}</span>
                   </div>
-                  <button className="cart-btn" onClick={(e) => handleAddToCart(e, prod.title)}>
-                    <FiShoppingCart />
+                  <button 
+                    className={`cart-btn ${isInCart(prod.id) ? 'in-cart' : ''}`} 
+                    onClick={(e) => handleAddToCart(e, prod)}
+                  >
+                    {isInCart(prod.id) ? <FiCheck /> : <FiShoppingCart />}
                   </button>
                 </div>
               </div>
