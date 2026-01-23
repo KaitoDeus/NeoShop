@@ -1,0 +1,207 @@
+/* Dashboard Widgets Shared Styles */
+
+/* Stats Card */
+.stats-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s;
+  }
+  
+  .stats-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  .stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+  }
+  
+  .stats-title {
+    font-size: 0.875rem;
+    color: #64748b;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stats-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #1e293b;
+    line-height: 1.2;
+  }
+  
+  .stats-icon {
+    padding: 0.75rem;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+  
+  .stats-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+  }
+  
+  .stats-percent {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-weight: 600;
+  }
+  
+  .stats-compare {
+    color: #94a3b8;
+  }
+  
+  /* Widget Generic */
+  .dashboard-widget {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    padding: 1.5rem;
+  }
+  
+  .widget-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+  }
+  
+  .widget-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 0.25rem;
+  }
+  
+  .widget-subtitle {
+    font-size: 0.85rem;
+    color: #64748b;
+  }
+  
+  /* Chart Widget */
+  .chart-actions {
+    display: flex;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    padding: 0.25rem;
+    border-radius: 8px;
+  }
+  
+  .chart-filter {
+    border: none;
+    background: none;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .chart-filter.active {
+    background: white;
+    color: #1e293b;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  }
+  
+  /* Table Widget */
+  .view-all-btn {
+    text-decoration: none;
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  
+  .table-responsive {
+    overflow-x: auto;
+  }
+  
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .admin-table th {
+    text-align: left;
+    padding: 1rem;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #94a3b8;
+    background: #f8fafc;
+    font-weight: 600;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .admin-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 0.9rem;
+    color: #1e293b;
+  }
+  
+  .admin-table tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .customer-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .customer-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  
+  /* Badges & Colors */
+  .badge {
+    padding: 0.35rem 0.75rem;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  
+  .badge-success { background: #dcfce7; color: #15803d; }
+  .badge-warning { background: #fef3c7; color: #b45309; }
+  .badge-error { background: #fee2e2; color: #b91c1c; }
+  .badge-gray { background: #f1f5f9; color: #475569; }
+  
+  .text-success { color: #10b981; }
+  .text-danger { color: #ef4444; }
+  .text-purple { color: #8b5cf6; }
+  .text-orange { color: #f97316; }
+  .text-blue { color: #3b82f6; }
+  .text-indigo { color: #6366f1; }
+  
+  .bg-success-light { background: #d1fae5; }
+  .bg-purple-light { background: #ede9fe; }
+  .bg-orange-light { background: #ffedd5; }
+  .bg-blue-light { background: #dbeafe; }
+  .bg-gray-light { background: #f1f5f9; }
+  .bg-indigo-light { background: #e0e7ff; }
+  .bg-danger-light { background: #fee2e2; }
+  
+  .increase { color: #10b981; }
+  .decrease { color: #ef4444; }
+  
+  .text-right { text-align: right; }
+  .font-medium { font-weight: 500; }
+  .font-bold { font-weight: 700; }
+  .text-primary { color: #1e293b; }
+  .text-secondary { color: #64748b; }
