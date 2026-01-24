@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import SidebarFilter from '../../components/sections/SidebarFilter/SidebarFilter';
+import FilterBar from '../../components/sections/FilterBar/FilterBar';
 import ProductList from '../../components/sections/ProductList/ProductList';
 import { MOCK_PRODUCTS } from '../../data/mockProducts';
 import './ProductCategory.css';
@@ -11,7 +11,7 @@ const ProductCategory = () => {
   // Trạng thái bộ lọc
   const [filters, setFilters] = useState({
     platforms: [],
-    priceRange: [0, 1000],
+    priceRange: [0, 50000000], // 0 - 50 million VND
     features: []
   });
 
@@ -32,7 +32,7 @@ const ProductCategory = () => {
   const handleResetFilters = () => {
     setFilters({
       platforms: [],
-      priceRange: [0, 1000],
+      priceRange: [0, 50000000],
       features: []
     });
     setVisibleCount(PRODUCTS_PER_LOAD);
@@ -53,8 +53,9 @@ const ProductCategory = () => {
         if (!selectedPlatforms.includes(product.platform)) return false;
       }
 
-      // Lọc theo giá
-      if (product.price < filters.priceRange[0] || product.price > filters.priceRange[1]) {
+      // Lọc theo giá (Convert USD to VND for comparison)
+      const priceVND = product.price * 25000;
+      if (priceVND < filters.priceRange[0] || priceVND > filters.priceRange[1]) {
         return false;
       }
 
@@ -128,36 +129,32 @@ const ProductCategory = () => {
 
       {/* Header */}
       <div className="category-header">
-        <h1 className="category-title">Tất cả sản phẩm</h1>
-        <p className="category-desc">
-          Khám phá hàng ngàn sản phẩm số: Game, phần mềm, subscription và nhiều hơn nữa.
-          Giao hàng tức thì qua email.
-        </p>
+        <h1 className="category-title">Tìm kiếm sản phẩm</h1>
       </div>
 
-      {/* Main Layout */}
-      <div className="category-grid-layout">
-        <aside className="filter-sidebar-wrapper">
-          <SidebarFilter 
-            filters={filters} 
-            onFilterChange={handleFilterChange}
-            onReset={handleResetFilters}
-          />
-        </aside>
-        <section className="product-content">
-          <ProductList 
-            products={visibleProducts}
-            sortBy={sortBy}
-            onSortChange={handleSortChange}
-            viewMode={viewMode}
-            onViewChange={setViewMode}
-            hasMore={hasMore}
-            onLoadMore={handleLoadMore}
-            totalProducts={sortedProducts.length}
-            isLoading={isLoading}
-          />
-        </section>
-      </div>
+      {/* Filter Bar */}
+      <FilterBar 
+        filters={filters} 
+        onFilterChange={handleFilterChange}
+        onReset={handleResetFilters}
+        sortBy={sortBy}
+        onSortChange={handleSortChange}
+      />
+
+      {/* Product List */}
+      <section className="product-content">
+        <ProductList 
+          products={visibleProducts}
+          sortBy={sortBy}
+          onSortChange={handleSortChange}
+          viewMode={viewMode}
+          onViewChange={setViewMode}
+          hasMore={hasMore}
+          onLoadMore={handleLoadMore}
+          totalProducts={sortedProducts.length}
+          isLoading={isLoading}
+        />
+      </section>
     </div>
   );
 };

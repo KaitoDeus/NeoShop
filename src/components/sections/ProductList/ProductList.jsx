@@ -7,9 +7,9 @@ import './ProductList.css';
 
 const ProductList = ({ 
   products, 
-  sortBy, 
-  onSortChange, 
-  viewMode, 
+  sortBy,
+  onSortChange,
+  viewMode,
   onViewChange,
   hasMore = false,
   onLoadMore,
@@ -32,38 +32,7 @@ const ProductList = ({
     <div className="product-list-container">
       {/* Sort and View Bar */}
       <div className="sort-bar">
-        <div className="sort-options">
-          <button 
-            className={`sort-btn ${sortBy === 'popular' ? 'active' : ''}`}
-            onClick={() => onSortChange('popular')}
-          >
-            Phổ biến
-          </button>
-          <button 
-            className={`sort-btn ${sortBy === 'best_sellers' ? 'active' : ''}`}
-            onClick={() => onSortChange('best_sellers')}
-          >
-            Bán chạy
-          </button>
-          <button 
-            className={`sort-btn ${sortBy === 'newest' ? 'active' : ''}`}
-            onClick={() => onSortChange('newest')}
-          >
-            Mới nhất
-          </button>
-          <button 
-            className={`sort-btn ${sortBy === 'price_asc' ? 'active' : ''}`}
-            onClick={() => onSortChange('price_asc')}
-          >
-            Giá: Thấp → Cao
-          </button>
-          <button 
-            className={`sort-btn ${sortBy === 'price_desc' ? 'active' : ''}`}
-            onClick={() => onSortChange('price_desc')}
-          >
-            Giá: Cao → Thấp
-          </button>
-        </div>
+
         <div className="view-options">
           <button 
             className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}

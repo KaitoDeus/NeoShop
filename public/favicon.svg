@@ -1,0 +1,43 @@
+<svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="neonGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#06b6d4" />
+      <stop offset="50%" stopColor="#3b82f6" />
+      <stop offset="100%" stopColor="#d946ef" />
+    </linearGradient>
+  </defs>
+  <path
+    d="M22 20C22 14.4772 26.4772 10 32 10C37.5228 10 42 14.4772 42 20"
+    stroke="url(#neonGradient)"
+    stroke-width="4"
+    stroke-linecap="round"
+  />
+  <path
+    d="M14 20H50L54 50C54.6667 52 53 54 51 54H13C11 54 9.33333 52 10 50L14 20Z"
+    stroke="url(#neonGradient)"
+    stroke-width="3.5"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M14 20L32 36L50 20"
+    stroke="url(#neonGradient)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    opacity="0.9"
+  />
+  <path
+    d="M32 36V54"
+    stroke="url(#neonGradient)"
+    stroke-width="2.5"
+    stroke-linecap="round"
+    opacity="0.8"
+  />
+  <path
+    d="M12.5 40L32 36L51.5 40"
+    stroke="url(#neonGradient)"
+    stroke-width="2"
+    stroke-linejoin="round"
+    opacity="0.7"
+  />
+</svg>

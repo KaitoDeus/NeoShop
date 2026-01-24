@@ -16,22 +16,27 @@
   gap: 1rem;
 }
 
-.sort-btn {
-  padding: 0.5rem 1rem;
-  border-radius: var(--radius-sm);
-  background: var(--bg-secondary);
-  border: 1px solid var(--border-color);
-  color: var(--text-secondary);
+.sort-options.left-align {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary);
   font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
-.sort-btn.active {
-  background: #e0e7ff; /* Indigo-100 */
-  color: var(--primary);
+.sort-select {
+  padding: 0.5rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+}
+
+.sort-select:focus {
   border-color: var(--primary);
-  font-weight: 600;
 }
 
 .view-options {
@@ -60,7 +65,7 @@
 
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
 }
 
