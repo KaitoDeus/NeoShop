@@ -59,7 +59,7 @@ const Settings = () => {
           <div className="logo-upload-box">
              <div className="upload-placeholder">
                <FiUpload size={32} color="#94a3b8" />
-               <span style={{color: '#6366f1', fontWeight: 600}}>Tải logo mới lên</span>
+               <span style={{color: '#2563eb', fontWeight: 600}}>Tải logo mới lên</span>
                <span style={{fontSize: '0.8rem', color: '#64748b'}}>Hỗ trợ PNG, JPG (Max 2MB)</span>
              </div>
           </div>

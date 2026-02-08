@@ -26,7 +26,7 @@
   }
   
   .icon-btn-sm:hover {
-    color: #6366f1;
+    color: #2563eb;
   }
   
   .product-icon {
@@ -156,8 +156,8 @@
   }
   
   .form-select:focus, .form-input:focus, .form-textarea:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
   }
   
   .form-textarea {

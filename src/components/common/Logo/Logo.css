@@ -19,7 +19,7 @@
 /* Hover Effect - Icon Only */
 .neo-logo-link:hover .neo-logo-icon {
   transform: scale(1.1) rotate(-3deg);
-  filter: drop-shadow(0 0 8px rgba(168, 85, 247, 0.6));
+  filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.6));
 }
 
 /* Gradient Definition (used in SVG) will be handled in JSX but we can augment here if needed */
@@ -37,12 +37,12 @@
 
 /* "Neo" - Gradient Text */
 .text-neo {
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #d946ef 100%);
+  background: linear-gradient(135deg, #0891b2 0%, #2563eb 50%, #06b6d4 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
   /* Fallback color */
-  color: #3b82f6; 
+  color: #2563eb; 
 }
 
 /* "Shop" - Adaptive Color */

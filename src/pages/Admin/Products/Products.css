@@ -20,7 +20,7 @@
 }
 
 .btn-primary {
-  background: #6366f1;
+  background: #2563eb;
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -35,8 +35,8 @@
 }
 
 .btn-primary:hover {
-  background: #4f46e5;
-  box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.2);
+  background: #1d4ed8;
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
 }
 
 /* Stats Grid */
@@ -134,7 +134,7 @@
 
 .product-sku {
   font-size: 0.8rem;
-  color: #6366f1;
+  color: #2563eb;
   margin: 0;
 }
 
@@ -211,7 +211,7 @@
 
 .btn-icon:hover {
   background: #f1f5f9;
-  color: #6366f1;
+  color: #2563eb;
 }
 
 /* Pagination */
@@ -243,9 +243,9 @@
 }
 
 .page-btn.active {
-  background: #6366f1;
+  background: #2563eb;
   color: white;
-  border-color: #6366f1;
+  border-color: #2563eb;
 }
 
 .page-btn:hover:not(.active) {

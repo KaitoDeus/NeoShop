@@ -1,18 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   FiMail, FiCheck, FiCpu, FiCreditCard, FiGlobe, 
   FiCopy, FiAlertTriangle, FiArrowRight, FiZap, 
-  FiShield, FiLifeBuoy, FiInfo 
+  FiShield, FiLifeBuoy, FiInfo, FiSmartphone
 } from 'react-icons/fi';
 import { FaBitcoin, FaWallet } from 'react-icons/fa';
+import { useCart } from '../../context/CartContext';
 import './Checkout.css';
 
 const Checkout = () => {
+  const { cartItems, totalPrice, clearCart } = useCart();
   const [paymentMethod, setPaymentMethod] = useState('crypto');
   const navigate = useNavigate();
 
+  // Redirect if cart is empty
+  useEffect(() => {
+    if (cartItems.length === 0) {
+      navigate('/cart');
+    }
+  }, [cartItems, navigate]);
+
   const handleComplete = () => {
+    // Process payment here (mock)
+    // Clear cart after successful payment simulation
+    clearCart();
     navigate('/delivery');
   };
 
@@ -86,7 +98,7 @@ const Checkout = () => {
                 </div>
 
                 <div 
-                  className={`method-card ${paymentMethod['wallet'] ? 'active' : ''}`}
+                  className={`method-card ${paymentMethod === 'wallet' ? 'active' : ''}`}
                   onClick={() => setPaymentMethod('wallet')}
                 >
                   <div className="method-icon-box"><FaWallet /></div>
@@ -97,7 +109,7 @@ const Checkout = () => {
               </div>
             </div>
 
-            {/* 3. Transfer Details (Dynamic) */}
+            {/* 3. Payment Details (Dynamic) */}
             {paymentMethod === 'crypto' && (
               <div className="checkout-section">
                 <div className="transfer-header">
@@ -117,7 +129,7 @@ const Checkout = () => {
                     <div className="amount-group">
                       <span className="amount-label">TỔNG SỐ TIỀN</span>
                       <div className="amount-value-row">
-                        <span className="amount-value">2,500,000 ₫</span>
+                        <span className="amount-value">{(totalPrice).toLocaleString('vi-VN')} ₫</span>
                         <button className="copy-btn"><FiCopy /> Sao chép</button>
                       </div>
                     </div>
@@ -137,6 +149,26 @@ const Checkout = () => {
                 </div>
               </div>
             )}
+
+            {paymentMethod === 'wallet' && (
+               <div className="checkout-section">
+                  <div style={{textAlign: 'center', padding: '2rem'}}>
+                     <FiSmartphone size={48} color="#06b6d4" />
+                     <h3 style={{marginTop: '1rem'}}>Quét mã Momo / ZaloPay</h3>
+                     <p>Vui lòng mở ứng dụng để quét mã QR thanh toán.</p>
+                  </div>
+               </div>
+            )}
+
+            {paymentMethod === 'card' && (
+               <div className="checkout-section">
+                  <div style={{textAlign: 'center', padding: '2rem'}}>
+                     <FiCreditCard size={48} color="#3b82f6" />
+                     <h3 style={{marginTop: '1rem'}}>Cổng thanh toán thẻ</h3>
+                     <p>Bạn sẽ được chuyển hướng đến cổng thanh toán bảo mật Stripe/Visa.</p>
+                  </div>
+               </div>
+            )}
           </div>
 
           {/* Sidebar Summary */}
@@ -144,16 +176,23 @@ const Checkout = () => {
             <div className="checkout-summary-card">
               <h3 className="summary-title">Tóm tắt đơn hàng</h3>
               
-              <div className="summary-item-card">
-                <div className="item-thumb" style={{background: 'linear-gradient(135deg, #6366f1, #a855f7)'}}></div>
-                <div className="item-info-mini">
-                  <h4>Windows 11 Pro</h4>
-                  <p>Retail License Key</p>
-                  <div className="item-tags">
-                    <span className="tag-available">CÓ SẴN</span>
-                    <span className="tag-global">TOÀN CẦU</span>
-                  </div>
-                </div>
+              <div className="summary-items-container">
+                 {cartItems.map(item => (
+                    <div className="summary-item-card" key={item.id}>
+                      <div 
+                        className="item-thumb" 
+                        style={{background: item.imageColor || 'linear-gradient(135deg, #2563eb, #06b6d4)'}}
+                      ></div>
+                      <div className="item-info-mini">
+                        <h4 style={{fontSize: '0.9rem', marginBottom: '2px'}}>{item.title}</h4>
+                        <p style={{fontSize: '0.8rem', color: '#64748b'}}>Full License Key</p>
+                        <div className="item-tags" style={{marginTop: '4px'}}>
+                          <span className="tag-available" style={{fontSize: '0.7rem', padding: '2px 6px'}}>x{item.qty}</span>
+                          <span style={{fontSize: '0.85rem', fontWeight: 'bold'}}>{(item.priceVND * item.qty).toLocaleString('vi-VN')}₫</span>
+                        </div>
+                      </div>
+                    </div>
+                 ))}
               </div>
 
               <div className="summary-promo-field">
@@ -164,19 +203,19 @@ const Checkout = () => {
               <div className="summary-details">
                 <div className="summary-line">
                   <span>Tạm tính</span>
-                  <span>2,650,000 ₫</span>
+                  <span>{totalPrice.toLocaleString('vi-VN')} ₫</span>
                 </div>
                 <div className="summary-line discount">
-                  <span>Khuyến mãi (NEOLAUNCH)</span>
-                  <span>-150,000 ₫</span>
+                  <span>Khuyến mãi</span>
+                  <span>-0 ₫</span>
                 </div>
                 <div className="summary-line">
-                  <span>Thuế (Sản phẩm số)</span>
+                  <span>Thuế</span>
                   <span>0 ₫</span>
                 </div>
                 <div className="summary-line total-due">
                   <span>Tổng cộng</span>
-                  <span>2,500,000 ₫</span>
+                  <span>{totalPrice.toLocaleString('vi-VN')} ₫</span>
                 </div>
               </div>
 

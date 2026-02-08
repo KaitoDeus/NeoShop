@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   FiMail, FiLock, FiUser, FiPhone, FiEye, FiEyeOff, 
   FiArrowLeft, FiCheck, FiAlertCircle
 } from 'react-icons/fi';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
+import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
 const Auth = () => {
+  const { login } = useAuth();
+  const navigate = useNavigate();
+
   // Trạng thái view: 'login', 'register', 'forgot'
   const [view, setView] = useState('login');
   
@@ -38,16 +42,26 @@ const Auth = () => {
   const [forgotEmail, setForgotEmail] = useState('');
 
   // Các hàm xử lý
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     setMessage({ type: '', text: '' });
     
-    // Giả lập gọi API
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      const user = await login(loginData.email, loginData.password);
       setMessage({ type: 'success', text: 'Đăng nhập thành công! Đang chuyển hướng...' });
-    }, 1500);
+      
+      setTimeout(() => {
+        if (user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      }, 1000);
+    } catch (error) {
+      setMessage({ type: 'error', text: 'Đăng nhập thất bại. Vui lòng kiểm tra lại.' });
+      setIsLoading(false);
+    }
   };
 
   const handleRegister = (e) => {

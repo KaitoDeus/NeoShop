@@ -28,8 +28,8 @@ const Sidebar = () => {
           <span style={{ 
             fontSize: '0.75rem', 
             fontWeight: '700', 
-            color: '#6366f1',
-            background: '#e0e7ff',
+            color: '#2563eb',
+            background: '#dbeafe',
             padding: '2px 8px',
             borderRadius: '12px',
             textTransform: 'uppercase',

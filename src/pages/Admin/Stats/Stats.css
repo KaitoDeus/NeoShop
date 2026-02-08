@@ -100,7 +100,7 @@
   .progress-fill {
     height: 100%;
     border-radius: 99px;
-    background: linear-gradient(90deg, #6366f1, #818cf8);
+    background: linear-gradient(90deg, #2563eb, #818cf8);
   }
   
   /* Financial Table */
@@ -126,12 +126,12 @@
   }
   
   .btn-sm-outline:hover {
-    border-color: #6366f1;
-    color: #6366f1;
+    border-color: #2563eb;
+    color: #2563eb;
   }
   
   .btn-sm-primary {
-    background: #4f46e5;
+    background: #1d4ed8;
     border: none;
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;

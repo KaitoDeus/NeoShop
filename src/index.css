@@ -10,11 +10,11 @@
   --text-secondary: #64748b; /* Slate 500 */
   --text-muted: #94a3b8; /* Slate 400 */
 
-  --primary: #6366f1; /* Indigo 500 */
-  --primary-hover: #4f46e5; /* Indigo 600 */
-  --accent: #ec4899; /* Pink 500 */
+  --primary: #2563eb; /* Blue 600 */
+  --primary-hover: #1d4ed8; /* Blue 700 */
+  --accent: #0891b2; /* Cyan 600 */
   
-  --gradient-primary: linear-gradient(135deg, #6366f1 0%, #ec4899 100%);
+  --gradient-primary: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
   --gradient-card: linear-gradient(145deg, #ffffff 0%, #f1f5f9 100%);
   
   --border-color: #e2e8f0; /* Slate 200 */

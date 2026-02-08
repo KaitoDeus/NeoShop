@@ -20,8 +20,8 @@ const categories = [
   },
   {
     icon: <FiMonitor />,
-    color: '#a855f7',
-    bg: 'rgba(168, 85, 247, 0.1)',
+    color: '#e11d48',
+    bg: 'rgba(225, 29, 72, 0.1)',
     title: 'Game',
     sub: 'Steam & Xbox'
   },

@@ -38,8 +38,8 @@
   
   .search-input:focus {
     background: white;
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.1);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.1);
   }
   
   .header-actions {
@@ -64,7 +64,7 @@
   
   .action-btn:hover {
     background: #f1f5f9;
-    color: #6366f1;
+    color: #2563eb;
   }
   
   .notification-btn .badge {
@@ -101,5 +101,5 @@
   }
   
   .profile-btn:hover {
-    color: #6366f1;
+    color: #2563eb;
   }

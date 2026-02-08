@@ -52,14 +52,14 @@
 }
 
 .tab-item:hover {
-  color: #6366f1;
+  color: #2563eb;
   background: #f8fafc;
   border-radius: 6px 6px 0 0;
 }
 
 .tab-item.active {
-  color: #6366f1;
-  border-bottom-color: #6366f1;
+  color: #2563eb;
+  border-bottom-color: #2563eb;
   background: transparent;
 }
 
@@ -131,8 +131,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .form-textarea {
@@ -158,7 +158,7 @@
 }
 
 .logo-upload-box:hover {
-  border-color: #6366f1;
+  border-color: #2563eb;
   background: #f1f5f9;
 }
 
@@ -233,7 +233,7 @@
 }
 
 input:checked + .slider {
-  background-color: #6366f1;
+  background-color: #2563eb;
 }
 
 input:checked + .slider:before {
@@ -281,12 +281,12 @@ input:checked + .slider:before {
 }
 
 .btn-primary {
-  background: #6366f1;
+  background: #2563eb;
   color: white;
 }
 
 .btn-primary:hover {
-  background: #4f46e5;
+  background: #1d4ed8;
 }
 
 .btn-primary:disabled {

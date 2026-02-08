@@ -127,7 +127,7 @@ const Users = () => {
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
                     <button 
                         className="btn-outline" 
-                        style={{ padding: '0.4rem', border: 'none', color: '#6366f1' }}
+                        style={{ padding: '0.4rem', border: 'none', color: '#2563eb' }}
                         onClick={() => setSelectedUser(user)}
                     >
                         Xem chi tiết

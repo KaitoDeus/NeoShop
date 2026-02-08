@@ -121,7 +121,7 @@
   /* Table Widget */
   .view-all-btn {
     text-decoration: none;
-    color: #6366f1;
+    color: #2563eb;
     font-weight: 600;
     font-size: 0.9rem;
   }
@@ -184,17 +184,17 @@
   
   .text-success { color: #10b981; }
   .text-danger { color: #ef4444; }
-  .text-purple { color: #8b5cf6; }
+  .text-purple { color: #0891b2; }
   .text-orange { color: #f97316; }
   .text-blue { color: #3b82f6; }
-  .text-indigo { color: #6366f1; }
+  .text-indigo { color: #2563eb; }
   
   .bg-success-light { background: #d1fae5; }
-  .bg-purple-light { background: #ede9fe; }
+  .bg-purple-light { background: #e0f2fe; }
   .bg-orange-light { background: #ffedd5; }
   .bg-blue-light { background: #dbeafe; }
   .bg-gray-light { background: #f1f5f9; }
-  .bg-indigo-light { background: #e0e7ff; }
+  .bg-indigo-light { background: #dbeafe; }
   .bg-danger-light { background: #fee2e2; }
   
   .increase { color: #10b981; }

@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
+import ProtectedRoute from './components/common/ProtectedRoute/ProtectedRoute';
 import MainLayout from './layouts/MainLayout/MainLayout';
 import AdminLayout from './layouts/AdminLayout'; // Import Admin Layout
 import Home from './pages/Home/Home';
@@ -28,42 +30,46 @@ import './App.css';
 
 function App() {
   return (
-    <CartProvider>
-      <Router>
-        <Routes>
-          {/* Admin Routes */}
-          <Route path="/admin" element={<AdminLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="dashboard" element={<Dashboard />} />
-            <Route path="products" element={<Products />} />
-            <Route path="orders" element={<Orders />} />
-            <Route path="keys" element={<Keys />} />
-            <Route path="users" element={<Users />} />
-            <Route path="stats" element={<Stats />} />
-            <Route path="settings" element={<Settings />} />
-          </Route>
+    <AuthProvider>
+      <CartProvider>
+        <Router>
+          <Routes>
+            {/* Admin Routes (Protected) */}
+            <Route element={<ProtectedRoute adminOnly={true} />}>
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<Dashboard />} />
+                <Route path="dashboard" element={<Dashboard />} />
+                <Route path="products" element={<Products />} />
+                <Route path="orders" element={<Orders />} />
+                <Route path="keys" element={<Keys />} />
+                <Route path="users" element={<Users />} />
+                <Route path="stats" element={<Stats />} />
+                <Route path="settings" element={<Settings />} />
+              </Route>
+            </Route>
 
-          {/* Ứng dụng chính với Layout */}
-          <Route path="/" element={<MainLayout />}>
-            <Route index element={<Home />} />
-            <Route path="login" element={<Auth />} />
-            <Route path="category" element={<ProductCategory />} />
-            <Route path="product/:id" element={<ProductDetail />} />
-            <Route path="cart" element={<Cart />} />
-            <Route path="checkout" element={<Checkout />} />
-            <Route path="delivery" element={<Delivery />} />
-            {/* Trang Hỗ Trợ */}
-            <Route path="help" element={<HelpCenter />} />
-            <Route path="activation-guide" element={<ActivationGuide />} />
-            <Route path="warranty" element={<WarrantyPolicy />} />
-            <Route path="contact" element={<Contact />} />
-            {/* Trang Pháp Lý */}
-            <Route path="privacy" element={<PrivacyPolicy />} />
-            <Route path="terms" element={<Terms />} />
-          </Route>
-        </Routes>
-      </Router>
-    </CartProvider>
+            {/* Ứng dụng chính với Layout */}
+            <Route path="/" element={<MainLayout />}>
+              <Route index element={<Home />} />
+              <Route path="login" element={<Auth />} />
+              <Route path="category" element={<ProductCategory />} />
+              <Route path="product/:id" element={<ProductDetail />} />
+              <Route path="cart" element={<Cart />} />
+              <Route path="checkout" element={<Checkout />} />
+              <Route path="delivery" element={<Delivery />} />
+              {/* Trang Hỗ Trợ */}
+              <Route path="help" element={<HelpCenter />} />
+              <Route path="activation-guide" element={<ActivationGuide />} />
+              <Route path="warranty" element={<WarrantyPolicy />} />
+              <Route path="contact" element={<Contact />} />
+              {/* Trang Pháp Lý */}
+              <Route path="privacy" element={<PrivacyPolicy />} />
+              <Route path="terms" element={<Terms />} />
+            </Route>
+          </Routes>
+        </Router>
+      </CartProvider>
+    </AuthProvider>
   );
 }
 

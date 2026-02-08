@@ -51,7 +51,7 @@
   top: 0;
   left: 0;
   height: 100%;
-  background: linear-gradient(to right, #6366f1, #a855f7);
+  background: linear-gradient(to right, #2563eb, #3b82f6);
   width: 66%; /* Step 2 of 3 */
   border-radius: 10px;
 }
@@ -71,7 +71,7 @@
 }
 
 .step-label.active {
-  color: #6366f1;
+  color: #2563eb;
 }
 
 /* Main Layout */
@@ -180,9 +180,9 @@
 }
 
 .method-card.active {
-  border-color: #6366f1;
+  border-color: #2563eb;
   background: #f5f3ff;
-  box-shadow: 0 0 0 1px #6366f1;
+  box-shadow: 0 0 0 1px #2563eb;
 }
 
 .method-icon-box {
@@ -200,7 +200,7 @@
 
 .method-card.active .method-icon-box {
   background: white;
-  color: #6366f1;
+  color: #2563eb;
 }
 
 .method-name {
@@ -225,7 +225,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  color: #6366f1;
+  color: #2563eb;
   display: none;
 }
 
@@ -483,7 +483,7 @@
 
 .complete-btn {
   width: 100%;
-  background: #6366f1;
+  background: #2563eb;
   color: white;
   border: none;
   padding: 1rem;
@@ -499,7 +499,7 @@
 }
 
 .complete-btn:hover {
-  background: #4f46e5;
+  background: #1d4ed8;
   transform: translateY(-2px);
 }
 
@@ -529,7 +529,7 @@
 .activation-icon {
   width: 32px;
   height: 32px;
-  background: #6366f1;
+  background: #2563eb;
   color: white;
   border-radius: 50%;
   display: flex;
@@ -550,7 +550,7 @@
   margin: 0;
   font-size: 0.75rem;
   line-height: 1.4;
-  color: #6366f1;
+  color: #2563eb;
 }
 
 /* Trust Footer */
