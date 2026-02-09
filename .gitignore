@@ -1,0 +1,17 @@
+target/
+*.class
+*.jar
+*.war
+*.ear
+.mvn/
+.idea/
+*.iml
+.vscode/
+bin/
+*.log
+auth_log.txt
+build_error.txt
+build_error_auth.txt
+build_error_registry.txt
+node_modules/
+.env
