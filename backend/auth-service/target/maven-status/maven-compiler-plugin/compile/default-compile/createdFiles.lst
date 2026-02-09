@@ -1,6 +1,0 @@
-com\neoshop\auth\entity\User.class
-com\neoshop\auth\controller\UserController.class
-com\neoshop\auth\entity\User$UserBuilder.class
-com\neoshop\auth\repository\UserRepository.class
-com\neoshop\auth\config\OpenApiConfig.class
-com\neoshop\auth\AuthApplication.class
