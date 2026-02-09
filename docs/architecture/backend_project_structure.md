@@ -7,7 +7,7 @@
 ```
 backend/
 ├── neoshop-gateway/          # Spring Cloud Gateway (API Gateway)
-├── neoshop-auth/             # Dịch vụ Xác thực & Định danh (Auth)
+├── auth-service/             # Dịch vụ Xác thực & Định danh (Auth)
 ├── neoshop-catalog/          # Dịch vụ Sản phẩm & Danh mục (Catalog)
 ├── neoshop-order/            # Dịch vụ Đơn hàng & Giao dịch (Order)
 ├── neoshop-notification/     # Đối tượng tiêu thụ (Consumer) Kafka cho thông báo
