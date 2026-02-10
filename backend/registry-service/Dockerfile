@@ -4,6 +4,7 @@ WORKDIR /app
 COPY pom.xml .
 COPY auth-service/pom.xml auth-service/
 COPY registry-service/pom.xml registry-service/
+COPY gateway-service/pom.xml gateway-service/
 RUN mvn dependency:go-offline -pl registry-service
 
 COPY registry-service/src registry-service/src

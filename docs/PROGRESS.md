@@ -42,10 +42,10 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
   - [x] Kết nối PostgreSQL, JPA chuẩn hóa Entity.
   - [x] Tích hợp Swagger / OpenAPI 3 để test API.
   - [x] Docker hóa dịch vụ (Multi-stage build).
-- [ ] **Gateway Service**:
-  - [ ] Định tuyến tập trung (Centralized Routing).
-  - [ ] Áp dụng Rate Limiting (Giới hạn tốc độ) bằng Redis.
-  - [ ] Xử lý CORS và Authentication tập trung.
+- [x] **Gateway Service**:
+  - [x] Định tuyến tập trung (Centralized Routing).
+  - [x] Áp dụng Rate Limiting (Giới hạn tốc độ) bằng Redis.
+  - [x] Xử lý CORS và Authentication tập trung.
 
 ### 5. Khả năng quan sát (Observability)
 
@@ -76,6 +76,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 | Thành phần          | Port | Trạng thái          |
 | :------------------ | :--- | :------------------ |
 | **Frontend**        | 5173 | 🟢 Running          |
+| **Gateway Service** | 8080 | 🟢 Running (Docker) |
 | **Eureka Registry** | 8761 | 🟢 Running (Docker) |
 | **Auth Service**    | 8081 | 🟢 Running (Docker) |
 | **PostgreSQL**      | 5432 | 🟢 Running (Docker) |
