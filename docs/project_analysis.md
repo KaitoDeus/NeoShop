@@ -2,19 +2,29 @@
 
 ## 1. Tổng quan
 
-NeoShop là một ứng dụng thương mại điện tử hiện đại được xây dựng bằng **React 19** và **Vite**. Ứng dụng có thiết kế linh hoạt (responsive), giao diện cửa hàng cho khách hàng và trang quản trị (admin dashboard) dành riêng cho việc quản lý. Dự án sử dụng **React Router** để điều hướng và Context API để quản lý trạng thái.
+NeoShop là một ứng dụng thương mại điện tử hiện đại. Ban đầu được thiết kế theo hướng Microservices, dự án đã được chuyển đổi sang kiến trúc **Monolith hiện đại** để tối ưu hóa hiệu năng và đơn giản hóa việc phát triển cho giai đoạn đầu. Backend được xây dựng với Spring Boot theo mô hình **5-layer pattern** (Layered Architecture).
 
 ## 2. Công nghệ sử dụng
+
+### Backend
+
+- **Framework**: Spring Boot 3.2+
+- **Kiến trúc**: Monolith (5 layers: Config, Controller, Service, Repository, Model)
+- **Bảo mật**: Spring Security + JWT
+- **Hệ quản trị CSDL**: PostgreSQL 17
+
+### Frontend
 
 - **Frontend Framework**: React 19
 - **Công cụ xây dựng (Build Tool)**: Vite
 - **Điều hướng**: React Router DOM v7
 - **Quản lý trạng thái**: React Context API (`AuthContext`, `CartContext`)
-- **Định dạng kiểu dáng (Styling)**: CSS (Modular và Global), có sử dụng các mẫu class giống Tailwind CSS.
-- **Biểu tượng (Icons)**: React Icons
-- **Biểu đồ (Charts)**: Recharts (dùng trong Dashboard Quản trị)
+- **Định dạng kiểu dáng (Styling)**: CSS Modular.
+- **Biểu đồ (Charts)**: Recharts.
 
 ## 3. Cấu trúc dự án
+
+... (giữ nguyên)
 
 Dự án tuân theo tổ chức dựa trên tính năng và chức năng:
 

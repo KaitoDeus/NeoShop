@@ -1,102 +1,73 @@
-# Hợp đồng API: NeoShop
+# Hợp đồng API RESTful: NeoShop
 
-Tài liệu này định nghĩa các điểm cuối (endpoints) REST API được cung cấp bởi các microservices cho ứng dụng frontend.
+Tất cả các API đều sử dụng tiền tố `/api/v1` và trả về dữ liệu định dạng JSON.
 
-## 1. Dịch vụ Sản phẩm (Product Service) (`BASE_URL/api/v1/products`)
+## 1. Xác thực & Người dùng (Authentication & User)
 
-### Lấy tất cả sản phẩm (Storefront)
+Cung cấp các API liên quan đến bảo mật và quản lý tài khoản.
 
-- **Phương thức**: `GET /`
-- **Tham số truy vấn (Query Params)**: `category` (tùy chọn), `search` (tùy chọn), `page`, `size`.
-- **Phản hồi**: `200 OK`
+### Đăng nhập (Login)
 
-```json
-{
-  "content": [
-    {
-      "id": "uuid",
-      "title": "Tên sản phẩm",
-      "price": 99.9,
-      "salePrice": 79.9,
-      "thumbnail": "url",
-      "category": { "id": "uuid", "name": "Tên danh mục" }
-    }
-  ],
-  "totalPages": 5
-}
-```
+- **Endpoint**: `POST /api/v1/auth/login`
+- **Body**:
+  ```json
+  { "username": "admin", "password": "password" }
+  ```
+- **Response (200 OK)**:
+  ```json
+  { "token": "jwt_string", "username": "admin", "role": "ADMIN" }
+  ```
 
-### Lấy chi tiết sản phẩm
+### Danh sách người dùng (Admin)
 
-- **Phương thức**: `GET /{id}`
-- **Phản hồi**: `200 OK` (Đối tượng sản phẩm đầy đủ bao gồm mô tả và bộ sưu tập hình ảnh).
+- **Endpoint**: `GET /api/v1/auth/users`
+- **Params**: `page`, `size`
+- **Security**: Bearer JWT (Role: ADMIN)
 
 ---
 
-## 2. Dịch vụ Đơn hàng (Order Service) (`BASE_URL/api/v1/orders`)
+## 2. Quản lý Sản phẩm (Product Catalog)
 
-### Tạo đơn hàng (Checkout)
+_Dự kiến triển khai trong các giai đoạn tiếp theo._
 
-- **Phương thức**: `POST /`
-- **Xác thực (Auth)**: Bắt buộc (User)
-- **Nội dung yêu cầu (Request Body)**:
+### Lấy danh sách sản phẩm
 
-```json
-{
-  "items": [{ "productId": "uuid", "quantity": 1 }],
-  "shippingAddress": "...",
-  "paymentMethod": "COD"
-}
-```
-
-- **Phản hồi**: `201 Created`
-
-```json
-{
-  "orderId": "uuid",
-  "status": "PENDING",
-  "totalAmount": 150.0
-}
-```
+- **Endpoint**: `GET /api/v1/products`
+- **Params**: `category`, `search`, `sort`
+- **Response**: Trạng thái 200 kèm danh sách sản phẩm phân trang.
 
 ---
 
-## 3. Dịch vụ Xác thực (Auth Service) (`BASE_URL/api/v1/auth`)
+## 3. Quản lý Đơn hàng (Orders)
 
-### Đăng nhập
+_Dự kiến triển khai trong các giai đoạn tiếp theo._
 
-- **Phương thức**: `POST /login`
-- **Nội dung yêu cầu (Request Body)**: `{ "email": "...", "password": "..." }`
-- **Phản hồi**: `200 OK`
+### Tạo đơn hàng mới
 
-```json
-{
-  "accessToken": "jwt_token",
-  "refreshToken": "refresh_token",
-  "user": { "id": "uuid", "email": "...", "role": "ADMIN" }
-}
-```
+- **Endpoint**: `POST /api/v1/orders`
+- **Security**: Bearer JWT
+- **Body**: Danh sách ProductID và số lượng.
 
 ---
 
-## 4. Dịch vụ Admin (`BASE_URL/api/v1/admin/*`)
+## 4. Quản trị & Thống kê (Dashboard)
 
-### Lấy thống kê Dashboard
+### Lấy thống kê tổng quan
 
-- **Phương thức**: `GET /stats/summary`
-- **Xác thực (Auth)**: Bắt buộc (Admin)
-- **Phản hồi**:
+- **Endpoint**: `GET /api/v1/admin/stats/summary`
+- **Security**: Bearer JWT (Role: ADMIN)
+- **Response**: Doanh thu, số đơn hàng, tăng trưởng người dùng.
+
+## 5. Cấu trúc Phản hồi Chung (Common Wrapper)
+
+Mọi lỗi sẽ được trả về theo cấu trúc:
 
 ```json
 {
-  "totalRevenue": 15000000,
-  "totalOrders": 120,
-  "topProducts": [...]
+  "timestamp": "2024-02-10T...",
+  "status": 401,
+  "error": "Unauthorized",
+  "message": "Chi tiết thông báo lỗi",
+  "path": "/api/v1/..."
 }
 ```
-
-### Quản lý khóa kỹ thuật số (Digital Keys)
-
-- **Phương thức**: `POST /keys/import`
-- **Xác thực (Auth)**: Bắt buộc (Admin)
-- **Nội dung yêu cầu (Request Body)**: `{ "productId": "uuid", "keys": ["KEY-1", "KEY-2"] }`
