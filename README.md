@@ -1,16 +1,80 @@
-# React + Vite
+# NeoShop - Modern E-Commerce Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NeoShop is a modern, full-stack e-commerce application built with a high-performance Monolith architecture using Spring Boot and React.
 
-Currently, two official plugins are available:
+## 🚀 Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Modern Monolith Architecture**: 5-layer clean architecture for maintainability and scalability.
+- **Micro-Infrastructure Ready**: Integrated with Redis (Cache), Kafka (Messaging), and PostgreSQL.
+- **Real-world Simulation**: Pre-loaded with 10,000+ realistic product and user records.
+- **Monitoring & Observability**: Full stack monitoring with Prometheus and Grafana.
+- **Containerized Implementation**: Entire system runs seamlessly via Docker Compose.
 
-## React Compiler
+## 🛠 Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Backend
 
-## Expanding the ESLint configuration
+- **Java 21** & **Spring Boot 3.2**
+- **Spring Data JPA** (PostgreSQL)
+- **Spring Security** (JWT Authentication)
+- **Spring Kafka** & **Redis**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Frontend
+
+- **React 19** & **Vite**
+- **Nginx** (Production serving)
+- **Responsive UI** with modern aesthetics.
+
+### Infrastructure
+
+- **Docker & Docker Compose**
+- **Prometheus** (Metrics collection)
+- **Grafana** (Visualization dashboards)
+
+## 📦 Project Structure
+
+```text
+NeoShop/
+├── backend/            # Spring Boot application
+├── frontend/           # React frontend application
+├── infrastructure/     # SQL scripts, Monitoring configs
+├── docs/               # System documentation (SRS, API, Architecture)
+└── docker-compose.yml  # System orchestration
+```
+
+## 🚦 Getting Started
+
+### Prerequisites
+
+- Docker & Docker Compose installed.
+
+### Installation & Run
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/KaitoDeus/NeoShop.git
+   cd NeoShop
+   ```
+2. Start the entire system:
+   ```bash
+   docker-compose up -d --build
+   ```
+
+### Access Ports
+
+- **Frontend UI**: [http://localhost:3000](http://localhost:3000)
+- **Backend API**: [http://localhost:8080](http://localhost:8080)
+- **Swagger UI**: [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+- **Prometheus**: [http://localhost:9090](http://localhost:9090)
+- **Grafana**: [http://localhost:3001](http://localhost:3001)
+
+## 🛡 Security
+
+Default Admin credentials for testing:
+
+- **Username**: `admin@neoshop.com`
+- **Password**: `admin123`
+
+## 📄 License
+
+This project is licensed under the MIT License.
