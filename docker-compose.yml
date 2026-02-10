@@ -1,42 +1,52 @@
 services:
-  # Database
+
+  # 1. DATABASE & CACHE (Core Infrastructure)
   postgres:
     image: postgres:17-alpine
-    container_name: neoshop-postgres
+    container_name: postgres
+    restart: always
     environment:
       - POSTGRES_USER=admin
       - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=neoshop
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./infrastructure/database/init:/docker-entrypoint-initdb.d
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d postgres"]
+      test: ["CMD-SHELL", "pg_isready -U admin -d neoshop"]
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # Caching
   redis:
     image: redis:7-alpine
-    container_name: neoshop-redis
+    container_name: redis
+    restart: always
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  # Messaging (Kafka cho Event-driven)
+  # 2. MESSAGING (Event Streaming)
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
-    container_name: neoshop-zookeeper
-    ports:
-      - "2181:2181"
+    container_name: zookeeper
+    restart: always
     environment:
       - ZOOKEEPER_CLIENT_PORT=2181
       - ZOOKEEPER_TICK_TIME=2000
+    ports:
+      - "2181:2181"
 
   kafka:
     image: confluentinc/cp-kafka:latest
-    container_name: neoshop-kafka
+    container_name: kafka
+    restart: always
     ports:
       - "9092:9092"
     environment:
@@ -49,70 +59,61 @@ services:
     depends_on:
       - zookeeper
 
-  # Monitoring - Quan sát hệ thống
+  # 3. APPLICATION SERVICES
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/neoshop
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=password
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_DATA_REDIS_PORT=6379
+      - SPRING_KAFKA_BOOTSTRAP_SERVERS=kafka:29092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  # 4. MONITORING
   prometheus:
     image: prom/prometheus:latest
-    container_name: neoshop-prometheus
+    container_name: prometheus
+    restart: always
     ports:
       - "9090:9090"
     volumes:
       - ./infrastructure/monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
-      - registry-service
-      - auth-service
-      - gateway-service
+      - backend
 
   grafana:
     image: grafana/grafana:latest
-    container_name: neoshop-grafana
+    container_name: grafana
+    restart: always
     ports:
-      - "3000:3000"
+      - "3001:3000"
     depends_on:
       - prometheus
 
-  # Java Microservices
-  registry-service:
-    build:
-      context: ./backend
-      dockerfile: registry-service/Dockerfile
-    container_name: registry-service
-    ports:
-      - "8761:8761"
-    environment:
-      - SPRING_PROFILES_ACTIVE=docker
-
-  auth-service:
-    build:
-      context: ./backend
-      dockerfile: auth-service/Dockerfile
-    container_name: auth-service
-    ports:
-      - "8081:8081"
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://neoshop-postgres:5432/neoshop_auth
-      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://registry-service:8761/eureka/
-      - SPRING_PROFILES_ACTIVE=docker
-    depends_on:
-      postgres:
-        condition: service_healthy
-      registry-service:
-        condition: service_started
-
-  gateway-service:
-    build:
-      context: ./backend
-      dockerfile: gateway-service/Dockerfile
-    container_name: gateway-service
-    ports:
-      - "8080:8080"
-    environment:
-      - REDIS_HOST=neoshop-redis
-      - EUREKA_URL=http://registry-service:8761/eureka/
-    depends_on:
-      registry-service:
-        condition: service_started
-      redis:
-        condition: service_started
-
 volumes:
   postgres_data:
+    driver: local
