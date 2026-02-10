@@ -54,7 +54,7 @@ const Footer = () => {
         </div>
         
         <div className="footer-bottom">
-          <p>&copy; 2026 NeoShop LLC. Bảo lưu mọi quyền.</p>
+          <p>&copy; 2026 NeoShop.</p>
         </div>
       </div>
     </footer>
