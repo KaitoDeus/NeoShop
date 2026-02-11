@@ -44,19 +44,39 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🚀 Giai đoạn 3: Nghiệp vụ & Tích hợp (Sắp tới)
+## 🚀 Giai đoạn 3: Nghiệp vụ & Tích hợp (Hoàn thành)
 
 ### 6. Nghiệp vụ Chính
 
-- [ ] Module Sản phẩm (Catalog).
-- [ ] Module Đơn hàng (Order).
-- [ ] Caching với Redis.
+- [x] Module Sản phẩm (Catalog).
+- [x] Module Đơn hàng (Order).
+- [x] Caching với Redis.
+- [x] Thông báo Event-driven với Kafka.
 
 ### 7. Tích hợp Frontend (UI/UX)
 
 - [x] Tích hợp Frontend vào Docker (Nginx).
 - [x] Kết nối React vào Backend.
-- [ ] Tối ưu hóa hiệu suất.
+- [x] Tối ưu hóa hiệu suất (Caching).
+
+---
+
+## 🛠️ Giai đoạn 4: Quản lý Nâng cao & Vận hành (Đang thực hiện)
+
+### 8. Quản lý Kho & Khóa kỹ thuật số
+
+- [x] Hệ thống quản lý Khóa sản phẩm (Product Keys).
+- [x] Tự động cấp phát khóa khi thanh toán thành công.
+
+### 9. Thống kê & Phân tích (Analytics)
+
+- [x] API Thống kê doanh thu, đơn hàng, người dùng.
+- [ ] Tích hợp biểu đồ Dashboard Admin.
+
+### 10. Thanh toán & Bảo mật Nâng cao
+
+- [ ] Tích hợp Mock Payment Gateway.
+- [ ] Hệ thống mã giảm giá (Coupons/Vouchers).
 
 ---
 
