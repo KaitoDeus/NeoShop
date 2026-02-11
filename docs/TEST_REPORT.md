@@ -25,7 +25,18 @@ This report summarizes the backend refactoring and data seeding activities.
 - **Docker:** All services (Postgres, Redis, Kafka, Backend) are running healthy.
 - **Backend:** Successfully restarted and connected to the new schema without errors.
 
-## 3. Next Steps
+## 3. Automated Testing (JUnit 5 + Mockito)
 
-- **Frontend Integration:** Ensure the frontend can handle the large volume of order/product data (pagination implementation is critical).
-- **Analytics:** The Admin Dashboard should now show rich, realistic statistics based on the 5,000 orders.
+**Status:** ✅ **UNIT TESTS PASSED**
+
+Implemented the first batch of business-critical unit tests covering core services:
+
+- **`AuthServiceTest`**: Validated login flow, JWT parsing, and Role mapping. (2/2 Passed)
+- **`ProductServiceTest`**: Validated catalog browsing, category filtering, and search logic. (3/3 Passed)
+- **`OrderServiceTest`**: Validated order creation, stock management, and automatic **Digital Key assignment** logic. (3/3 Passed)
+
+## 4. Next Steps
+
+- **Integration Testing:** Plan to implement `@SpringBootTest` using Testcontainers for real DB/Kafka integration.
+- **Frontend Integration:** Ensure the frontend can handle the large volume of order/product data.
+- **Analytics:** Verify dashboard metrics against the 5,000 real-world simulated accounts.

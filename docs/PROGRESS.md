@@ -80,6 +80,22 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
+## 🧪 Giai đoạn 5: Kiểm thử Tự động (Chuẩn bị)
+
+### 11. Unit Testing (JUnit 5 + Mockito)
+
+- [x] Khởi tạo cấu trúc thư mục `src/test/java`.
+- [x] **AuthServiceTest**: Kiểm thử logic đăng nhập & phân quyền.
+- [x] **ProductServiceTest**: Kiểm thử danh mục & tìm kiếm.
+- [x] **OrderServiceTest**: Kiểm thử tạo đơn hàng & gán Key tự động.
+
+### 12. Integration Testing
+
+- [ ] Thiết lập Testcontainers cho PostgreSQL & Kafka.
+- [ ] Kiểm thử luồng API End-to-End.
+
+---
+
 ## 🛠️ Trạng thái Vận hành (Local Environment)
 
 | Thành phần      | Port | Trạng thái          |

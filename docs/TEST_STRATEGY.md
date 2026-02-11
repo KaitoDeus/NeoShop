@@ -33,6 +33,24 @@ This document outlines the testing strategy for the NeoShop platform, focusing o
 
 - **Browser (Swagger UI):** For manual API execution.
 - **Terminal:** For checking container logs (Kafka/Backend).
+- **JUnit 5 & Mockito:** For backend unit and integration testing.
+
+## 6. Automated Testing Plan (Phase 5)
+
+### 6.1. Unit Testing
+
+- **AuthServiceTest:** Validate login logic, JWT generation, and role processing.
+- **ProductServiceTest:** Test catalog retrieval, search functionality, and pagination.
+- **OrderServiceTest:** Focus on business-critical logic:
+  - Stock deduction when creating orders.
+  - Automatic `ProductKey` assignment when status becomes `PAID`.
+  - Kafka event publication.
+
+### 6.2. Integration Testing
+
+- Use `@SpringBootTest` with a dedicated test database (or Testcontainers).
+- **AuthControllerTest:** Test full login flow and security filter chain.
+- **OrderControllerTest:** End-to-end order placement and status workflow.
 
 ## 6. Pass/Fail Criteria
 
