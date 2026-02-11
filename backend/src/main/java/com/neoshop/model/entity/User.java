@@ -27,7 +27,16 @@ public class User {
     private String passwordHash;
 
     private String fullName;
-    private String role;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    @Builder.Default
+    private java.util.Set<Role> roles = new java.util.HashSet<>();
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

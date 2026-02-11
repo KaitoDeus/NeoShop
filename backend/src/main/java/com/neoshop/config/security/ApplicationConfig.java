@@ -25,7 +25,9 @@ public class ApplicationConfig {
                 .map(user -> org.springframework.security.core.userdetails.User.builder()
                         .username(user.getUsername())
                         .password(user.getPasswordHash())
-                        .roles(user.getRole())
+                        .roles(user.getRoles().stream()
+                                .map(com.neoshop.model.entity.Role::getName)
+                                .toArray(String[]::new))
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

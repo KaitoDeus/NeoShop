@@ -59,7 +59,9 @@ public class AuthServiceImpl implements AuthService {
         var userDetails = org.springframework.security.core.userdetails.User.builder()
                 .username(user.getUsername())
                 .password(user.getPasswordHash())
-                .roles(user.getRole())
+                .roles(user.getRoles().stream()
+                        .map(com.neoshop.model.entity.Role::getName)
+                        .toArray(String[]::new))
                 .build();
 
         var jwtToken = jwtService.generateToken(userDetails);
@@ -67,7 +69,9 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponse.builder()
                 .token(jwtToken)
                 .username(user.getUsername())
-                .role(user.getRole())
+                .roles(user.getRoles().stream()
+                        .map(com.neoshop.model.entity.Role::getName)
+                        .collect(java.util.stream.Collectors.toSet()))
                 .build();
     }
 }
