@@ -61,12 +61,12 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 ### 8. Thống kê & Phân tích (Analytics)
 
 - [x] API Thống kê doanh thu, đơn hàng, người dùng.
-- [ ] Tích hợp biểu đồ Dashboard Admin.
+- [x] Tích hợp biểu đồ Dashboard Admin.
 
 ### 9. Thanh toán & Bảo mật Nâng cao
 
-- [ ] Tích hợp Mock Payment Gateway.
-- [ ] Hệ thống mã giảm giá (Coupons/Vouchers).
+- [x] Tích hợp Mock Payment Gateway.
+- [x] Hệ thống mã giảm giá (Coupons/Vouchers).
 
 ---
 
@@ -81,8 +81,8 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 11. Integration Testing
 
-- [ ] Thiết lập Testcontainers cho PostgreSQL.
-- [ ] Kiểm thử luồng API End-to-End.
+- [x] Thiết lập Testcontainers cho PostgreSQL.
+- [x] Kiểm thử luồng API End-to-End.
 
 ---
 
