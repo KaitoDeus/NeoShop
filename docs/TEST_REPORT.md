@@ -9,7 +9,7 @@ Báo cáo này tóm tắt các hoạt động tái cấu trúc backend và nạp
 
 ### 2.1. Chiến lược Database First
 
-- **Khởi tạo SQL:** Tạo tệp `infrastructure/database/init/script.sql` cung cấp bộ dữ liệu đầy đủ và thực tế.
+- **Khởi tạo SQL:** Tạo tệp `database/init/script.sql` cung cấp bộ dữ liệu đầy đủ và thực tế.
 - **Java Initializer:** Loại bỏ `DatabaseInitializer.java` để tuân thủ phương pháp Database First. Dữ liệu hiện được quản lý hoàn toàn bằng các script SQL.
 
 ### 2.2. Kết quả Nạp dữ liệu (Đã xác minh)
@@ -22,7 +22,7 @@ Báo cáo này tóm tắt các hoạt động tái cấu trúc backend và nạp
 
 ### 2.3. Sức khỏe Hệ thống
 
-- **Docker:** Tất cả các dịch vụ (Postgres, Redis, Kafka, Backend) đang chạy ổn định.
+- **Docker:** Tất cả các dịch vụ (Backend, Frontend) đang chạy ổn định.
 - **Backend:** Khởi động lại thành công và kết nối với schema mới mà không gặp lỗi.
 
 ## 3. Kiểm thử Tự động (JUnit 5 + Mockito)
@@ -37,6 +37,6 @@ Báo cáo này tóm tắt các hoạt động tái cấu trúc backend và nạp
 
 ## 4. Các bước tiếp theo
 
-- **Kiểm thử Tích hợp (Integration Testing):** Lên kế hoạch triển khai `@SpringBootTest` sử dụng Testcontainers cho việc tích hợp DB/Kafka thực tế.
+- **Kiểm thử Tích hợp (Integration Testing):** Lên kế hoạch triển khai `@SpringBootTest` sử dụng Testcontainers cho việc tích hợp DB thực tế.
 - **Tích hợp Frontend:** Đảm bảo frontend có thể xử lý khối lượng dữ liệu đơn hàng/sản phẩm lớn.
 - **Phân tích (Analytics):** Xác minh các chỉ số dashboard dựa trên 5,000 tài khoản mô phỏng thực tế.

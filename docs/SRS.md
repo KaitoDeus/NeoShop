@@ -50,4 +50,4 @@ Hệ thống sử dụng mô hình **Decoupled Architecture**:
 
 - **Backend**: Java 21, Spring Boot 3, Spring Security, PostgreSQL 17.
 - **Frontend**: React 19, Vite, Recharts, React Router v7.
-- **Infrastucture**: Docker, Redis (Caching), Kafka (Async Task), Prometheus & Grafana (Monitoring).
+- **Infrastructure**: Docker.

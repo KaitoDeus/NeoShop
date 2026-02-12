@@ -9,7 +9,7 @@ Tài liệu này phác thảo chiến lược kiểm thử cho nền tảng NeoS
 - Xác minh các luồng chức năng chính cho Người dùng và Quản trị viên.
 - Đảm bảo logic tự động (Giảm tồn kho, Gán mã key) hoạt động chính xác.
 - Xác thực tính bảo mật (RBAC) trên các điểm cuối API.
-- Kiểm tra tính toàn vẹn của dữ liệu và tích hợp (Database, Kafka logs).
+- Kiểm tra tính toàn vẹn của dữ liệu và tích hợp Database.
 
 ## 3. Phạm vi Kiểm thử
 
@@ -27,24 +27,22 @@ Tài liệu này phác thảo chiến lược kiểm thử cho nền tảng NeoS
 
 - **URL:** http://localhost:8080/swagger-ui.html
 - **Cơ sở dữ liệu:** PostgreSQL (đã nạp hơn 10k bản ghi).
-- **Messaging:** Apache Kafka (Chế độ KRaft).
 
 ## 5. Công cụ Kiểm thử
 
 - **Trình duyệt (Swagger UI):** Để thực thi API thủ công.
-- **Terminal:** Để kiểm tra nhật ký container (Kafka/Backend).
+- **Terminal:** Để kiểm tra nhật ký container Backend.
 - **JUnit 5 & Mockito:** Để kiểm thử đơn vị (Unit Test) và tích hợp (Integration Test) backend.
 
 ## 6. Kế hoạch Kiểm thử Tự động (Giai đoạn 5)
 
 ### 6.1. Kiểm thử Đơn vị (Unit Testing)
 
-- **AuthServiceTest:** Xác minh logic đăng nhập, tạo JWT và xử lý vai trò.
+- **AuthServiceTest:** Xác minh luồng đăng nhập, tạo JWT và xử lý vai trò.
 - **ProductServiceTest:** Kiểm tra việc truy xuất danh mục, chức năng tìm kiếm và phân trang.
 - **OrderServiceTest:** Tập trung vào các logic nghiệp vụ quan trọng:
   - Khấu trừ tồn kho khi tạo đơn hàng.
   - Tự động gán `ProductKey` khi trạng thái chuyển sang `PAID`.
-  - Gửi sự kiện lên Kafka.
 
 ### 6.2. Kiểm thử Tích hợp (Integration Testing)
 

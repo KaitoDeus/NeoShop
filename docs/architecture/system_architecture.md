@@ -24,10 +24,8 @@ graph LR
         Sec[Spring Security]
     end
 
-    subgraph "Storage & Infrastructure"
+    subgraph "Storage"
         DB[(PostgreSQL)]
-        Cache[(Redis)]
-        MQ[Kafka]
     end
 
     UI --> States
@@ -39,8 +37,6 @@ graph LR
     Ctrl --> Svc
     Svc --> Repo
     Repo --> DB
-    Svc --> Cache
-    Svc --> MQ
 ```
 
 ## 2. Luồng dữ liệu (Data Flow)
@@ -56,4 +52,3 @@ graph LR
 
 - **Stateless**: Backend không lưu Session (trạng thái đăng nhập) trong bộ nhớ, mọi thứ dựa vào JWT.
 - **Decoupled**: Frontend có thể được deploy độc lập trên Vercel/Netlify, trong khi Backend chạy trên Docker/VPS.
-- **Efficiency**: Sử dụng Redis để cache các dữ liệu nặng (như danh sách sản phẩm) nhằm giảm tải cho Database.

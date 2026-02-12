@@ -15,10 +15,8 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 ### 2. Thiết lập hạ tầng (Infrastructure as Code)
 
 - [x] Cấu hình Docker Compose với:
-  - **PostgreSQL 17**: Cơ sở dữ liệu chính.
-  - **Redis**: Caching.
-  - **Apache Kafka**: Xử lý sự kiện (Event-driven).
-  - **Prometheus & Grafana**: Giám sát.
+  - **Backend**: Spring Boot Monolith.
+  - **Frontend**: React + Nginx.
 
 ### 3. Xử lý Dữ liệu lớn (Big Data Preparation)
 
@@ -37,43 +35,35 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
   - [x] Tích hợp Spring Security & JWT.
   - [x] Phân quyền Role-based Access Control (RBAC).
 
-### 5. Khả năng quan sát (Observability)
-
-- [x] Tích hợp Spring Actuator và Micrometer Prometheus.
-- [x] Cấu hình Prometheus scraper.
-
 ---
 
 ## 🚀 Giai đoạn 3: Nghiệp vụ & Tích hợp (Hoàn thành)
 
-### 6. Nghiệp vụ Chính
+### 5. Nghiệp vụ Chính
 
 - [x] Module Sản phẩm (Catalog).
 - [x] Module Đơn hàng (Order).
-- [x] Caching với Redis.
-- [x] Thông báo Event-driven với Kafka.
 
-### 7. Tích hợp Frontend (UI/UX)
+### 6. Tích hợp Frontend (UI/UX)
 
 - [x] Tích hợp Frontend vào Docker (Nginx).
 - [x] Kết nối React vào Backend.
-- [x] Tối ưu hóa hiệu suất (Caching).
 
 ---
 
 ## 🛠️ Giai đoạn 4: Quản lý Nâng cao & Vận hành (Đang thực hiện)
 
-### 8. Quản lý Kho & Khóa kỹ thuật số
+### 7. Quản lý Kho & Khóa kỹ thuật số
 
 - [x] Hệ thống quản lý Khóa sản phẩm (Product Keys).
 - [x] Tự động cấp phát khóa khi thanh toán thành công.
 
-### 9. Thống kê & Phân tích (Analytics)
+### 8. Thống kê & Phân tích (Analytics)
 
 - [x] API Thống kê doanh thu, đơn hàng, người dùng.
 - [ ] Tích hợp biểu đồ Dashboard Admin.
 
-### 10. Thanh toán & Bảo mật Nâng cao
+### 9. Thanh toán & Bảo mật Nâng cao
 
 - [ ] Tích hợp Mock Payment Gateway.
 - [ ] Hệ thống mã giảm giá (Coupons/Vouchers).
@@ -82,16 +72,16 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ## 🧪 Giai đoạn 5: Kiểm thử Tự động (Chuẩn bị)
 
-### 11. Unit Testing (JUnit 5 + Mockito)
+### 10. Unit Testing (JUnit 5 + Mockito)
 
 - [x] Khởi tạo cấu trúc thư mục `src/test/java`.
 - [x] **AuthServiceTest**: Kiểm thử logic đăng nhập & phân quyền.
 - [x] **ProductServiceTest**: Kiểm thử danh mục & tìm kiếm.
 - [x] **OrderServiceTest**: Kiểm thử tạo đơn hàng & gán Key tự động.
 
-### 12. Integration Testing
+### 11. Integration Testing
 
-- [ ] Thiết lập Testcontainers cho PostgreSQL & Kafka.
+- [ ] Thiết lập Testcontainers cho PostgreSQL.
 - [ ] Kiểm thử luồng API End-to-End.
 
 ---
@@ -100,12 +90,9 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 | Thành phần      | Port | Trạng thái          |
 | :-------------- | :--- | :------------------ |
-| **Frontend**    | 80   | 🟢 Running (Docker) |
+| **Frontend**    | 3000 | 🟢 Running (Docker) |
 | **Backend API** | 8080 | 🟢 Running (Docker) |
-| **PostgreSQL**  | 5432 | 🟢 Running (Docker) |
-| **Prometheus**  | 9090 | 🟢 Running (Docker) |
-| **Grafana**     | 3000 | 🟢 Running (Docker) |
 
 ---
 
-_Cập nhật lần cuối: 2026-02-10_
+_Cập nhật lần cuối: 2026-02-12_

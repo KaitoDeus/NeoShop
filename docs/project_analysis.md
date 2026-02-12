@@ -24,8 +24,6 @@ NeoShop là một ứng dụng thương mại điện tử hiện đại. Ban đ
 
 ## 3. Cấu trúc dự án
 
-... (giữ nguyên)
-
 Dự án tuân theo tổ chức dựa trên tính năng và chức năng:
 
 ```
