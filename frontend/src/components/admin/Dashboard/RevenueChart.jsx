@@ -1,10 +1,31 @@
+import { useState, useEffect } from 'react';
 import { 
   AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid 
 } from 'recharts';
-import { revenueData } from '../../../data/adminMockData';
+import { revenueData as mockRevenueData } from '../../../data/adminMockData';
 import './DashboardWidgets.css';
 
 const RevenueChart = () => {
+  const [chartData, setChartData] = useState(mockRevenueData);
+
+  useEffect(() => {
+    const fetchChart = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/admin/dashboard/revenue-chart', {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          setChartData(data);
+        }
+      } catch {
+        // Fallback to mock data
+      }
+    };
+    fetchChart();
+  }, []);
+
   return (
     <div className="dashboard-widget chart-widget">
       <div className="widget-header">
@@ -20,7 +41,7 @@ const RevenueChart = () => {
 
       <div className="chart-container">
         <ResponsiveContainer width="100%" height={300}>
-          <AreaChart data={revenueData}>
+          <AreaChart data={chartData}>
             <defs>
               <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="5%" stopColor="#2563eb" stopOpacity={0.2}/>
@@ -41,7 +62,7 @@ const RevenueChart = () => {
                 border: 'none', 
                 boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' 
               }}
-              formatter={(value) => [`${value.toLocaleString()} đ`, 'Doanh thu']}
+              formatter={(value) => [`${Number(value).toLocaleString()} đ`, 'Doanh thu']}
             />
             <Area 
               type="monotone" 
@@ -59,3 +80,4 @@ const RevenueChart = () => {
 };
 
 export default RevenueChart;
+
