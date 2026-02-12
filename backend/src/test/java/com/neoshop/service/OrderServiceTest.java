@@ -16,7 +16,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.kafka.core.KafkaTemplate;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -38,8 +37,6 @@ class OrderServiceTest {
     private UserRepository userRepository;
     @Mock
     private ProductKeyRepository productKeyRepository;
-    @Mock
-    private KafkaTemplate<String, Object> kafkaTemplate;
 
     @InjectMocks
     private OrderService orderService;
@@ -94,7 +91,6 @@ class OrderServiceTest {
         assertEquals(new BigDecimal("200.00"), response.getTotalAmount());
         assertEquals(8, sampleProduct.getStockQuantity());
 
-        verify(kafkaTemplate).send(eq("order-placed-topic"), any());
         verify(orderRepository).save(any(Order.class));
     }
 

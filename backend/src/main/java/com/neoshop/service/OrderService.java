@@ -29,7 +29,6 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final com.neoshop.repository.ProductKeyRepository productKeyRepository;
-    private final org.springframework.kafka.core.KafkaTemplate<String, Object> kafkaTemplate;
 
     @Transactional
     public OrderResponse createOrder(UUID userId, OrderRequest request) {
@@ -67,21 +66,12 @@ public class OrderService {
                     .build();
 
             order.getItems().add(orderItem);
-            totalAmount = totalAmount.add(orderItem.getUnitPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+            totalAmount = totalAmount
+                    .add(orderItem.getUnitPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
         }
 
         order.setTotalAmount(totalAmount);
         Order savedOrder = orderRepository.save(order);
-
-        // Gửi sự kiện Kafka
-        com.neoshop.model.dto.event.OrderPlacedEvent event = com.neoshop.model.dto.event.OrderPlacedEvent.builder()
-                .orderId(savedOrder.getId())
-                .customerEmail(user.getEmail())
-                .customerName(user.getFullName())
-                .totalAmount(savedOrder.getTotalAmount())
-                .status(savedOrder.getStatus())
-                .build();
-        kafkaTemplate.send("order-placed-topic", event);
 
         return mapToResponse(savedOrder);
     }
@@ -100,13 +90,14 @@ public class OrderService {
     public OrderResponse updateOrderStatus(UUID orderId, String status) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        
+
         String oldStatus = order.getStatus();
         order.setStatus(status);
         Order savedOrder = orderRepository.save(order);
 
         // Logic gán key khi đơn hàng được thanh toán
-        if (("PAID".equals(status) || "COMPLETED".equals(status)) && !"PAID".equals(oldStatus) && !"COMPLETED".equals(oldStatus)) {
+        if (("PAID".equals(status) || "COMPLETED".equals(status)) && !"PAID".equals(oldStatus)
+                && !"COMPLETED".equals(oldStatus)) {
             assignKeysToOrder(savedOrder);
         }
 
@@ -116,12 +107,12 @@ public class OrderService {
     private void assignKeysToOrder(Order order) {
         for (OrderItem item : order.getItems()) {
             List<com.neoshop.model.entity.ProductKey> availableKeys = productKeyRepository.findAvailableKeysByProduct(
-                    item.getProduct().getId(), 
-                    org.springframework.data.domain.PageRequest.of(0, item.getQuantity())
-            );
+                    item.getProduct().getId(),
+                    org.springframework.data.domain.PageRequest.of(0, item.getQuantity()));
 
             if (availableKeys.size() < item.getQuantity()) {
-                // Trong thực tế, cần có cơ chế xử lý khi thiếu key (thông báo admin, hoàn tiền...)
+                // Trong thực tế, cần có cơ chế xử lý khi thiếu key (thông báo admin, hoàn
+                // tiền...)
                 throw new RuntimeException("Not enough keys available for product: " + item.getProduct().getTitle());
             }
 
