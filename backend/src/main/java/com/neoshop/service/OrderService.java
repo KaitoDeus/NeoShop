@@ -6,6 +6,7 @@ import com.neoshop.model.entity.Order;
 import com.neoshop.model.entity.OrderItem;
 import com.neoshop.model.entity.Product;
 import com.neoshop.model.entity.User;
+import com.neoshop.model.entity.Coupon;
 import com.neoshop.repository.OrderRepository;
 import com.neoshop.repository.ProductRepository;
 import com.neoshop.repository.UserRepository;
@@ -29,6 +30,7 @@ public class OrderService {
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final com.neoshop.repository.ProductKeyRepository productKeyRepository;
+    private final CouponService couponService;
 
     @Transactional
     public OrderResponse createOrder(UUID userId, OrderRequest request) {
@@ -71,6 +73,17 @@ public class OrderService {
         }
 
         order.setTotalAmount(totalAmount);
+
+        // Apply coupon if provided
+        if (request.getCouponCode() != null && !request.getCouponCode().isBlank()) {
+            Coupon coupon = couponService.validateCoupon(request.getCouponCode(), totalAmount);
+            BigDecimal discount = couponService.calculateDiscount(coupon, totalAmount);
+            order.setCouponCode(request.getCouponCode());
+            order.setDiscountAmount(discount);
+            order.setTotalAmount(totalAmount.subtract(discount));
+            couponService.incrementUsage(coupon);
+        }
+
         Order savedOrder = orderRepository.save(order);
 
         return mapToResponse(savedOrder);

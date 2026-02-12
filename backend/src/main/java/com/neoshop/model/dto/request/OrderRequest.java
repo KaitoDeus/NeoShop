@@ -14,6 +14,7 @@ import java.util.UUID;
 public class OrderRequest {
     private String paymentMethod;
     private String shippingAddress;
+    private String couponCode;
     private List<OrderItemRequest> items;
 
     @Data
