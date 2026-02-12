@@ -3,11 +3,11 @@ server:
 
 spring:
   application:
-    name: neoshop-monolith
+    name: neoshop
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/neoshop}
-    username: ${SPRING_DATASOURCE_USERNAME:admin}
-    password: ${SPRING_DATASOURCE_PASSWORD:password}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
@@ -23,18 +23,6 @@ spring:
         jdbc:
           lob:
             non_contextual_creation: true
-  kafka:
-    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
-    consumer:
-      group-id: neoshop-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
-      properties:
-        spring.json.trusted.packages: "*"
 
 # Swagger / OpenAPI Configuration
 springdoc:
@@ -43,20 +31,15 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-# Monitoring Configuration
+# Health Check
 management:
   endpoints:
     web:
       exposure:
-        include: health, info, prometheus
+        include: health, info
   endpoint:
-    prometheus:
-      enabled: true
     health:
       show-details: always
-  metrics:
-    tags:
-      application: ${spring.application.name}
 
 logging:
   level:
