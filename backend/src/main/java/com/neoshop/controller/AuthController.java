@@ -24,13 +24,16 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Đăng nhập hệ thống", description = "Trả về JWT Token nếu đăng nhập thành công")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
         log.info("Received login request for user: {}", request.getUsername());
-        try {
-            return ResponseEntity.ok(authService.login(request));
-        } catch (Exception e) {
-            log.error("Login failed for user: {}", request.getUsername(), e);
-            return ResponseEntity.status(401).body("Login failed: " + e.getMessage());
-        }
+        return ResponseEntity.ok(authService.login(request));
+    }
+
+    @PostMapping("/register")
+    @Operation(summary = "Đăng ký tài khoản", description = "Tạo tài khoản mới và trả về JWT Token")
+    public ResponseEntity<AuthResponse> register(
+            @Valid @RequestBody com.neoshop.model.dto.request.RegisterRequest request) {
+        log.info("Received register request for user: {}", request.getUsername());
+        return ResponseEntity.ok(authService.register(request));
     }
 }
