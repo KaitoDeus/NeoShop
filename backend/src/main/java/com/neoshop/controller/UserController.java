@@ -1,45 +1,49 @@
 package com.neoshop.controller;
 
-import com.neoshop.model.entity.User;
-import com.neoshop.repository.UserRepository;
+import com.neoshop.model.dto.request.ChangePasswordRequest;
+import com.neoshop.model.dto.request.UpdateProfileRequest;
+import com.neoshop.model.dto.response.AuthResponse;
+import com.neoshop.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication; // Or Principal
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
+import java.security.Principal;
 
 @RestController
-@RequestMapping("/api/v1/auth/users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "User Management", description = "APIs cho quản lý người dùng và xác thực")
+@Tag(name = "User", description = "User Profile Management")
+@SecurityRequirement(name = "bearerAuth") // Assuming Swagger config
 public class UserController {
 
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Lấy danh sách người dùng (Phân trang)", description = "Yêu cầu quyền ADMIN. Hỗ trợ kiểm tra hiệu năng trên 1 triệu dòng dữ liệu")
-    public Page<User> getAllUsers(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        return userRepository.findAll(PageRequest.of(page, size));
+    @GetMapping("/profile")
+    @Operation(summary = "Get current user profile")
+    public ResponseEntity<AuthResponse> getCurrentUser(Principal principal) {
+        return ResponseEntity.ok(userService.getCurrentUser(principal.getName()));
     }
 
-    @GetMapping("/{id}")
-    @Operation(summary = "Lấy chi tiết người dùng theo ID")
-    public User getUserById(@PathVariable UUID id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @RequestMapping(value = "/profile", method = { RequestMethod.PATCH, RequestMethod.PUT })
+    @Operation(summary = "Update user profile", description = "Update full name, phone number, address, avatar")
+    public ResponseEntity<AuthResponse> updateProfile(
+            @RequestBody UpdateProfileRequest request,
+            Principal principal) {
+        return ResponseEntity.ok(userService.updateProfile(principal.getName(), request));
     }
 
-    @GetMapping("/search")
-    @Operation(summary = "Tìm kiếm người dùng theo Email")
-    public User getUserByEmail(@RequestParam String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+    @PostMapping("/change-password")
+    @Operation(summary = "Change password")
+    public ResponseEntity<String> changePassword(
+            @Valid @RequestBody ChangePasswordRequest request,
+            Principal principal) {
+        userService.changePassword(principal.getName(), request);
+        return ResponseEntity.ok("Password changed successfully");
     }
 }

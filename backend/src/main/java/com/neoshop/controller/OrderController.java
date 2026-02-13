@@ -11,7 +11,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
@@ -22,22 +21,26 @@ import java.util.UUID;
 @Tag(name = "Order Management", description = "APIs cho quản lý đơn hàng")
 public class OrderController {
     private final OrderService orderService;
+    private final com.neoshop.repository.UserRepository userRepository;
 
     @PostMapping
     @Operation(summary = "Tạo đơn hàng mới")
     public ResponseEntity<OrderResponse> createOrder(
-            @AuthenticationPrincipal User user,
-            @RequestBody OrderRequest request) {
-        // Trong thực tế, lấy userId từ token (user.getId())
+            java.security.Principal principal,
+            @jakarta.validation.Valid @RequestBody OrderRequest request) {
+        User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         return ResponseEntity.ok(orderService.createOrder(user.getId(), request));
     }
 
     @GetMapping("/my-orders")
     @Operation(summary = "Lấy lịch sử đơn hàng của người dùng hiện tại")
     public ResponseEntity<Page<OrderResponse>> getMyOrders(
-            @AuthenticationPrincipal User user,
+            java.security.Principal principal,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
+        User user = userRepository.findByUsername(principal.getName())
+                .orElseThrow(() -> new RuntimeException("User not found"));
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(orderService.getOrdersByUser(user.getId(), pageable));
     }
