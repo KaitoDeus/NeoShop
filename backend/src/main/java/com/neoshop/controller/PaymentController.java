@@ -22,7 +22,8 @@ public class PaymentController {
 
     @PostMapping("/process")
     @Operation(summary = "Xử lý thanh toán cho đơn hàng")
-    public ResponseEntity<PaymentResponse> processPayment(@RequestBody PaymentRequest request) {
+    public ResponseEntity<PaymentResponse> processPayment(
+            @jakarta.validation.Valid @RequestBody PaymentRequest request) {
         return ResponseEntity.ok(paymentService.processPayment(request));
     }
 }

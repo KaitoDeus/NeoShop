@@ -15,6 +15,10 @@ export const formatPriceVND = (price, fromUSD = true) => {
  * @returns {string} - Giá format VNĐ (ví dụ: 159.000đ)
  */
 export const formatUSDtoVND = (price) => {
-  const priceVND = Math.round(price * 25000);
+  if (price === null || price === undefined) return '0đ';
+  // Ngưỡng 2000: Nếu giá < 2000 -> USD (x 25,000). Giá game thường < 100$
+  //, nhưng phần mềm doanh nghiệp có thể cao hơn. 2000$ = 50tr VND.
+  const isUSD = price < 2000;
+  const priceVND = isUSD ? Math.round(price * 25000) : Math.round(price);
   return priceVND.toLocaleString('vi-VN') + 'đ';
 };

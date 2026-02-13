@@ -12,6 +12,9 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PaymentRequest {
+    @jakarta.validation.constraints.NotNull(message = "Order ID is required")
     private UUID orderId;
+
+    @jakarta.validation.constraints.NotBlank(message = "Payment method is required")
     private String paymentMethod; // MOMO, BANK, VISA, COD
 }

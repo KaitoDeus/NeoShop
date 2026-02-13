@@ -10,7 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
 const Auth = () => {
-  const { login } = useAuth();
+  const { login, register } = useAuth();
   const navigate = useNavigate();
 
   // Trạng thái view: 'login', 'register', 'forgot'
@@ -64,7 +64,7 @@ const Auth = () => {
     }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
     setMessage({ type: '', text: '' });
 
@@ -86,11 +86,16 @@ const Auth = () => {
 
     setIsLoading(true);
     
-    setTimeout(() => {
-      setIsLoading(false);
-      setMessage({ type: 'success', text: 'Đăng ký thành công! Vui lòng đăng nhập.' });
-      setTimeout(() => setView('login'), 1500);
-    }, 1500);
+    const result = await register(registerData.username, registerData.emailOrPhone, registerData.password);
+    
+    setIsLoading(false);
+    
+    if (result.success) {
+      setMessage({ type: 'success', text: 'Đăng ký thành công! Đang chuyển hướng...' });
+      setTimeout(() => navigate('/'), 1500);
+    } else {
+      setMessage({ type: 'error', text: result.message });
+    }
   };
 
   const handleForgotPassword = (e) => {

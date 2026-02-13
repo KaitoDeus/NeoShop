@@ -86,6 +86,69 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
+## 🔗 Giai đoạn 6: Tích hợp Frontend ↔ Backend Toàn diện
+
+### 12. Kết nối API Thực cho User-Facing Pages
+
+- [x] Trang **Danh mục sản phẩm** (`/category`) gọi `GET /api/products` thực.
+- [x] Trang **Chi tiết sản phẩm** (`/product/:id`) gọi `GET /api/products/{id}` thực.
+- [x] Trang **Giỏ hàng** (`/cart`) đồng bộ state với Backend (persist) (Hiện dùng LocalStorage).
+- [x] Trang **Thanh toán** (`/checkout`) gọi `POST /api/orders` + `POST /api/payments/process`.
+- [x] Tích hợp ô nhập **mã giảm giá** tại Checkout → gọi `POST /api/coupons/validate`.
+
+### 13. Hệ thống Auth Frontend Hoàn chỉnh
+
+- [x] Luồng **Đăng ký** (Register) kết nối API `POST /api/auth/register`.
+- [x] Luồng **Đăng nhập** (Login) lưu JWT → `AuthContext`.
+- [x] **Trang cá nhân** (`/profile`): Xem lịch sử đơn hàng, thông tin tài khoản.
+- [x] **Hiển thị Product Keys** sau thanh toán thành công (trang xác nhận đơn hàng).
+
+### 14. Admin Panel — Quản lý Coupon & Payment
+
+- [ ] Trang **Admin Coupons** (`/admin/coupons`): CRUD mã giảm giá.
+- [ ] Trang **Admin Dashboard**: Hiển thị thống kê Payment (thành công / thất bại).
+
+---
+
+## 🔒 Giai đoạn 7: Tối ưu & Bảo mật
+
+### 15. Performance & Caching
+
+- [ ] Tối ưu SQL queries bằng JPQL/Native Query cho `StatisticsService`.
+- [ ] Thêm **phân trang** (Pagination) cho tất cả danh sách API.
+- [ ] Lazy loading hình ảnh sản phẩm trên Frontend.
+
+### 16. Bảo mật Nâng cao
+
+- [x] Thêm **Rate Limiting** cho API Authentication (Simple In-Memory).
+- [x] Cấu hình **CORS** chặt chẽ (chỉ cho phép domain Frontend).
+- [x] Thêm **Input Validation** (@Valid) cho tất cả Request DTOs.
+- [x] Global **Exception Handler** (`@ControllerAdvice`) trả về lỗi chuẩn hóa.
+
+### 17. CI/CD Pipeline
+
+- [ ] Thiết lập **GitHub Actions** cho Build + Test tự động.
+- [ ] Auto-deploy lên môi trường staging khi merge vào `main`.
+
+---
+
+## 🌐 Giai đoạn 8: Production & Monitoring
+
+### 18. Deploy Production
+
+- [ ] Deploy **Frontend** lên Vercel / Netlify.
+- [ ] Deploy **Backend** lên Railway / Render.
+- [ ] Cấu hình **Supabase PostgreSQL** cho production database.
+- [ ] Thiết lập **Custom Domain** + SSL.
+
+### 19. Monitoring & Logging
+
+- [ ] Tích hợp **Structured Logging** (JSON format).
+- [ ] Health check endpoint cho uptime monitoring.
+- [ ] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
+
+---
+
 ## 🛠️ Trạng thái Vận hành (Local Environment)
 
 | Thành phần      | Port | Trạng thái          |
@@ -95,4 +158,4 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-_Cập nhật lần cuối: 2026-02-12_
+_Cập nhật lần cuối: 2026-02-13_

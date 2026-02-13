@@ -4,51 +4,83 @@ import {
   FiCheckCircle, FiGlobe, FiStar, FiZap, FiShield, 
   FiMonitor, FiFileText, FiKey, FiShoppingCart, FiArrowRight, FiClock, FiCheck 
 } from 'react-icons/fi';
-import { MOCK_PRODUCTS } from '../../data/mockProducts';
+import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
+import { formatUSDtoVND } from '../../utils/formatPrice';
 import './ProductDetail.css';
-
-const RELATED_PRODUCTS = MOCK_PRODUCTS.slice(0, 4).map(p => ({
-  id: p.id,
-  name: p.title,
-  price: (p.price * 25000).toLocaleString('vi-VN') + 'đ'
-}));
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
   const [product, setProduct] = useState(null);
-  const [rawProduct, setRawProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [duration, setDuration] = useState(12);
 
+  // Fetch Product Data
   useEffect(() => {
-    window.scrollTo(0, 0);
+    const fetchProductData = async () => {
+      setIsLoading(true);
+      try {
+         window.scrollTo(0, 0);
+         
+         // 1. Get Product Detail
+         const data = await productService.getProductById(id);
+         
+         // Fix: create a raw product object for cart (needs specific fields)
+         const mappedProduct = {
+             id: data.id,
+             name: data.title,
+             title: data.title, // Cart uses 'title'
+             price: data.price,
+             originalPrice: data.salePrice || (data.price * 1.3),
+             description: data.description,
+             rating: 4.8, // Mock
+             reviews: Math.floor(Math.random() * 500) + 50, // Mock
+             banner: null, 
+             imageColor: 'linear-gradient(135deg, #1e1b4b, #312e81)', // Default holder
+             platform: 'steam', // Mock
+             category: data.categoryName || 'games',
+             features: [
+                  { icon: <FiZap />, title: "Giao ngay", desc: "Nhận key kích hoạt tự động qua email 24/7." },
+                  { icon: <FiGlobe />, title: "Global Key", desc: "Kích hoạt và sử dụng tại mọi quốc gia." },
+                  { icon: <FiShield />, title: "Bảo hành uy tín", desc: "Hỗ trợ kỹ thuật và bảo hành suốt đời." },
+                  { icon: <FiCheckCircle />, title: "Chính hãng", desc: "Sản phẩm bản quyền 100% từ nhà phát hành." }
+             ]
+         };
+         setProduct(mappedProduct);
 
-    const found = MOCK_PRODUCTS.find(p => p.id.toString() === id);
-    if (found) {
-        setRawProduct(found);
-        setProduct({
-            id: found.id,
-            name: found.title,
-            price: found.price * 25000, 
-            originalPrice: found.oldPrice ? found.oldPrice * 25000 : (found.price * 25000 * 1.3),
-            description: found.desc,
-            rating: 4.8,
-            reviews: Math.floor(Math.random() * 500) + 50,
-            banner: null, 
-            imageColor: found.imageColor,
-            features: [
-                 { icon: <FiZap />, title: "Giao ngay", desc: "Nhận key kích hoạt tự động qua email 24/7." },
-                 { icon: <FiGlobe />, title: "Global Key", desc: "Kích hoạt và sử dụng tại mọi quốc gia." },
-                 { icon: <FiShield />, title: "Bảo hành uy tín", desc: "Hỗ trợ kỹ thuật và bảo hành suốt đời." },
-                 { icon: <FiCheckCircle />, title: "Chính hãng", desc: "Sản phẩm bản quyền 100% từ nhà phát hành." }
-            ]
-        });
-    } else {
-        setProduct(null);
-    }
+         // 2. Fetch Related (Just fetch 4 newest for now)
+         const relatedData = await productService.getAllProducts(0, 4);
+         const mappedRelated = relatedData.content
+            .filter(p => p.id !== id) // Exclude current
+            .slice(0, 4)
+            .map(p => ({
+                id: p.id,
+                name: p.title,
+                price: p.price
+            }));
+         setRelatedProducts(mappedRelated);
+
+      } catch (error) {
+         console.error("Failed to load product", error);
+         setProduct(null);
+      } finally {
+         setIsLoading(false);
+      }
+    };
+    
+    if (id) fetchProductData();
   }, [id]);
+
+  if (isLoading) {
+      return (
+          <div className="product-detail-page" style={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh'}}>
+              <div className="spinner"></div> Đang tải...
+          </div>
+      );
+  }
 
   if (!product) {
       return (
@@ -166,10 +198,10 @@ const ProductDetail = () => {
 
              <div className="price-section">
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem'}}>
-                   <div className="current-price">{product.price.toLocaleString('vi-VN')}₫</div>
+                   <div className="current-price">{formatUSDtoVND(product.price)}</div>
                    <div className="discount-tag">-{discountPercent}%</div>
                 </div>
-                <div className="original-price">{product.originalPrice.toLocaleString('vi-VN')}₫</div>
+                <div className="original-price">{formatUSDtoVND(product.originalPrice)}</div>
                 <div style={{fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem'}}>Đã bao gồm thuế VAT</div>
              </div>
 
@@ -205,17 +237,17 @@ const ProductDetail = () => {
                 <button 
                   className="btn-buy-now"
                   onClick={() => {
-                    if (rawProduct) addToCart(rawProduct);
+                    addToCart(product);
                     navigate('/checkout');
                   }}
                 >
                    Mua ngay <FiArrowRight />
                 </button>
                 <button 
-                  className={`btn-add-cart ${rawProduct && isInCart(rawProduct.id) ? 'added' : ''}`}
-                  onClick={() => rawProduct && addToCart(rawProduct)}
+                  className={`btn-add-cart ${isInCart(product.id) ? 'added' : ''}`}
+                  onClick={() => addToCart(product)}
                 >
-                   {rawProduct && isInCart(rawProduct.id) 
+                   {isInCart(product.id) 
                      ? <><FiCheck /> Đã thêm vào giỏ</>
                      : <><FiShoppingCart /> Thêm vào giỏ</>}
                 </button>
@@ -246,16 +278,16 @@ const ProductDetail = () => {
         <div className="related-section">
            <h3 className="section-title">Có thể bạn quan tâm</h3>
            <div className="related-grid">
-              {RELATED_PRODUCTS.map(p => (
-                 <div key={p.id} className="feature-card" style={{flexDirection: 'column', padding: '1rem', gap: '0.5rem', alignItems: 'center', textAlign: 'center'}}>
+              {relatedProducts.length > 0 ? relatedProducts.map(p => (
+                 <div key={p.id} className="feature-card" style={{flexDirection: 'column', padding: '1rem', gap: '0.5rem', alignItems: 'center', textAlign: 'center', cursor: 'pointer'}} onClick={() => navigate(`/product/${p.id}`)}>
                     <div style={{width: '60px', height: '60px', borderRadius: '12px', background: '#333', marginBottom: '0.5rem'}}></div>
                     <h4 style={{fontSize: '0.9rem', margin: 0}}>{p.name}</h4>
-                    <div style={{fontWeight: 'bold', color: '#2563eb'}}>{p.price}</div>
+                    <div style={{fontWeight: 'bold', color: '#2563eb'}}>{formatUSDtoVND(p.price)}</div>
                     <button style={{width: '100%', marginTop: '0.5rem', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px', background: 'white', fontSize: '0.8rem', cursor: 'pointer'}}>
-                       Thêm vào giỏ
+                       Xem chi tiết
                     </button>
                  </div>
-              ))}
+              )) : <p>Không có sản phẩm liên quan</p>}
            </div>
         </div>
       </div>

@@ -25,6 +25,8 @@ import Stats from './pages/Admin/Stats/Stats'; // Import Stats
 import Keys from './pages/Admin/Keys/Keys'; // Import Keys
 import Settings from './pages/Admin/Settings/Settings'; // Re-Import Settings
 import './App.css';
+import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
+import Profile from './pages/Profile/Profile';
 
 // Main App Component
 
@@ -52,10 +54,16 @@ function App() {
             <Route path="/" element={<MainLayout />}>
               <Route index element={<Home />} />
               <Route path="login" element={<Auth />} />
+              <Route path="profile" element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              } />
               <Route path="category" element={<ProductCategory />} />
               <Route path="product/:id" element={<ProductDetail />} />
               <Route path="cart" element={<Cart />} />
               <Route path="checkout" element={<Checkout />} />
+              <Route path="order-success/:id" element={<OrderSuccess />} />
               <Route path="delivery" element={<Delivery />} />
               {/* Trang Hỗ Trợ */}
               <Route path="help" element={<HelpCenter />} />

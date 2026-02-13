@@ -5,17 +5,22 @@
       <stop offset="50%" stop-color="#3b82f6" />
       <stop offset="100%" stop-color="#d946ef" />
     </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="15" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
   </defs>
 
-  <!-- Shopping Bag Shape -->
-  <path d="M144 160 H368 L348 432 H164 L144 160 Z" stroke="url(#neoGradient)" stroke-width="32" stroke-linejoin="round" fill="none"/>
-  
-  <!-- Handle -->
-  <path d="M200 160 V 128 C 200 97.072 225.072 72 256 72 C 286.928 72 312 97.072 312 128 V 160" stroke="url(#neoGradient)" stroke-width="32" stroke-linecap="round" fill="none"/>
+  <!-- Main Bag Shape -->
+  <path d="M128 160 H384 L360 448 H152 L128 160 Z" fill="url(#neoGradient)" filter="url(#glow)" opacity="0.15"/>
+  <path d="M144 160 H368 L348 432 H164 L144 160 Z" stroke="url(#neoGradient)" stroke-width="32" stroke-linejoin="round"/>
 
-  <!-- The "N" Monogram stylized -->
-  <path d="M210 240 V 360" stroke="url(#neoGradient)" stroke-width="32" stroke-linecap="round" />
-  <path d="M302 240 V 360" stroke="url(#neoGradient)" stroke-width="32" stroke-linecap="round" />
-  <path d="M210 240 L 302 360" stroke="url(#neoGradient)" stroke-width="32" stroke-linecap="round" />
+  <!-- Handle -->
+  <path d="M200 160 V 128 C 200 97.072 225.072 72 256 72 C 286.928 72 312 97.072 312 128 V 160" stroke="url(#neoGradient)" stroke-width="32" stroke-linecap="round" />
+
+  <!-- The "N" Monogram stylized inside -->
+  <path d="M210 240 V 360" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+  <path d="M302 240 V 360" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
+  <path d="M210 240 L 302 360" stroke="#FFFFFF" stroke-width="24" stroke-linecap="round" />
 
 </svg>
