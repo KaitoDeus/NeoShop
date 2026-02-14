@@ -105,8 +105,8 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 14. Admin Panel — Quản lý Coupon & Payment
 
-- [ ] Trang **Admin Coupons** (`/admin/coupons`): CRUD mã giảm giá.
-- [ ] Trang **Admin Dashboard**: Hiển thị thống kê Payment (thành công / thất bại).
+- [x] Trang **Admin Coupons** (`/admin/coupons`): CRUD mã giảm giá.
+- [x] Trang **Admin Dashboard**: Hiển thị thống kê Payment (thành công / thất bại).
 
 ---
 
@@ -114,9 +114,9 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 15. Performance & Caching
 
-- [ ] Tối ưu SQL queries bằng JPQL/Native Query cho `StatisticsService`.
-- [ ] Thêm **phân trang** (Pagination) cho tất cả danh sách API.
-- [ ] Lazy loading hình ảnh sản phẩm trên Frontend.
+- [x] Tối ưu SQL queries bằng JPQL/Native Query cho `StatisticsService`.
+- [x] Thêm **phân trang** (Pagination) cho tất cả danh sách API.
+- [x] Lazy loading hình ảnh sản phẩm trên Frontend.
 
 ### 16. Bảo mật Nâng cao
 

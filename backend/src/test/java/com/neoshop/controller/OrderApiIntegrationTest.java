@@ -23,93 +23,98 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class OrderApiIntegrationTest extends AbstractIntegrationTest {
 
-    @Autowired
-    private TestRestTemplate restTemplate;
+        @Autowired
+        private TestRestTemplate restTemplate;
 
-    @Autowired
-    private UserRepository userRepository;
+        @Autowired
+        private UserRepository userRepository;
 
-    @Autowired
-    private RoleRepository roleRepository;
+        @Autowired
+        private RoleRepository roleRepository;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+        @Autowired
+        private PasswordEncoder passwordEncoder;
 
-    private String adminToken;
+        private String adminToken;
 
-    @BeforeEach
-    void setUp() {
-        // Clean up
-        userRepository.deleteAll();
+        @BeforeEach
+        void setUp() {
+                // Clean up
+                userRepository.deleteAll();
 
-        // Create admin role if not exists
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_ADMIN").build()));
+                // Create admin role if not exists
+                Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_ADMIN").build()));
 
-        // Create admin user
-        User admin = User.builder()
-                .email("admin@neoshop.test")
-                .username("admin_test")
-                .passwordHash(passwordEncoder.encode("admin123"))
-                .fullName("Test Admin")
-                .roles(Set.of(adminRole))
-                .build();
-        userRepository.save(admin);
+                // Create admin user
+                User admin = User.builder()
+                                .email("admin@neoshop.test")
+                                .username("admin_test")
+                                .passwordHash(passwordEncoder.encode("admin123"))
+                                .fullName("Test Admin")
+                                .roles(Set.of(adminRole))
+                                .build();
+                userRepository.save(admin);
 
-        // Login to get token
-        Map<String, String> loginRequest = Map.of(
-                "email", "admin@neoshop.test",
-                "password", "admin123");
+                // Login to get token
+                Map<String, String> loginRequest = Map.of(
+                                "email", "admin@neoshop.test",
+                                "password", "admin123");
 
-        ResponseEntity<Map<String, Object>> loginResponse = restTemplate.postForEntity(
-                "/api/auth/login", loginRequest, (Class<Map<String, Object>>) (Class<?>) Map.class);
+                ResponseEntity<Map<String, Object>> loginResponse = restTemplate.exchange(
+                                "/api/auth/login",
+                                HttpMethod.POST,
+                                new HttpEntity<>(loginRequest),
+                                new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {
+                                });
 
-        if (loginResponse.getStatusCode() == HttpStatus.OK && loginResponse.getBody() != null) {
-            adminToken = (String) loginResponse.getBody().get("token");
-        }
-    }
-
-    @Test
-    void healthCheck_ReturnsOk() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                "/actuator/health", String.class);
-        // Health endpoint should be accessible
-        assertTrue(response.getStatusCode().is2xxSuccessful()
-                || response.getStatusCode() == HttpStatus.UNAUTHORIZED);
-    }
-
-    @Test
-    void getDashboardStats_WithAdminToken_ReturnsStats() {
-        if (adminToken == null) {
-            // Skip if login didn't work (depends on auth implementation)
-            return;
+                if (loginResponse.getStatusCode() == HttpStatus.OK && loginResponse.getBody() != null) {
+                        adminToken = (String) loginResponse.getBody().get("token");
+                }
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(adminToken);
-        HttpEntity<?> entity = new HttpEntity<>(headers);
+        @Test
+        void healthCheck_ReturnsOk() {
+                ResponseEntity<String> response = restTemplate.getForEntity(
+                                "/actuator/health", String.class);
+                // Health endpoint should be accessible
+                assertTrue(response.getStatusCode().is2xxSuccessful()
+                                || response.getStatusCode() == HttpStatus.UNAUTHORIZED);
+        }
 
-        ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
-                "/api/admin/dashboard/stats",
-                HttpMethod.GET,
-                entity,
-                (Class<Map<String, Object>>) (Class<?>) Map.class);
+        @Test
+        void getDashboardStats_WithAdminToken_ReturnsStats() {
+                if (adminToken == null) {
+                        // Skip if login didn't work (depends on auth implementation)
+                        return;
+                }
 
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-        assertTrue(response.getBody().containsKey("totalOrders"));
-        assertTrue(response.getBody().containsKey("totalUsers"));
-        assertTrue(response.getBody().containsKey("totalRevenue"));
-        assertTrue(response.getBody().containsKey("activeProducts"));
-    }
+                HttpHeaders headers = new HttpHeaders();
+                headers.setBearerAuth(adminToken);
+                HttpEntity<Void> entity = new HttpEntity<>(headers);
 
-    @Test
-    void getDashboardStats_WithoutToken_Returns401() {
-        ResponseEntity<String> response = restTemplate.getForEntity(
-                "/api/admin/dashboard/stats", String.class);
+                ResponseEntity<Map<String, Object>> response = restTemplate.exchange(
+                                "/api/admin/dashboard/stats",
+                                HttpMethod.GET,
+                                entity,
+                                new org.springframework.core.ParameterizedTypeReference<Map<String, Object>>() {
+                                });
 
-        // Should be unauthorized without token
-        assertTrue(response.getStatusCode() == HttpStatus.UNAUTHORIZED
-                || response.getStatusCode() == HttpStatus.FORBIDDEN);
-    }
+                assertEquals(HttpStatus.OK, response.getStatusCode());
+                assertNotNull(response.getBody());
+                assertTrue(response.getBody().containsKey("totalOrders"));
+                assertTrue(response.getBody().containsKey("totalUsers"));
+                assertTrue(response.getBody().containsKey("totalRevenue"));
+                assertTrue(response.getBody().containsKey("activeProducts"));
+        }
+
+        @Test
+        void getDashboardStats_WithoutToken_Returns401() {
+                ResponseEntity<String> response = restTemplate.getForEntity(
+                                "/api/admin/dashboard/stats", String.class);
+
+                // Should be unauthorized without token
+                assertTrue(response.getStatusCode() == HttpStatus.UNAUTHORIZED
+                                || response.getStatusCode() == HttpStatus.FORBIDDEN);
+        }
 }
