@@ -61,9 +61,17 @@ const ProductList = ({
                 onClick={() => handleProductClick(prod.id)}
                 style={{ cursor: 'pointer' }}
             >
-              <div className="card-image" style={{ background: prod.imageColor }}>
-                <span className="badge-instant"><FiZap size={10} /> {prod.tag}</span>
-                {prod.discount && <span className="badge-sale">{prod.discount}</span>}
+              <div className="card-image" style={{ background: prod.imageColor, position: 'relative', overflow: 'hidden' }}>
+                <img 
+                  src={prod.image || 'https://via.placeholder.com/300?text=No+Image'} 
+                  alt={prod.title} 
+                  loading="lazy" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 0.6 }} 
+                />
+                <div style={{ position: 'relative', zIndex: 1 }}>
+                  <span className="badge-instant"><FiZap size={10} /> {prod.tag}</span>
+                  {prod.discount && <span className="badge-sale">{prod.discount}</span>}
+                </div>
               </div>
               <div className="card-content">
                 <h3 className="card-title">{prod.title}</h3>

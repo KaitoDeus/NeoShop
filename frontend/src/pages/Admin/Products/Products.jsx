@@ -79,7 +79,7 @@ const Products = () => {
                 </td>
                 <td>
                   <div className="product-cell">
-                    <img src={product.image} alt="" className="product-thumb" />
+                    <img src={product.image} alt="" className="product-thumb" loading="lazy" />
                     <div className="product-info">
                       <h4>{product.name}</h4>
                       <span className="product-sku">SKU: {product.sku}</span>
