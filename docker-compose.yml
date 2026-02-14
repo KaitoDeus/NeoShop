@@ -1,4 +1,20 @@
+version: '3.8'
+
 services:
+  database:
+    image: postgres:15-alpine
+    container_name: neoshop-database
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=neoshop
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./database/init/script.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data
+
   backend:
     build:
       context: ./backend
@@ -13,9 +29,12 @@ services:
       - /app/target
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://host.docker.internal:5432/neoshop
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/neoshop
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+    depends_on:
+      - database
     extra_hosts:
       - "host.docker.internal:host-gateway"
 
@@ -33,3 +52,6 @@ services:
       - /app/node_modules
     depends_on:
       - backend
+
+volumes:
+  postgres_data:
