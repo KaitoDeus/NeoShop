@@ -108,6 +108,25 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] Trang **Admin Coupons** (`/admin/coupons`): CRUD mã giảm giá.
 - [x] Trang **Admin Dashboard**: Hiển thị thống kê Payment (thành công / thất bại).
 
+### 14.1. Admin Panel Depth — Kết nối dữ liệu thực & Chức năng (Đang thực hiện)
+
+- [ ] **Kết nối API thực cho các danh sách Quản trị**:
+  - [ ] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
+  - [ ] Danh sách Sản phẩm: Thay thế mock data bằng `GET /api/admin/products`.
+  - [ ] Danh sách Khách hàng: Thay thế mock data bằng `GET /api/admin/users`.
+- [ ] **Hoàn thiện các nút hành động (Event Handlers)**:
+  - [ ] Gắn sự kiện "Xem chi tiết" cho Đơn hàng (Hiển thị popup thông tin chi tiết đơn).
+  - [ ] Gắn sự kiện "Chỉnh sửa" & "Xóa" cho Sản phẩm (Gửi request cập nhật DB).
+  - [ ] Gắn sự kiện "Quản lý Key" (Xem/Thêm/Xóa key cho từng sản phẩm cụ thể).
+- [ ] **Trang Thống kê nâng cao**:
+  - [ ] Kết nối API lọc theo thời gian (7 ngày, 30 ngày, năm).
+  - [ ] Xuất báo cáo Excel/PDF từ dữ liệu thực.
+- [ ] **Trang Cấu hình (Settings)**:
+  - [ ] Lưu cấu hình hệ thống (Tên shop, thông tin liên hệ, cài đặt thanh toán) vào Database.
+- [ ] **Phân trang & Tìm kiếm**:
+  - [ ] Đồng bộ logic Pagination giữa Frontend và Backend API cho tất cả các bảng Admin.
+  - [ ] Filter đơn hàng theo trạng thái (Success, Pending, Failed) sử dụng API.
+
 ---
 
 ## 🔒 Giai đoạn 7: Tối ưu & Bảo mật
@@ -158,4 +177,4 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-_Cập nhật lần cuối: 2026-02-13_
+_Cập nhật lần cuối: 2026-02-14_
