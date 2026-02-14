@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
 import RevenueChart from '../../../components/admin/Dashboard/RevenueChart';
+import PaymentPieChart from '../../../components/admin/Dashboard/PaymentPieChart';
 import RecentOrders from '../../../components/admin/Dashboard/RecentOrders';
 import { statsData as mockStatsData } from '../../../data/adminMockData';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(mockStatsData);
+  const [paymentStats, setPaymentStats] = useState([]);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -22,6 +24,7 @@ const Dashboard = () => {
             { id: 3, title: 'Sản phẩm', value: String(data.activeProducts), percent: 0, isIncrease: true, compareText: '', iconType: 'key' },
             { id: 4, title: 'Người dùng', value: String(data.totalUsers), percent: 2, isIncrease: true, compareText: '', iconType: 'user' },
           ]);
+          setPaymentStats(data.paymentStats);
         }
       } catch {
         // Fallback to mock data
@@ -44,8 +47,13 @@ const Dashboard = () => {
       </div>
 
       {/* Chart Section */}
-      <div style={{ marginBottom: '2rem' }}>
-        <RevenueChart />
+      <div className="dashboard-charts-grid grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+            <RevenueChart />
+        </div>
+        <div>
+            <PaymentPieChart data={paymentStats} />
+        </div>
       </div>
 
       {/* Recent Orders */}
@@ -57,4 +65,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
