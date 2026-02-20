@@ -62,6 +62,24 @@ public class UserServiceImpl implements UserService {
         return mapToAuthResponse(user);
     }
 
+    @Override
+    public org.springframework.data.domain.Page<com.neoshop.model.dto.response.UserResponse> getAllUsers(
+            org.springframework.data.domain.Pageable pageable) {
+        return userRepository.findAll(pageable).map(user -> com.neoshop.model.dto.response.UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .roles(user.getRoles().stream()
+                        .map(Role::getName)
+                        .collect(Collectors.toSet()))
+                .active(true)
+                .build());
+    }
+
     private AuthResponse mapToAuthResponse(User user) {
         return AuthResponse.builder()
                 .username(user.getUsername())

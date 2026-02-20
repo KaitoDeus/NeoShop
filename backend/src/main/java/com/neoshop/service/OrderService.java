@@ -93,6 +93,10 @@ public class OrderService {
         return orderRepository.findByUserId(userId, pageable).map(this::mapToResponse);
     }
 
+    public Page<OrderResponse> getAllOrders(Pageable pageable) {
+        return orderRepository.findAll(pageable).map(this::mapToResponse);
+    }
+
     public OrderResponse getOrderById(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
@@ -141,6 +145,8 @@ public class OrderService {
         return OrderResponse.builder()
                 .id(order.getId())
                 .userId(order.getUser().getId())
+                .username(order.getUser().getUsername())
+                .userEmail(order.getUser().getEmail())
                 .totalAmount(order.getTotalAmount())
                 .status(order.getStatus())
                 .paymentMethod(order.getPaymentMethod())
