@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { FiShoppingCart, FiArrowRight, FiZap, FiCheck } from 'react-icons/fi';
+import { getProductCover } from '../../../utils/imageHelpers';
 import { formatUSDtoVND } from '../../../utils/formatPrice';
 import { useCart } from '../../../context/CartContext';
 import './ProductSection.css';
@@ -31,9 +32,15 @@ const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor
         <div className="products-grid">
           {products.map((product) => (
             <Link to={`/product/${product.id}`} key={product.id} className="product-card">
-              <div className="card-image" style={{ background: product.imageColor }}>
-                {product.discount && <span className="discount-badge">{product.discount}</span>}
-                <span className="tag-badge">{product.tag}</span>
+              <div className="card-image" style={{ background: product.imageColor, position: 'relative', overflow: 'hidden' }}>
+                <img 
+                  src={getProductCover(product.title)} 
+                  alt={product.title} 
+                  loading="lazy" 
+                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 1, zIndex: 0 }} 
+                />
+                {product.discount && <span className="discount-badge" style={{ zIndex: 1 }}>{product.discount}</span>}
+                <span className="tag-badge" style={{ zIndex: 1 }}>{product.tag}</span>
               </div>
               <div className="card-content">
                 <h3 className="card-title">{product.title}</h3>

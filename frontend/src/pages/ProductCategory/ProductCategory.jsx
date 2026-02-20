@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom';
 import FilterBar from '../../components/sections/FilterBar/FilterBar';
 import ProductList from '../../components/sections/ProductList/ProductList';
 import productService from '../../services/productService';
+import { getProductCover } from '../../utils/imageHelpers';
 import './ProductCategory.css';
 
 const PRODUCTS_PER_LOAD = 12;
@@ -47,6 +48,7 @@ const ProductCategory = () => {
             oldPrice: p.salePrice || (p.price * 1.2), // Mock old price visual
             discount: p.salePrice ? '-' + Math.round((1 - p.salePrice/p.price)*100) + '%' : null,
             imageColor: 'linear-gradient(135deg, #1e1b4b, #312e81)', // Default placeholder
+            image: getProductCover(p.title),
             tag: p.stockQuantity > 0 ? 'Sẵn hàng' : 'Hết hàng',
             platform: p.categoryName || 'steam' 
         }));

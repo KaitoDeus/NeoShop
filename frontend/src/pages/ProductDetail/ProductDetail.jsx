@@ -7,6 +7,7 @@ import {
 import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
 import { formatUSDtoVND } from '../../utils/formatPrice';
+import { getProductCover } from '../../utils/imageHelpers';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -38,7 +39,7 @@ const ProductDetail = () => {
              description: data.description,
              rating: 4.8, // Mock
              reviews: Math.floor(Math.random() * 500) + 50, // Mock
-             banner: null, 
+             banner: getProductCover(data.title), 
              imageColor: 'linear-gradient(135deg, #1e1b4b, #312e81)', // Default holder
              platform: 'steam', // Mock
              category: data.categoryName || 'games',
@@ -59,7 +60,9 @@ const ProductDetail = () => {
             .map(p => ({
                 id: p.id,
                 name: p.title,
-                price: p.price
+                title: p.title,
+                price: p.price,
+                image: getProductCover(p.title)
             }));
          setRelatedProducts(mappedRelated);
 
@@ -280,7 +283,9 @@ const ProductDetail = () => {
            <div className="related-grid">
               {relatedProducts.length > 0 ? relatedProducts.map(p => (
                  <div key={p.id} className="feature-card" style={{flexDirection: 'column', padding: '1rem', gap: '0.5rem', alignItems: 'center', textAlign: 'center', cursor: 'pointer'}} onClick={() => navigate(`/product/${p.id}`)}>
-                    <div style={{width: '60px', height: '60px', borderRadius: '12px', background: '#333', marginBottom: '0.5rem'}}></div>
+                    <div style={{width: '100%', aspectRatio: '16/9', borderRadius: '8px', marginBottom: '0.5rem', overflow: 'hidden'}}>
+                      <img src={p.image} alt="" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                    </div>
                     <h4 style={{fontSize: '0.9rem', margin: 0}}>{p.name}</h4>
                     <div style={{fontWeight: 'bold', color: '#2563eb'}}>{formatUSDtoVND(p.price)}</div>
                     <button style={{width: '100%', marginTop: '0.5rem', padding: '0.5rem', border: '1px solid #e2e8f0', borderRadius: '4px', background: 'white', fontSize: '0.8rem', cursor: 'pointer'}}>
