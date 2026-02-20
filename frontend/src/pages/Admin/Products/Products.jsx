@@ -2,11 +2,43 @@ import {
   FiPlus, FiSearch, FiFilter, FiEdit2, FiTrash2, 
   FiMoreVertical, FiKey, FiChevronLeft, FiChevronRight 
 } from 'react-icons/fi';
+import { useState, useEffect } from 'react';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
-import { productStats, productsData } from '../../../data/adminMockData';
+import { productStats } from '../../../data/adminMockData'; // Keep mock stats for now
+import productService from '../../../services/productService';
 import './Products.css';
 
 const Products = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+
+  useEffect(() => {
+    fetchProducts();
+  }, [page]);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const data = await productService.getAllProductsAdmin(page, 10);
+      setProducts(data.content);
+      setTotalPages(data.totalPages);
+      setTotalElements(data.totalElements);
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePageChange = (newPage) => {
+    if (newPage >= 0 && newPage < totalPages) {
+      setPage(newPage);
+    }
+  };
+
   return (
     <div className="products-page">
       {/* 1. Header */}
@@ -43,15 +75,11 @@ const Products = () => {
           <div className="filter-group">
             <select className="filter-select">
               <option>Tất cả danh mục</option>
-              <option>Tài khoản</option>
-              <option>Game Key</option>
-              <option>Phần mềm</option>
+              {/* Add dynamic categories later */}
             </select>
             <select className="filter-select">
               <option>Tất cả trạng thái</option>
-              <option>Hoạt động</option>
-              <option>Tạm ẩn</option>
-              <option>Hết hàng</option>
+              {/* Add dynamic statuses later */}
             </select>
           </div>
         </div>
@@ -72,67 +100,74 @@ const Products = () => {
             </tr>
           </thead>
           <tbody>
-            {productsData.map(product => (
-              <tr key={product.id}>
-                <td className="checkbox-cell">
-                  <input type="checkbox" className="custom-checkbox" />
-                </td>
-                <td>
-                  <div className="product-cell">
-                    <img src={product.image} alt="" className="product-thumb" loading="lazy" />
-                    <div className="product-info">
-                      <h4>{product.name}</h4>
-                      <span className="product-sku">SKU: {product.sku}</span>
-                    </div>
-                  </div>
-                </td>
-                <td>{product.category}</td>
-                <td className="font-bold text-primary">{product.price}</td>
-                <td>
-                  {product.stock === 0 ? (
-                    <span className="stock-danger">0 (Hết hàng)</span>
-                  ) : product.stock < 5 ? (
-                    <span className="stock-warning">{product.stock} (Sắp hết)</span>
-                  ) : (
-                    <span className="stock-ok">{product.stock}</span>
-                  )}
-                </td>
-                <td>
-                  <span className={`status-badge ${product.status === 'active' ? 'status-active' : 'status-hidden'}`}>
-                    <span className="status-dot"></span>
-                    {product.status === 'active' ? 'Hoạt động' : 'Tạm ẩn'}
-                  </span>
-                </td>
-                <td>
-                  <div className="action-btn-group">
-                    <button className="btn-icon" title="Quản lý Key">
-                      <FiKey />
-                    </button>
-                    <button className="btn-icon" title="Chỉnh sửa">
-                      <FiEdit2 />
-                    </button>
-                    <button className="btn-icon" title="Xóa">
-                      <FiTrash2 />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {loading ? (
+                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
+            ) : products.length === 0 ? (
+                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Không có sản phẩm nào.</td></tr>
+            ) : (
+                products.map(product => (
+                  <tr key={product.id}>
+                    <td className="checkbox-cell">
+                      <input type="checkbox" className="custom-checkbox" />
+                    </td>
+                    <td>
+                      <div className="product-cell">
+                        <img src={'https://via.placeholder.com/50'} alt="" className="product-thumb" loading="lazy" />
+                        <div className="product-info">
+                          <h4>{product.title}</h4>
+                          <span className="product-sku">SKU: {product.id.substring(0, 8)}</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td>{product.categoryName || 'Chưa phân loại'}</td>
+                    <td className="font-bold text-primary">{(product.salePrice || product.price)?.toLocaleString()} đ</td>
+                    <td>
+                      {product.stockQuantity === 0 ? (
+                        <span className="stock-danger">0 (Hết hàng)</span>
+                      ) : product.stockQuantity < 5 ? (
+                        <span className="stock-warning">{product.stockQuantity} (Sắp hết)</span>
+                      ) : (
+                        <span className="stock-ok">{product.stockQuantity}</span>
+                      )}
+                    </td>
+                    <td>
+                      <span className={`status-badge ${product.status === 'ACTIVE' || product.status === 'active' ? 'status-active' : 'status-hidden'}`}>
+                        <span className="status-dot"></span>
+                        {product.status}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="action-btn-group">
+                        <button className="btn-icon" title="Quản lý Key">
+                          <FiKey />
+                        </button>
+                        <button className="btn-icon" title="Chỉnh sửa">
+                          <FiEdit2 />
+                        </button>
+                        <button className="btn-icon" title="Xóa">
+                          <FiTrash2 />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+            )}
           </tbody>
         </table>
 
         {/* Pagination */}
         <div className="table-footer">
           <div className="table-info">
-            Hiển thị <span className="font-bold">1</span> đến <span className="font-bold">5</span> trong <span className="font-bold">120</span> kết quả
+            Hiển thị <span className="font-bold">{products.length > 0 ? page * 10 + 1 : 0}</span> đến <span className="font-bold">{Math.min((page + 1) * 10, totalElements)}</span> trong <span className="font-bold">{totalElements}</span> kết quả
           </div>
           <div className="pagination">
-            <button className="page-btn"><FiChevronLeft /></button>
-            <button className="page-btn active">1</button>
-            <button className="page-btn">2</button>
-            <button className="page-btn">3</button>
-            <button className="page-btn">...</button>
-            <button className="page-btn"><FiChevronRight /></button>
+            <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 0}><FiChevronLeft /></button>
+            {Array.from({ length: totalPages }, (_, i) => (
+                <button key={i} className={`page-btn ${page === i ? 'active' : ''}`} onClick={() => handlePageChange(i)}>
+                    {i + 1}
+                </button>
+            )).slice(Math.max(0, page - 2), Math.min(totalPages, page + 3))} 
+            <button className="page-btn" onClick={() => handlePageChange(page + 1)} disabled={page >= totalPages - 1}><FiChevronRight /></button>
           </div>
         </div>
       </div>

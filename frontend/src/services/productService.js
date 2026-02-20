@@ -29,6 +29,14 @@ const productService = {
             params: { page, size }
         });
         return response.data;
+    },
+
+    // Admin: Lấy tất cả sản phẩm
+    getAllProductsAdmin: async (page = 0, size = 10) => {
+        const response = await api.get('/admin/products', {
+             params: { page, size }
+        });
+        return response.data;
     }
 };
 

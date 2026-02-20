@@ -423,3 +423,10 @@ export const keysData = [
     image: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Kaspersky_logo_2019.svg"
   }
 ];
+
+export const userStats = [
+  { id: 1, title: "Tổng khách hàng", value: "1,250", percent: 12, isIncrease: true, compareText: "so với tháng trước", iconType: "user" },
+  { id: 2, title: "Khách mới (Tháng)", value: "340", percent: 5, isIncrease: true, compareText: "so với tháng trước", iconType: "user-add" },
+  { id: 3, title: "Đang hoạt động", value: "1,180", percent: 2, isIncrease: true, compareText: "người dùng", iconType: "check" },
+  { id: 4, title: "Bị khóa", value: "70", percent: -1, isIncrease: false, compareText: "tài khoản", iconType: "alert" }
+];

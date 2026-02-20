@@ -30,6 +30,14 @@ const userService = {
             }
         });
         return response.data;
+    },
+
+    // Admin: Lấy tất cả người dùng
+    getAllUsers: async (page = 0, size = 10) => {
+        const response = await api.get('/admin/users', {
+             params: { page, size }
+        });
+        return response.data;
     }
 };
 

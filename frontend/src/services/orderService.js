@@ -25,6 +25,14 @@ const orderService = {
     processPayment: async (paymentData) => {
         const response = await api.post('/payments/process', paymentData);
         return response.data;
+    },
+
+    // Admin: Lấy tất cả đơn hàng
+    getAllOrders: async (page = 0, size = 10) => {
+        const response = await api.get('/admin/orders', {
+             params: { page, size }
+        });
+        return response.data;
     }
 };
 
