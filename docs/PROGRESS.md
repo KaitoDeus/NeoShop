@@ -110,10 +110,10 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 14.1. Admin Panel Depth — Kết nối dữ liệu thực & Chức năng (Đang thực hiện)
 
-- [ ] **Kết nối API thực cho các danh sách Quản trị**:
-  - [ ] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
-  - [ ] Danh sách Sản phẩm: Thay thế mock data bằng `GET /api/admin/products`.
-  - [ ] Danh sách Khách hàng: Thay thế mock data bằng `GET /api/admin/users`.
+- [x] **Kết nối API thực cho các danh sách Quản trị**:
+  - [x] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
+  - [x] Danh sách Sản phẩm: Thay thế mock data bằng `GET /api/admin/products`.
+  - [x] Danh sách Khách hàng: Thay thế mock data bằng `GET /api/admin/users`.
 - [ ] **Hoàn thiện các nút hành động (Event Handlers)**:
   - [ ] Gắn sự kiện "Xem chi tiết" cho Đơn hàng (Hiển thị popup thông tin chi tiết đơn).
   - [ ] Gắn sự kiện "Chỉnh sửa" & "Xóa" cho Sản phẩm (Gửi request cập nhật DB).
