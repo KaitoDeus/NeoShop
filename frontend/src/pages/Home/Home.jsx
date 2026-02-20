@@ -16,97 +16,88 @@ import './Home.css';
 
 const Home = () => {
   // Lấy sản phẩm cho từng section
-  const bestSellers = getBestSellers(4);
-  const newestProducts = getNewestProducts(4);
-  const steamGames = getSteamGames(4);
-  const aiProducts = getAIProducts(4);
-  const learningProducts = getProductsByCategory('learning');
-  const entertainmentProducts = getProductsByCategory('entertainment');
-  const officeProducts = getProductsByCategory('office');
+  // FeaturedProducts tự load getBestSellers(4), nên ta lấy list đó ra để lọc không cho hiển thị lại
+  const featured = getBestSellers(4);
+  const featuredIds = new Set(featured.map(p => p.id));
+
+  // Hàm helper để lọc các sản phẩm trùng lặp
+  const filterUnique = (products, usedIds) => {
+    const unique = products.filter(p => !usedIds.has(p.id));
+    unique.forEach(p => usedIds.add(p.id)); // Thêm vào set để các section sau không dùng lại
+    return unique;
+  };
+
+  const trackingIds = new Set(featuredIds);
+
+  const steamGames = filterUnique(getSteamGames(10), trackingIds).slice(0, 4);
+  
+  // Gộp AI và Tiện ích văn phòng (Làm việc)
+  const allAiOffice = [...getAIProducts(8), ...getProductsByCategory('office')];
+  const aiProducts = filterUnique(allAiOffice, trackingIds).slice(0, 4);
+
+  // Gộp Giải trí và Học tập
+  const allEnterLearn = [...getProductsByCategory('entertainment'), ...getProductsByCategory('learning')];
+  const entertainmentProducts = filterUnique(allEnterLearn, trackingIds).slice(0, 4);
+
+  // Sản phẩm mới: Những gì còn lại mới nhất
+  const newestProducts = filterUnique(getNewestProducts(12), trackingIds).slice(0, 4);
 
   return (
     <div className="home-page">
       <Hero />
       <QuickCategories />
       
-      {/* Sản phẩm nổi bật */}
+      {/* Sản phẩm nổi bật (Tự load best sellers) */}
       <FeaturedProducts />
       
       {/* Từ khóa nổi bật */}
       <TrendingKeywords />
       
-      {/* Sản phẩm bán chạy nhất */}
-      <ProductSection 
-        title="Sản phẩm bán chạy nhất"
-        icon="🔥"
-        subtitle="Top sản phẩm được mua nhiều nhất tuần này"
-        products={bestSellers}
-        categoryLink="/category?sort=best_sellers"
-        bgColor="bg-alt"
-      />
-      
       {/* Game trên Steam */}
-      <ProductSection 
-        title="Game trên Steam"
-        icon="🎮"
-        subtitle="Key game Steam chính hãng giá tốt"
-        products={steamGames}
-        categoryLink="/category?platform=steam"
-      />
-      
-      {/* Sản phẩm AI */}
-      <ProductSection 
-        title="Sản phẩm AI"
-        icon="🤖"
-        subtitle="ChatGPT, Midjourney, Copilot và nhiều công cụ AI khác"
-        products={aiProducts}
-        categoryLink="/category?category=ai"
-        bgColor="bg-alt"
-      />
-      
-      {/* Học tập */}
-      {learningProducts.length > 0 && (
+      {steamGames.length > 0 && (
         <ProductSection 
-          title="Học tập"
-          icon="📚"
-          subtitle="Khóa học online, ứng dụng học ngôn ngữ"
-          products={learningProducts}
-          categoryLink="/category?category=learning"
+          title="Game trên Steam"
+          icon="🎮"
+          subtitle="Key game Steam chính hãng giá tốt"
+          products={steamGames}
+          categoryLink="/category?platform=steam"
+          bgColor="bg-alt"
         />
       )}
       
-      {/* Giải trí */}
+      {/* Sản phẩm AI & Làm việc */}
+      {aiProducts.length > 0 && (
+        <ProductSection 
+          title="AI & Làm việc"
+          icon="🤖"
+          subtitle="Các công cụ tăng năng suất và sáng tạo"
+          products={aiProducts}
+          categoryLink="/category?category=ai"
+        />
+      )}
+      
+      {/* Giải trí & Học tập */}
       {entertainmentProducts.length > 0 && (
         <ProductSection 
-          title="Giải trí"
+          title="Giải trí & Học tập"
           icon="🎬"
-          subtitle="Netflix, Spotify và các dịch vụ streaming"
+          subtitle="Netflix, Spotify, Duolingo, Coursera và hơn thế nữa"
           products={entertainmentProducts}
           categoryLink="/category?category=entertainment"
           bgColor="bg-alt"
         />
       )}
       
-      {/* Làm việc */}
-      {officeProducts.length > 0 && (
+      {/* Sản phẩm mới */}
+      {newestProducts.length > 0 && (
         <ProductSection 
-          title="Làm việc"
-          icon="💼"
-          subtitle="Office 365, Adobe CC, Canva và các công cụ văn phòng"
-          products={officeProducts}
-          categoryLink="/category?category=office"
+          title="Sản phẩm mới"
+          icon="✨"
+          subtitle="Vừa được cập nhật trên cửa hàng"
+          products={newestProducts}
+          categoryLink="/category?sort=newest"
         />
       )}
-      
-      {/* Sản phẩm mới */}
-      <ProductSection 
-        title="Sản phẩm mới"
-        icon="✨"
-        subtitle="Vừa được thêm vào cửa hàng"
-        products={newestProducts}
-        categoryLink="/category?sort=newest"
-        bgColor="bg-alt"
-      />
     </div>
   );
 };
