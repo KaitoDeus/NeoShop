@@ -114,6 +114,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
   - [x] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
   - [x] Danh sách Sản phẩm: Thay thế mock data bằng `GET /api/admin/products`.
   - [x] Danh sách Khách hàng: Thay thế mock data bằng `GET /api/admin/users`.
+  - [x] Chức năng Thêm khách hàng mới: Đã bổ sung Modal và API `POST /api/admin/users`.
 - [x] **Hoàn thiện các nút hành động (Event Handlers)**:
   - [x] Gắn sự kiện "Xem chi tiết" cho Đơn hàng (Hiển thị popup thông tin chi tiết đơn).
   - [x] Gắn sự kiện "Chỉnh sửa" & "Xóa" cho Sản phẩm (Gửi request cập nhật DB).
@@ -127,6 +128,28 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
   - [x] Đồng bộ logic Pagination giữa Frontend và Backend API cho tất cả các bảng Admin.
   - [x] Filter đơn hàng theo trạng thái (Success, Pending, Failed) sử dụng API.
   - [x] Tích hợp thanh tìm kiếm và bộ lọc trạng thái/danh mục cho Sản phẩm.
+
+### 14.2. Kết quả Rà soát & Kiểm thử Admin (Audit Results)
+
+- [x] **Sidebar Navigation**: Đã bổ sung link "Mã giảm giá" (Coupons) bị thiếu.
+- [x] **Chức năng Tìm kiếm/Lọc (Search & Filter)**:
+  - [x] Tìm kiếm sản phẩm theo tên (Backend-supported).
+  - [x] Lọc đơn hàng theo trạng thái và bộ lọc thời gian Stats.
+- [x] **Quản lý Key (Inventory Management)**: Đã kiểm thử luồng thêm/xóa key cho từng sản phẩm.
+- [x] **Tìm kiếm & Bộ lọc (Admin Search & Filters)**:
+  - [x] Tìm kiếm Đơn hàng theo ID/Email/Username (Backend-supported).
+  - [x] Tìm kiếm Key theo mã Key/Tên sản phẩm.
+  - [x] Sắp xếp mặc định theo ngày mới nhất cho Đơn hàng và Key.
+- [x] **Nhập kho hàng loạt (Bulk Inventory)**:
+  - [x] Chức năng nhập danh sách Key bằng Textarea, tự động tách dòng.
+  - [x] API `POST /api/admin/keys/bulk` hỗ trợ xử lý hàng loạt.
+- [ ] **Các mục cần cải thiện (Pending/Broken)**:
+  - [x] **Thẻ thống kê (Stats Cards)** trên Dashboard: Đã kết nối với API `getOverviewStats`.
+  - [ ] **Hành động hàng loạt (Bulk Actions)**: Checkbox trong bảng chưa có chức năng (Xóa hàng loạt, Đổi trạng thái hàng loạt).
+  - [x] **Quản lý Danh mục (Category CRUD)**: Đã trang bị trang quản lý riêng biệt với đầy đủ tính năng Thêm/Sửa/Xóa và chọn danh mục cha.
+  - [ ] **Placeholder Settings**: Các tab Bảo mật, SEO, Backup trong Settings hiện là placeholder UI.
+  - [x] **Xóa Đơn hàng**: Đã bổ sung logic xóa đơn hàng trong AdminController và UI.
+  - [x] **CRUD Toàn diện**: Đã sửa các lỗi validation Category/Coupon và bổ sung Update/Delete cho User/Coupon/Order.
 
 ---
 
@@ -146,8 +169,6 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] Global **Exception Handler** (`@ControllerAdvice`) trả về lỗi chuẩn hóa.
 
 ### 17. CI/CD Pipeline
-
-`
 
 - [ ] Thiết lập **GitHub Actions** cho Build + Test tự động.
 - [ ] Auto-deploy lên môi trường staging khi merge vào `main`.
@@ -180,4 +201,4 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-_Cập nhật lần cuối: 2026-02-14_
+_Cập nhật lần cuối: 2026-02-23_
