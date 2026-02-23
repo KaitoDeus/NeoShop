@@ -47,7 +47,14 @@ const ProductModal = ({ product, onClose, onSave }) => {
     e.preventDefault();
     setLoading(true);
     try {
-      await onSave(formData);
+      // Ensure categoryId is null if empty string to avoid UUID conversion error
+      const cleanedData = {
+        ...formData,
+        categoryId: formData.categoryId === '' ? null : formData.categoryId,
+        price: Number(formData.price),
+        salePrice: formData.salePrice === '' ? null : Number(formData.salePrice)
+      };
+      await onSave(cleanedData);
       onClose();
     } catch (error) {
       console.error("Failed to save product:", error);

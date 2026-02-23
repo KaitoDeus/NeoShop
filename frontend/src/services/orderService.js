@@ -28,10 +28,22 @@ const orderService = {
     },
 
     // Admin: Lấy tất cả đơn hàng
-    getAllOrders: async (page = 0, size = 10, status = '') => {
+    getAllOrders: async (page = 0, size = 10, status = '', query = '') => {
         const response = await api.get('/admin/orders', {
-             params: { page, size, status }
+             params: { page, size, status, query }
         });
+        return response.data;
+    },
+
+    updateStatus: async (id, status) => {
+        const response = await api.patch(`/admin/orders/${id}/status`, null, {
+            params: { status }
+        });
+        return response.data;
+    },
+
+    deleteOrder: async (id) => {
+        const response = await api.delete(`/admin/orders/${id}`);
         return response.data;
     }
 };

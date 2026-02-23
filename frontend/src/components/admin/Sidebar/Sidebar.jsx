@@ -12,8 +12,10 @@ const Sidebar = () => {
     { path: '/admin/dashboard', name: 'Tổng quan', icon: <FiGrid /> },
     { path: '/admin/orders', name: 'Đơn hàng', icon: <FiShoppingCart /> },
     { path: '/admin/products', name: 'Sản phẩm', icon: <FiBox /> },
+    { path: '/admin/categories', name: 'Danh mục', icon: <FiGrid /> },
     { path: '/admin/keys', name: 'Kho Key', icon: <FiKey /> },
-    { path: '/admin/users', name: 'Khách hàng', icon: <FiUsers /> },
+    { path: '/admin/coupons', name: 'Mã giảm giá', icon: <FiShoppingCart /> },
+    { path: '/admin/users', name: 'Người dùng', icon: <FiUsers /> },
     { path: '/admin/stats', name: 'Thống kê', icon: <FiBarChart2 /> },
     { path: '/admin/settings', name: 'Cấu hình', icon: <FiSettings /> },
   ];

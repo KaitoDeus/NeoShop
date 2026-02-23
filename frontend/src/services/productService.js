@@ -71,6 +71,18 @@ const productService = {
     deleteProductKey: async (keyId) => {
         const response = await api.delete(`/admin/keys/${keyId}`);
         return response.data;
+    },
+
+    searchKeys: async (params) => {
+        // params: { page, size, query, productId, status }
+        const response = await api.get('/admin/keys', { params });
+        return response.data;
+    },
+
+    bulkAddKeys: async (bulkData) => {
+        // bulkData: { productId, keyCodes: [] }
+        const response = await api.post('/admin/keys/bulk', bulkData);
+        return response.data;
     }
 };
 

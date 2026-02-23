@@ -24,6 +24,7 @@ import Users from './pages/Admin/Users/Users'; // Import Users
 import Stats from './pages/Admin/Stats/Stats'; // Import Stats
 import Keys from './pages/Admin/Keys/Keys'; // Import Keys
 import Coupons from './pages/Admin/Coupons/Coupons'; // Import Coupons
+import Categories from './pages/Admin/Categories/Categories'; // Import Categories
 import Settings from './pages/Admin/Settings/Settings'; // Re-Import Settings
 import './App.css';
 import OrderSuccess from './pages/OrderSuccess/OrderSuccess';
@@ -46,6 +47,7 @@ function App() {
                 <Route path="orders" element={<Orders />} />
                 <Route path="keys" element={<Keys />} />
                 <Route path="coupons" element={<Coupons />} />
+                <Route path="categories" element={<Categories />} />
                 <Route path="users" element={<Users />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="settings" element={<Settings />} />

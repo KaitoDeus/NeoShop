@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
 import { 
-  FiSearch, FiFilter, FiMoreHorizontal, FiUser, FiLock, FiUnlock, 
-  FiMail, FiPhone, FiCalendar, FiShoppingBag, FiCreditCard, FiX,
-  FiRefreshCw, FiChevronLeft, FiChevronRight
+  FiSearch, FiEdit2, FiTrash2, FiUser, 
+  FiChevronLeft, FiChevronRight
 } from 'react-icons/fi';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
 import { userStats } from '../../../data/adminMockData'; // Keep mock stats for now
 import userService from '../../../services/userService';
+import UserModal from './UserModal';
 import './Users.css';
 
 const Users = () => {
@@ -15,7 +15,9 @@ const Users = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [editingUser, setEditingUser] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchUsers();
@@ -35,14 +37,59 @@ const Users = () => {
     }
   };
 
+  const filteredUsers = users.filter(user => 
+    user.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.phoneNumber?.includes(searchTerm)
+  );
+
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
   };
 
+  const handleCreate = () => {
+    setEditingUser(null);
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa người dùng này? Thao tác này không thể hoàn tác.")) {
+      try {
+        await userService.deleteUser(id);
+        fetchUsers();
+      } catch (error) {
+        console.error("Failed to delete user:", error);
+        alert("Lỗi khi xóa người dùng.");
+      }
+    }
+  };
+
+  const handleSave = async (formData) => {
+    try {
+      if (editingUser) {
+        await userService.updateUser(editingUser.id, formData);
+        alert("Cập nhật thông tin thành công!");
+      } else {
+        await userService.createUser(formData);
+        alert("Thêm người dùng thành công!");
+      }
+      fetchUsers();
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to save user:", error);
+      throw error;
+    }
+  };
+
   const getStatusBadge = (active) => {
-    // Modify based on how status is returned. Currently I hardcoded active=true in backend
     return active 
       ? <span className="status-badge status-active"><span className="status-dot"></span>Hoạt động</span>
       : <span className="status-badge status-locked"><span className="status-dot"></span>Bị khóa</span>;
@@ -50,7 +97,6 @@ const Users = () => {
 
   return (
     <div className="users-page">
-      {/* 1. Header */}
       <div className="page-header">
         <div>
           <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem' }}>
@@ -59,51 +105,32 @@ const Users = () => {
           <h1 className="page-title">Quản lý Khách hàng</h1>
           <p className="page-subtitle">Quản lý danh sách người dùng và lịch sử giao dịch.</p>
         </div>
-        <button className="btn-primary" onClick={() => alert('Chức năng thêm khách hàng mới')}>
+        <button className="btn-primary" onClick={handleCreate}>
           <FiUser /> Thêm khách hàng
         </button>
       </div>
 
-      {/* 2. Stats Grid */}
       <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
         {userStats.map(stat => (
           <StatsCard key={stat.id} {...stat} />
         ))}
       </div>
 
-      {/* 3. Filter & Search */}
       <div className="products-table-container">
         <div className="filters-bar" style={{ padding: '1rem', gap: '1rem' }}>
-          <div className="search-wrapper" style={{ flex: 2 }}>
+          <div className="search-wrapper" style={{ flex: 1 }}>
             <FiSearch className="search-icon" style={{ top: '50%', transform: 'translateY(-50%)' }} />
             <input 
               type="text" 
               className="form-input" 
               placeholder="Tìm theo tên, email, số điện thoại..." 
               style={{ paddingLeft: '2.5rem' }} 
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <div style={{ flex: 1 }}>
-            <select className="form-select">
-              <option value="">Trạng thái: Tất cả</option>
-              <option value="active">Hoạt động</option>
-              <option value="locked">Bị khóa</option>
-            </select>
-          </div>
-          <div style={{ flex: 1 }}>
-             <select className="form-select">
-              <option value="">Chi tiêu: Tất cả</option>
-              <option value="high">Trên 5 triệu</option>
-              <option value="medium">1 - 5 triệu</option>
-              <option value="low">Dưới 1 triệu</option>
-            </select>
-          </div>
-          <button className="btn-outline" style={{ padding: '0.6rem 1rem' }}>
-            <FiFilter /> Lọc
-          </button>
         </div>
 
-        {/* 4. Users Table */}
         <table className="admin-table">
           <thead>
             <tr>
@@ -111,24 +138,22 @@ const Users = () => {
               <th>Khách hàng</th>
               <th>Số điện thoại</th>
               <th>Role</th>
-              <th>Đơn hàng</th>
-              <th>Tổng chi tiêu</th>
               <th>Trạng thái</th>
               <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
-            ) : users.length === 0 ? (
-                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Không có người dùng nào.</td></tr>
+                <tr><td colSpan="6" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
+            ) : filteredUsers.length === 0 ? (
+                <tr><td colSpan="6" style={{textAlign: 'center', padding: '2rem'}}>Không có người dùng nào.</td></tr>
             ) : (
-                users.map((user) => (
+                filteredUsers.map((user) => (
                   <tr key={user.id}>
                     <td style={{ color: '#94a3b8' }}>{user.id.substring(0, 8)}...</td>
                     <td>
                       <div className="user-cell">
-                        <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.fullName}&background=random`} alt={user.fullName} className="user-avatar-sm" />
+                        <img src={user.avatar || `https://ui-avatars.com/api/?name=${user.fullName || user.username}&background=random`} alt={user.fullName} className="user-avatar-sm" />
                         <div className="user-info-text">
                           <span className="user-name">{user.fullName || user.username}</span>
                           <span className="user-email">{user.email}</span>
@@ -141,21 +166,14 @@ const Users = () => {
                             <span key={r} className="badge-gray" style={{marginRight: '4px'}}>{r}</span>
                         ))}
                     </td>
-                    <td style={{ textAlign: 'center' }}>
-                        <span className="badge-gray" style={{ background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px' }}>
-                            -
-                        </span>
-                    </td>
-                    <td className="font-bold text-primary">-</td>
                     <td>{getStatusBadge(user.active !== undefined ? user.active : true)}</td>
                     <td>
-                      <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <button 
-                            className="btn-outline" 
-                            style={{ padding: '0.4rem', border: 'none', color: '#2563eb' }}
-                            onClick={() => setSelectedUser(user)}
-                        >
-                            Xem chi tiết
+                      <div className="action-btn-group">
+                        <button className="btn-icon" title="Sửa" onClick={() => handleEdit(user)}>
+                          <FiEdit2 />
+                        </button>
+                        <button className="btn-icon text-danger" title="Xóa" onClick={() => handleDelete(user.id)}>
+                          <FiTrash2 />
                         </button>
                       </div>
                     </td>
@@ -165,10 +183,9 @@ const Users = () => {
           </tbody>
         </table>
         
-        {/* Pagination */}
         <div className="table-footer">
           <div className="table-info">
-            Hiển thị <span className="font-bold">{users.length > 0 ? page * 10 + 1 : 0}</span> đến <span className="font-bold">{Math.min((page + 1) * 10, totalElements)}</span> trong <span className="font-bold">{totalElements}</span> kết quả
+            Hiển thị <span className="font-bold">{filteredUsers.length}</span> / <span className="font-bold">{totalElements}</span> người dùng
           </div>
           <div className="pagination">
             <button className="page-btn" onClick={() => handlePageChange(page - 1)} disabled={page === 0}><FiChevronLeft /></button>
@@ -182,65 +199,12 @@ const Users = () => {
         </div>
       </div>
 
-      {/* 5. User Detail Drawer */}
-      {selectedUser && (
-        <div className="user-detail-overlay" onClick={() => setSelectedUser(null)}>
-          <div className="user-detail-drawer" onClick={e => e.stopPropagation()}>
-            <div className="drawer-header">
-               <div className="drawer-user-profile">
-                  <img src={selectedUser.avatar || `https://ui-avatars.com/api/?name=${selectedUser.fullName}&background=random`} alt={selectedUser.fullName} className="drawer-avatar" />
-                  <div>
-                    <h3 style={{ margin: 0, fontSize: '1.2rem' }}>{selectedUser.fullName || selectedUser.username}</h3>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem' }}>
-                        {getStatusBadge(selectedUser.active !== undefined ? selectedUser.active : true)}
-                        <span style={{ fontSize: '0.85rem', color: '#94a3b8', display: 'flex', alignItems: 'center' }}>
-                            ID: {selectedUser.id}
-                        </span>
-                    </div>
-                  </div>
-               </div>
-               <button onClick={() => setSelectedUser(null)} style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', color: '#64748b' }}>
-                 <FiX />
-               </button>
-            </div>
-            
-            <div className="drawer-body">
-               {/* Contact Info */}
-               <div className="info-section">
-                  <h4 className="info-title">Thông tin cá nhân</h4>
-                  <div className="info-grid">
-                     <div className="info-item">
-                        <label><FiMail style={{ marginBottom: -2, marginRight: 4 }} /> Email</label>
-                        <span>{selectedUser.email}</span>
-                     </div>
-                     <div className="info-item">
-                        <label><FiPhone style={{ marginBottom: -2, marginRight: 4 }} /> Số điện thoại</label>
-                        <span>{selectedUser.phoneNumber || 'N/A'}</span>
-                     </div>
-                     <div className="info-item">
-                        <label><FiCalendar style={{ marginBottom: -2, marginRight: 4 }} /> Địa chỉ</label>
-                        <span>{selectedUser.address || 'Chưa cập nhật'}</span>
-                     </div>
-                  </div>
-               </div>
-
-               {/* Recent Activity Mocked for now */}
-               <div className="info-section">
-                  <h4 className="info-title">Lịch sử giao dịch gần đây (Mock)</h4>
-                  <div className="order-history-list">
-                     <p style={{color: '#94a3b8', fontStyle: 'italic'}}>Chức năng đang phát triển...</p>
-                  </div>
-               </div>
-            </div>
-
-            <div className="drawer-footer">
-               {/* Actions */}
-               <button className="btn-primary" style={{ flex: 1 }}>
-                 <FiRefreshCw /> Reset Mật khẩu
-               </button>
-            </div>
-          </div>
-        </div>
+      {isModalOpen && (
+        <UserModal 
+          user={editingUser}
+          onClose={() => setIsModalOpen(false)} 
+          onSave={handleSave} 
+        />
       )}
     </div>
   );

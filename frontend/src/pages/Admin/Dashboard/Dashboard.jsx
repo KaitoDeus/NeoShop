@@ -4,34 +4,36 @@ import RevenueChart from '../../../components/admin/Dashboard/RevenueChart';
 import PaymentPieChart from '../../../components/admin/Dashboard/PaymentPieChart';
 import RecentOrders from '../../../components/admin/Dashboard/RecentOrders';
 import { statsData as mockStatsData } from '../../../data/adminMockData';
+import statsService from '../../../services/statsService';
 
 const Dashboard = () => {
   const [stats, setStats] = useState(mockStatsData);
   const [paymentStats, setPaymentStats] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
-      try {
-        const token = localStorage.getItem('token');
-        const res = await fetch('/api/admin/dashboard/stats', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setStats([
-            { id: 1, title: 'Tổng doanh thu', value: `${Number(data.totalRevenue).toLocaleString('vi-VN')} đ`, percent: 12, isIncrease: true, compareText: '', iconType: 'money' },
-            { id: 2, title: 'Tổng đơn hàng', value: String(data.totalOrders), percent: 5, isIncrease: true, compareText: '', iconType: 'bag' },
-            { id: 3, title: 'Sản phẩm', value: String(data.activeProducts), percent: 0, isIncrease: true, compareText: '', iconType: 'key' },
-            { id: 4, title: 'Người dùng', value: String(data.totalUsers), percent: 2, isIncrease: true, compareText: '', iconType: 'user' },
-          ]);
-          setPaymentStats(data.paymentStats);
-        }
-      } catch {
-        // Fallback to mock data
-      }
-    };
-    fetchStats();
+    fetchDashboardData();
   }, []);
+
+  const fetchDashboardData = async () => {
+    try {
+      setIsLoading(true);
+      const data = await statsService.getOverviewStats();
+      if (data) {
+        setStats([
+          { id: 1, title: 'Tổng doanh thu', value: `${Number(data.totalRevenue || 0).toLocaleString('vi-VN')} đ`, percent: 12, isIncrease: true, compareText: '', iconType: 'money', color: 'blue' },
+          { id: 2, title: 'Tổng đơn hàng', value: String(data.totalOrders || 0), percent: 5, isIncrease: true, compareText: '', iconType: 'bag', color: 'green' },
+          { id: 3, title: 'Sản phẩm', value: String(data.activeProducts || 0), percent: 0, isIncrease: true, compareText: '', iconType: 'key', color: 'purple' },
+          { id: 4, title: 'Người dùng', value: String(data.totalUsers || 0), percent: 2, isIncrease: true, compareText: '', iconType: 'user', color: 'orange' },
+        ]);
+        setPaymentStats(data.paymentStats || []);
+      }
+    } catch (error) {
+      console.error("Dashboard stats fetch failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="dashboard-container">

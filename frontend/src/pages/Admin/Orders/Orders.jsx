@@ -16,16 +16,17 @@ const Orders = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
   const [filterStatus, setFilterStatus] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     fetchOrders();
-  }, [page, filterStatus]);
+  }, [page, filterStatus, searchQuery]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getAllOrders(page, 10, filterStatus);
+      const data = await orderService.getAllOrders(page, 10, filterStatus, searchQuery);
       setOrders(data.content);
       setTotalPages(data.totalPages);
       setTotalElements(data.totalElements);
@@ -105,6 +106,8 @@ const Orders = () => {
               type="text" 
               placeholder="Tìm kiếm theo mã đơn, khách hàng hoặc email..." 
               className="search-input"
+              value={searchQuery}
+              onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
             />
           </div>
           

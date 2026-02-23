@@ -1,0 +1,33 @@
+/* UserModal styling is mostly inherited from global admin modal styles, 
+   but specific additions can go here */
+
+.user-modal .modal-body {
+    padding: 20px;
+}
+
+.user-modal .form-group {
+    margin-bottom: 20px;
+}
+
+.user-modal .form-group label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #475569;
+    margin-bottom: 8px;
+}
+
+.user-modal .form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.user-modal .form-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    outline: none;
+}

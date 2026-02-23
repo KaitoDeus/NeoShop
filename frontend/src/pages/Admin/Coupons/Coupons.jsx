@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiPlus, FiSearch, FiEdit2, FiTrash2, 
-  FiChevronLeft, FiChevronRight, FiClock, FiDollarSign
+  FiChevronLeft, FiChevronRight, FiClock, FiDollarSign, FiX, FiSave
 } from 'react-icons/fi';
 import couponService from '../../../services/couponService';
 import './Coupons.css';
@@ -11,6 +11,7 @@ const Coupons = () => {
   const [coupons, setCoupons] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
     code: '',
     discountType: 'PERCENT',
@@ -36,7 +37,6 @@ const Coupons = () => {
       const data = await couponService.getAllCoupons();
       setCoupons(data);
       
-      // Calculate Stats
       const total = data.length;
       const active = data.filter(c => c.active).length;
       const used = data.reduce((acc, curr) => acc + (curr.currentUsage || 0), 0);
@@ -56,16 +56,34 @@ const Coupons = () => {
     }));
   };
 
+  const handleEdit = (coupon) => {
+    setEditingId(coupon.id);
+    setFormData({
+      code: coupon.code,
+      discountType: coupon.discountType,
+      discountValue: coupon.discountValue,
+      minOrderAmount: coupon.minOrderAmount || '',
+      maxUsage: coupon.maxUsage || '',
+      expiryDate: coupon.expiryDate ? coupon.expiryDate.split('.')[0] : '', // Format for datetime-local
+      active: coupon.active
+    });
+    setShowModal(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await couponService.createCoupon(formData);
+      if (editingId) {
+        await couponService.updateCoupon(editingId, formData);
+      } else {
+        await couponService.createCoupon(formData);
+      }
       setShowModal(false);
       resetForm();
       fetchCoupons();
     } catch (error) {
-      console.error("Failed to create coupon:", error);
-      alert("Lỗi khi tạo mã giảm giá. Vui lòng thử lại.");
+      console.error("Failed to save coupon:", error);
+      alert("Lỗi khi lưu mã giảm giá.");
     }
   };
 
@@ -81,6 +99,7 @@ const Coupons = () => {
   };
 
   const resetForm = () => {
+    setEditingId(null);
     setFormData({
       code: '',
       discountType: 'PERCENT',
@@ -92,59 +111,57 @@ const Coupons = () => {
     });
   };
 
+  const handleCreateNew = () => {
+    resetForm();
+    setShowModal(true);
+  };
+
   return (
     <div className="coupons-page">
-      {/* Header */}
       <div className="page-header">
         <div>
           <h1 className="page-title">Quản lý Mã Giảm Giá</h1>
-          <p className="page-subtitle">Tạo và quản lý các chương trình khuyến mãi</p>
+          <p className="page-subtitle">Tạo và quản lý các chương trình khuyến mãi cho khách hàng</p>
         </div>
-        <button className="btn-primary" onClick={() => setShowModal(true)}>
+        <button className="btn-primary" onClick={handleCreateNew}>
           <FiPlus size={20} />
           Tạo mã mới
         </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="stats-grid grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div className="stats-grid">
         <StatsCard 
-          title="Tổng mã giảm giá" 
+          title="Tổng mã" 
           value={stats.total} 
           icon={<FiDollarSign />} 
-          trend="+2" 
-          trendUp={true} 
+          color="blue"
         />
         <StatsCard 
           title="Đang hoạt động" 
           value={stats.active} 
           icon={<FiClock />} 
-          trend="Active" 
-          trendUp={true} 
+          color="green"
         />
         <StatsCard 
           title="Lượt sử dụng" 
           value={stats.used} 
           icon={<FiSearch />} 
-          trend="Used" 
-          trendUp={true} 
+          color="purple"
         />
       </div>
 
-      {/* Table Section */}
-      <div className="bg-white rounded-lg shadow p-6">
-        {/* Filters Bar */}
-        <div className="flex justify-between items-center mb-6">
-          <div className="relative w-64">
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <div className="products-table-container mt-6" style={{ marginTop: '2rem' }}>
+        <div className="filters-bar">
+          <div className="search-wrapper">
+            <FiSearch className="search-icon" />
             <input 
               type="text" 
               placeholder="Tìm kiếm mã code..." 
-              className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="search-input"
             />
           </div>
-          <div className="flex gap-4">
-            <select className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <div className="filter-group">
+            <select className="filter-select">
               <option>Tất cả trạng thái</option>
               <option>Hoạt động</option>
               <option>Hết hạn</option>
@@ -152,134 +169,130 @@ const Coupons = () => {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="overflow-x-auto">
-        <table className="w-full text-left">
+        <table className="admin-table">
           <thead>
-            <tr className="border-b text-gray-500 text-sm uppercase">
-              <th className="py-3 px-4">Mã Code</th>
-              <th className="py-3 px-4">Giảm giá</th>
-              <th className="py-3 px-4">Đơn tối thiểu</th>
-              <th className="py-3 px-4">Lượt dùng</th>
-              <th className="py-3 px-4">Hết hạn</th>
-              <th className="py-3 px-4">Trạng thái</th>
-              <th className="py-3 px-4 text-right">Hành động</th>
+            <tr>
+              <th>Mã Code</th>
+              <th>Giảm giá</th>
+              <th>Đơn tối thiểu</th>
+              <th>Lượt dùng</th>
+              <th>Hết hạn</th>
+              <th>Trạng thái</th>
+              <th>Hành động</th>
             </tr>
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="7" className="text-center py-8">Loading...</td></tr>
+              <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
             ) : coupons.length === 0 ? (
-              <tr><td colSpan="7" className="text-center py-8 text-gray-500">Chưa có mã giảm giá nào</td></tr>
+              <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Chưa có mã giảm giá nào.</td></tr>
             ) : (
               coupons.map(coupon => (
-                <tr key={coupon.id} className="border-b hover:bg-gray-50">
-                  <td className="py-3 px-4 font-medium text-blue-600 font-mono">{coupon.code}</td>
-                  <td className="py-3 px-4">
+                <tr key={coupon.id}>
+                  <td><span className="coupon-code">{coupon.code}</span></td>
+                  <td className="font-bold">
                     {coupon.discountType === 'PERCENT' ? `${coupon.discountValue}%` : `${parseInt(coupon.discountValue).toLocaleString()}đ`}
                   </td>
-                  <td className="py-3 px-4">
-                    {coupon.minOrderAmount ? `${parseInt(coupon.minOrderAmount).toLocaleString()}đ` : '-'}
-                  </td>
-                  <td className="py-3 px-4">
-                    {coupon.currentUsage} / {coupon.maxUsage || '∞'}
-                  </td>
-                  <td className="py-3 px-4 text-gray-600">
-                    {coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString() : 'Vĩnh viễn'}
-                  </td>
-                  <td className="py-3 px-4">
-                    <span className={`px-2 py-1 rounded text-xs font-semibold ${coupon.active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      {coupon.active ? 'Active' : 'Expired'}
+                  <td>{coupon.minOrderAmount ? `${parseInt(coupon.minOrderAmount).toLocaleString()}đ` : '-'}</td>
+                  <td>{coupon.currentUsage} / {coupon.maxUsage || '∞'}</td>
+                  <td>{coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString() : 'Vĩnh viễn'}</td>
+                  <td>
+                    <span className={`status-badge ${coupon.active ? 'status-active' : 'status-hidden'}`}>
+                      <span className="status-dot"></span>
+                      {coupon.active ? 'Active' : 'Disabled'}
                     </span>
                   </td>
-                  <td className="py-3 px-4 text-right flex justify-end gap-2">
-                    <button className="text-gray-500 hover:text-blue-600 p-1"><FiEdit2 /></button>
-                    <button onClick={() => handleDelete(coupon.id)} className="text-gray-500 hover:text-red-600 p-1"><FiTrash2 /></button>
+                  <td>
+                    <div className="action-btn-group">
+                      <button className="btn-icon" onClick={() => handleEdit(coupon)}><FiEdit2 /></button>
+                      <button onClick={() => handleDelete(coupon.id)} className="btn-icon text-danger"><FiTrash2 /></button>
+                    </div>
                   </td>
                 </tr>
               ))
             )}
           </tbody>
         </table>
-        </div>
       </div>
 
-      {/* Create Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">Tạo Mã Mới</h2>
-              <button onClick={() => setShowModal(false)} className="text-gray-500 hover:text-gray-700">&times;</button>
+        <div className="modal-backdrop" onClick={() => setShowModal(false)}>
+          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+            <div className="modal-header">
+              <h2 className="modal-title">{editingId ? 'Chỉnh Sửa Mã' : 'Tạo Mã Mới'}</h2>
+              <button onClick={() => setShowModal(false)} className="close-btn"><FiX size={24} /></button>
             </div>
             <form onSubmit={handleSubmit}>
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">Mã Code (VD: SALE50)</label>
+              <div className="modal-body">
+                <div className="form-group">
+                  <label className="form-label">Mã Code (VD: SALE50)</label>
                   <input 
                     name="code" required
-                    className="w-full border rounded px-3 py-2 uppercase font-mono"
+                    className="form-input text-uppercase font-mono"
+                    style={{ textTransform: 'uppercase' }}
                     value={formData.code} onChange={handleInputChange}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Loại giảm</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Loại giảm</label>
                     <select 
                       name="discountType"
-                      className="w-full border rounded px-3 py-2"
+                      className="form-select"
                       value={formData.discountType} onChange={handleInputChange}
                     >
                       <option value="PERCENT">% Phần trăm</option>
                       <option value="FIXED">Số tiền cố định</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Giá trị giảm</label>
+                  <div className="form-group">
+                    <label className="form-label">Giá trị giảm</label>
                     <input 
                       name="discountValue" type="number" required
-                      className="w-full border rounded px-3 py-2"
+                      className="form-input"
                       value={formData.discountValue} onChange={handleInputChange}
                     />
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Đơn tối thiểu</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Đơn tối thiểu</label>
                     <input 
                       name="minOrderAmount" type="number"
-                      className="w-full border rounded px-3 py-2"
+                      className="form-input"
                       value={formData.minOrderAmount} onChange={handleInputChange}
                     />
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Lượt dùng tối đa</label>
+                  <div className="form-group">
+                    <label className="form-label">Lượt dùng tối đa</label>
                     <input 
                       name="maxUsage" type="number"
-                      className="w-full border rounded px-3 py-2"
+                      className="form-input"
                       value={formData.maxUsage} onChange={handleInputChange}
                     />
                   </div>
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1">Ngày hết hạn</label>
+                <div className="form-group">
+                  <label className="form-label">Ngày hết hạn</label>
                   <input 
                     name="expiryDate" type="datetime-local"
-                    className="w-full border rounded px-3 py-2"
+                    className="form-input"
                     value={formData.expiryDate} onChange={handleInputChange}
                   />
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <input 
                     type="checkbox" name="active" id="active"
                     checked={formData.active} onChange={handleInputChange}
                   />
-                  <label htmlFor="active">Kích hoạt ngay</label>
+                  <label htmlFor="active">Kích hoạt</label>
                 </div>
               </div>
-              <div className="mt-6 flex justify-end gap-3">
-                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 border rounded hover:bg-gray-50">Hủy</button>
-                <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Tạo Mã</button>
+              <div className="modal-footer">
+                <button type="button" onClick={() => setShowModal(false)} className="btn-outline">Hủy</button>
+                <button type="submit" className="btn-primary">
+                   <FiSave /> {editingId ? 'Cập nhật' : 'Tạo Mã'}
+                </button>
               </div>
             </form>
           </div>

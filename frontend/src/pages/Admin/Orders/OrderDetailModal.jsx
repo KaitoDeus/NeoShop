@@ -1,5 +1,6 @@
 import React from 'react';
 import { FiX, FiCheckCircle, FiClock, FiXCircle, FiCreditCard, FiSmartphone, FiBriefcase, FiUser, FiMail } from 'react-icons/fi';
+import orderService from '../../../services/orderService';
 import './OrderDetailModal.css';
 
 const OrderDetailModal = ({ order, onClose }) => {
@@ -29,6 +30,32 @@ const OrderDetailModal = ({ order, onClose }) => {
       case 'BANK_TRANSFER': return <><FiBriefcase className="text-blue" /> Chuyển khoản</>;
       case 'VISA': return <><FiCreditCard className="text-green" /> Thẻ VISA</>;
       default: return <><FiCreditCard /> {method || 'Chưa xác định'}</>;
+    }
+  };
+
+  const handleUpdateStatus = async (status) => {
+    if (window.confirm(`Bạn có chắc muốn chuyển trạng thái đơn hàng sang ${status}?`)) {
+      try {
+        await orderService.updateStatus(order.id, status);
+        alert('Cập nhật trạng thái thành công!');
+        onClose();
+        window.location.reload(); 
+      } catch (error) {
+        alert('Lỗi khi cập nhật trạng thái');
+      }
+    }
+  };
+
+  const handleDelete = async () => {
+    if (window.confirm('Bạn có chắc muốn xóa đơn hàng này? Thao tác này không thể hoàn tác.')) {
+      try {
+        await orderService.deleteOrder(order.id);
+        alert('Xóa đơn hàng thành công!');
+        onClose();
+        window.location.reload();
+      } catch (error) {
+        alert('Lỗi khi xóa đơn hàng');
+      }
     }
   };
 
@@ -105,8 +132,25 @@ const OrderDetailModal = ({ order, onClose }) => {
           </div>
         </div>
         
-        <div className="modal-footer">
-          <button className="btn-outline" onClick={onClose}>Đóng</button>
+        <div className="modal-footer" style={{ justifyContent: 'space-between' }}>
+          <div className="left-actions">
+            <button className="btn-danger" onClick={handleDelete} style={{ background: '#fee2e2', color: '#b91c1c', border: '1px solid #fecaca', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              <FiXCircle /> Xóa đơn
+            </button>
+          </div>
+          <div className="right-actions" style={{ display: 'flex', gap: '0.5rem' }}>
+            {order.status !== 'PAID' && order.status !== 'COMPLETED' && (
+              <button className="btn-success" onClick={() => handleUpdateStatus('PAID')} style={{ background: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
+                Đã thanh toán
+              </button>
+            )}
+            {order.status === 'PENDING' && (
+              <button className="btn-danger-outline" onClick={() => handleUpdateStatus('CANCELLED')} style={{ background: 'white', color: '#b91c1c', border: '1px solid #fee2e2', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
+                Hủy đơn
+              </button>
+            )}
+            <button className="btn-outline" onClick={onClose} style={{ padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', border: '1px solid #e2e8f0', background: 'white' }}>Đóng</button>
+          </div>
         </div>
       </div>
     </div>

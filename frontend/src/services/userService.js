@@ -38,6 +38,22 @@ const userService = {
              params: { page, size }
         });
         return response.data;
+    },
+
+    // Admin: Tạo người dùng mới
+    createUser: async (userData) => {
+        const response = await api.post('/admin/users', userData);
+        return response.data;
+    },
+
+    updateUser: async (id, userData) => {
+        const response = await api.put(`/admin/users/${id}`, userData);
+        return response.data;
+    },
+
+    deleteUser: async (id) => {
+        const response = await api.delete(`/admin/users/${id}`);
+        return response.data;
     }
 };
 
