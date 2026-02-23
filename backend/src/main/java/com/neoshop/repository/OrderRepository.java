@@ -19,6 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, UUID> {
 
     Page<Order> findByStatus(String status, Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE " +
+            "(:status IS NULL OR o.status = :status) AND " +
+            "(:query IS NULL OR o.user.email LIKE %:query% OR o.user.username LIKE %:query% OR CAST(o.id AS string) LIKE %:query%)")
+    Page<Order> searchOrders(@Param("status") String status, @Param("query") String query, Pageable pageable);
+
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.status IN ('PAID', 'COMPLETED')")
     BigDecimal sumTotalRevenue();
 

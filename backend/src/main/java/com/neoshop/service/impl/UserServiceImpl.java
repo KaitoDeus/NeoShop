@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+    private final com.neoshop.repository.RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -78,6 +80,81 @@ public class UserServiceImpl implements UserService {
                         .collect(Collectors.toSet()))
                 .active(true)
                 .build());
+    }
+
+    @Override
+    public com.neoshop.model.dto.response.UserResponse createUser(
+            com.neoshop.model.dto.request.RegisterRequest request) {
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new RuntimeException("Username already exists");
+        }
+        if (userRepository.existsByEmail(request.getEmail())) {
+            throw new RuntimeException("Email already exists");
+        }
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
+
+        User user = User.builder()
+                .username(request.getUsername())
+                .email(request.getEmail())
+                .passwordHash(passwordEncoder.encode(request.getPassword()))
+                .fullName(request.getUsername())
+                .address("")
+                .phoneNumber("")
+                .roles(java.util.Collections.singleton(userRole))
+                .createdAt(java.time.LocalDateTime.now())
+                .updatedAt(java.time.LocalDateTime.now())
+                .build();
+
+        User savedUser = userRepository.save(user);
+
+        return com.neoshop.model.dto.response.UserResponse.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .fullName(savedUser.getFullName())
+                .roles(savedUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+                .active(true)
+                .build();
+    }
+
+    @Override
+    public com.neoshop.model.dto.response.UserResponse updateUserAdmin(UUID id, UpdateProfileRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (request.getFullName() != null)
+            user.setFullName(request.getFullName());
+        if (request.getPhoneNumber() != null)
+            user.setPhoneNumber(request.getPhoneNumber());
+        if (request.getAddress() != null)
+            user.setAddress(request.getAddress());
+        if (request.getAvatar() != null)
+            user.setAvatar(request.getAvatar());
+
+        user.setUpdatedAt(java.time.LocalDateTime.now());
+        User savedUser = userRepository.save(user);
+
+        return com.neoshop.model.dto.response.UserResponse.builder()
+                .id(savedUser.getId())
+                .username(savedUser.getUsername())
+                .email(savedUser.getEmail())
+                .fullName(savedUser.getFullName())
+                .phoneNumber(savedUser.getPhoneNumber())
+                .address(savedUser.getAddress())
+                .avatar(savedUser.getAvatar())
+                .roles(savedUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+                .active(true)
+                .build();
+    }
+
+    @Override
+    public void deleteUser(UUID id) {
+        if (!userRepository.existsById(id)) {
+            throw new RuntimeException("User not found");
+        }
+        userRepository.deleteById(id);
     }
 
     private AuthResponse mapToAuthResponse(User user) {

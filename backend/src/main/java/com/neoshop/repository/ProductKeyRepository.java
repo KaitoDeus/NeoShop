@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.UUID;
@@ -13,11 +14,21 @@ import java.util.UUID;
 public interface ProductKeyRepository extends JpaRepository<ProductKey, UUID> {
 
     @Query("SELECT pk FROM ProductKey pk WHERE pk.product.id = :productId AND pk.status = 'AVAILABLE'")
-    List<ProductKey> findAvailableKeysByProduct(UUID productId, Pageable pageable);
+    List<ProductKey> findAvailableKeysByProduct(@Param("productId") UUID productId, Pageable pageable);
 
     long countByProductIdAndStatus(UUID productId, ProductKey.KeyStatus status);
 
     Page<ProductKey> findByProductId(UUID productId, Pageable pageable);
 
     List<ProductKey> findByProductId(UUID productId);
+
+    @Query("SELECT pk FROM ProductKey pk WHERE " +
+            "(:query IS NULL OR pk.keyCode LIKE %:query% OR pk.product.title LIKE %:query%) AND " +
+            "(:productId IS NULL OR pk.product.id = :productId) AND " +
+            "(:status IS NULL OR pk.status = :status)")
+    Page<ProductKey> searchKeys(
+            @Param("productId") UUID productId,
+            @Param("query") String query,
+            @Param("status") ProductKey.KeyStatus status,
+            Pageable pageable);
 }

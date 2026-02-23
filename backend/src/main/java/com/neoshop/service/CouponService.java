@@ -20,10 +20,37 @@ public class CouponService {
         return couponRepository.findAll();
     }
 
-    public Coupon createCoupon(Coupon coupon) {
-        if (couponRepository.findByCode(coupon.getCode()).isPresent()) {
-            throw new RuntimeException("Mã giảm giá đã tồn tại: " + coupon.getCode());
+    public Coupon createCoupon(com.neoshop.model.dto.request.CouponRequest request) {
+        if (couponRepository.findByCode(request.getCode()).isPresent()) {
+            throw new RuntimeException("Mã giảm giá đã tồn tại: " + request.getCode());
         }
+        Coupon coupon = Coupon.builder()
+                .code(request.getCode())
+                .discountType(request.getDiscountType())
+                .discountValue(request.getDiscountValue())
+                .minOrderAmount(request.getMinOrderAmount())
+                .maxUsage(request.getMaxUsage())
+                .expiryDate(request.getExpiryDate())
+                .active(request.getActive() != null ? request.getActive() : true)
+                .currentUsage(0)
+                .build();
+        return couponRepository.save(coupon);
+    }
+
+    public Coupon updateCoupon(UUID id, com.neoshop.model.dto.request.CouponRequest request) {
+        Coupon coupon = couponRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Coupon not found"));
+
+        coupon.setCode(request.getCode());
+        coupon.setDiscountType(request.getDiscountType());
+        coupon.setDiscountValue(request.getDiscountValue());
+        coupon.setMinOrderAmount(request.getMinOrderAmount());
+        coupon.setMaxUsage(request.getMaxUsage());
+        coupon.setExpiryDate(request.getExpiryDate());
+        if (request.getActive() != null) {
+            coupon.setActive(request.getActive());
+        }
+
         return couponRepository.save(coupon);
     }
 

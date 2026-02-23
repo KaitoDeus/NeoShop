@@ -1,9 +1,11 @@
 package com.neoshop.controller;
 
+import com.neoshop.model.dto.request.CouponRequest;
 import com.neoshop.model.entity.Coupon;
 import com.neoshop.service.CouponService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -52,8 +54,15 @@ public class CouponController {
     @PostMapping("/api/admin/coupons")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Tạo mã giảm giá mới (Admin)")
-    public ResponseEntity<Coupon> createCoupon(@RequestBody Coupon coupon) {
-        return ResponseEntity.ok(couponService.createCoupon(coupon));
+    public ResponseEntity<Coupon> createCoupon(@Valid @RequestBody CouponRequest request) {
+        return ResponseEntity.ok(couponService.createCoupon(request));
+    }
+
+    @PutMapping("/api/admin/coupons/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Cập nhật mã giảm giá (Admin)")
+    public ResponseEntity<Coupon> updateCoupon(@PathVariable UUID id, @Valid @RequestBody CouponRequest request) {
+        return ResponseEntity.ok(couponService.updateCoupon(id, request));
     }
 
     @DeleteMapping("/api/admin/coupons/{id}")

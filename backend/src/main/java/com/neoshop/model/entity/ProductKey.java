@@ -3,6 +3,7 @@ package com.neoshop.model.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.UUID;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "product_keys")
@@ -29,6 +30,10 @@ public class ProductKey {
 
     @Column(name = "order_id")
     private UUID orderId;
+
+    @Column(name = "created_at")
+    @Builder.Default
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum KeyStatus {
         AVAILABLE, SOLD

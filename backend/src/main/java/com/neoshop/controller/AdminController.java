@@ -1,5 +1,6 @@
 package com.neoshop.controller;
 
+import com.neoshop.model.dto.request.CategoryRequest;
 import com.neoshop.model.dto.request.ProductKeyRequest;
 import com.neoshop.model.dto.request.ProductRequest;
 import com.neoshop.model.dto.response.OrderResponse;
@@ -10,6 +11,7 @@ import com.neoshop.service.OrderService;
 import com.neoshop.service.ProductKeyService;
 import com.neoshop.service.ProductService;
 import com.neoshop.service.UserService;
+import com.neoshop.service.CategoryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -35,17 +37,18 @@ public class AdminController {
     private final ProductService productService;
     private final UserService userService;
     private final ProductKeyService productKeyService;
+    private final CategoryService categoryService;
 
     @GetMapping("/orders")
     @Operation(summary = "List all orders with optional status filter")
     public ResponseEntity<Page<OrderResponse>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) String status) {
-        Pageable pageable = PageRequest.of(page, size);
-        String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
-        return ResponseEntity.ok(orderService.getAllOrdersManaged(filterStatus, pageable));
-
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String query) {
+        Pageable pageable = PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by("orderDate").descending());
+        return ResponseEntity.ok(orderService.getAllOrdersManaged(status, query, pageable));
     }
 
     @GetMapping("/products")
@@ -55,8 +58,14 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String categoryId,
-            @RequestParam(required = false) String status) {
-        Pageable pageable = PageRequest.of(page, size);
+            @RequestParam(required = false) String status,
+            @RequestParam(defaultValue = "createdAt,desc") String sort) {
+        String[] sortParts = sort.split(",");
+        org.springframework.data.domain.Sort sortObj = org.springframework.data.domain.Sort.by(sortParts[0]);
+        if (sortParts.length > 1 && "desc".equalsIgnoreCase(sortParts[1])) {
+            sortObj = sortObj.descending();
+        }
+        Pageable pageable = PageRequest.of(page, size, sortObj);
 
         // Convert empty strings to null for consistent repository filtering
         String filterTitle = (title != null && title.trim().isEmpty()) ? null : title;
@@ -83,6 +92,27 @@ public class AdminController {
         return ResponseEntity.ok(userService.getAllUsers(pageable));
     }
 
+    @PostMapping("/users")
+    @Operation(summary = "Create a new user (Admin)")
+    public ResponseEntity<UserResponse> createUser(
+            @Valid @RequestBody com.neoshop.model.dto.request.RegisterRequest request) {
+        return ResponseEntity.ok(userService.createUser(request));
+    }
+
+    @PutMapping("/users/{id}")
+    @Operation(summary = "Update user (Admin)")
+    public ResponseEntity<UserResponse> updateUserAdmin(@PathVariable UUID id,
+            @Valid @RequestBody com.neoshop.model.dto.request.UpdateProfileRequest request) {
+        return ResponseEntity.ok(userService.updateUserAdmin(id, request));
+    }
+
+    @DeleteMapping("/users/{id}")
+    @Operation(summary = "Delete user (Admin)")
+    public ResponseEntity<Void> deleteUser(@PathVariable UUID id) {
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
+
     // Product Management
     @PostMapping("/products")
     @Operation(summary = "Create a new product")
@@ -105,6 +135,26 @@ public class AdminController {
     }
 
     // Product Key Management
+    @GetMapping("/keys")
+    @Operation(summary = "Search all keys with filters and sorting")
+    public ResponseEntity<Page<ProductKeyResponse>> searchKeys(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) UUID productId,
+            @RequestParam(required = false) String status) {
+        Pageable pageable = PageRequest.of(page, size,
+                org.springframework.data.domain.Sort.by("createdAt").descending());
+        return ResponseEntity.ok(productKeyService.searchKeys(productId, query, status, pageable));
+    }
+
+    @PostMapping("/keys/bulk")
+    @Operation(summary = "Bulk add product keys")
+    public ResponseEntity<List<ProductKeyResponse>> bulkAddKeys(
+            @Valid @RequestBody com.neoshop.model.dto.request.BulkKeyRequest request) {
+        return ResponseEntity.ok(productKeyService.bulkAddKeys(request));
+    }
+
     @GetMapping("/products/{productId}/keys")
     @Operation(summary = "List all keys for a product")
     public ResponseEntity<List<ProductKeyResponse>> getProductKeys(@PathVariable UUID productId) {
@@ -122,6 +172,44 @@ public class AdminController {
     @Operation(summary = "Delete a product key")
     public ResponseEntity<Void> deleteProductKey(@PathVariable UUID keyId) {
         productKeyService.deleteKey(keyId);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- CATEGORY MANAGEMENT ---
+
+    @PostMapping("/categories")
+    @Operation(summary = "Create a new category")
+    public ResponseEntity<com.neoshop.model.dto.response.CategoryResponse> createCategory(
+            @Valid @RequestBody CategoryRequest request) {
+        return ResponseEntity.ok(categoryService.createCategory(request));
+    }
+
+    @PutMapping("/categories/{id}")
+    @Operation(summary = "Update a category")
+    public ResponseEntity<com.neoshop.model.dto.response.CategoryResponse> updateCategory(@PathVariable UUID id,
+            @Valid @RequestBody CategoryRequest request) {
+        return ResponseEntity.ok(categoryService.updateCategory(id, request));
+    }
+
+    @DeleteMapping("/categories/{id}")
+    @Operation(summary = "Delete a category")
+    public ResponseEntity<Void> deleteCategory(@PathVariable UUID id) {
+        categoryService.deleteCategory(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    // --- ORDER MANAGEMENT ---
+
+    @PatchMapping("/orders/{id}/status")
+    @Operation(summary = "Update order status")
+    public ResponseEntity<OrderResponse> updateOrderStatus(@PathVariable UUID id, @RequestParam String status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status));
+    }
+
+    @DeleteMapping("/orders/{id}")
+    @Operation(summary = "Delete order")
+    public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
+        orderService.deleteOrder(id);
         return ResponseEntity.noContent().build();
     }
 }

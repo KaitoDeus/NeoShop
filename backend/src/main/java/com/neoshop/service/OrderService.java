@@ -97,17 +97,23 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(this::mapToResponse);
     }
 
-    public Page<OrderResponse> getAllOrdersManaged(String status, Pageable pageable) {
-        if (status != null && !status.isEmpty()) {
-            return orderRepository.findByStatus(status, pageable).map(this::mapToResponse);
-        }
-        return getAllOrders(pageable);
+    public Page<OrderResponse> getAllOrdersManaged(String status, String query, Pageable pageable) {
+        String filterStatus = (status != null && status.isBlank()) ? null : status;
+        String filterQuery = (query != null && query.isBlank()) ? null : query;
+        return orderRepository.searchOrders(filterStatus, filterQuery, pageable).map(this::mapToResponse);
     }
 
     public OrderResponse getOrderById(UUID orderId) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         return mapToResponse(order);
+    }
+
+    public void deleteOrder(UUID id) {
+        if (!orderRepository.existsById(id)) {
+            throw new RuntimeException("Order not found");
+        }
+        orderRepository.deleteById(id);
     }
 
     @Transactional
