@@ -32,4 +32,10 @@ public class DashboardController {
     public ResponseEntity<List<Map<String, Object>>> getRevenueChart() {
         return ResponseEntity.ok(statisticsService.getRevenueChartData());
     }
+
+    @GetMapping("/monthly-stats")
+    @Operation(summary = "Lấy dữ liệu tài chính theo tháng")
+    public ResponseEntity<List<Map<String, Object>>> getMonthlyStats() {
+        return ResponseEntity.ok(statisticsService.getMonthlyStats());
+    }
 }

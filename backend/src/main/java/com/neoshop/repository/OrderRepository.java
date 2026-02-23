@@ -17,6 +17,8 @@ import java.util.UUID;
 public interface OrderRepository extends JpaRepository<Order, UUID> {
     Page<Order> findByUserId(UUID userId, Pageable pageable);
 
+    Page<Order> findByStatus(String status, Pageable pageable);
+
     @Query("SELECT SUM(o.totalAmount) FROM Order o WHERE o.status IN ('PAID', 'COMPLETED')")
     BigDecimal sumTotalRevenue();
 

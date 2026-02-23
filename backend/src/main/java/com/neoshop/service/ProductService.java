@@ -2,8 +2,12 @@ package com.neoshop.service;
 
 import com.neoshop.model.dto.response.ProductResponse;
 import com.neoshop.model.entity.Product;
+import com.neoshop.model.dto.request.ProductRequest;
+import com.neoshop.model.entity.Category;
+import com.neoshop.repository.CategoryRepository;
 import com.neoshop.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import java.time.LocalDateTime;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -13,6 +17,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
     public Page<ProductResponse> getAllProducts(Pageable pageable) {
         return productRepository.findAll(pageable).map(this::mapToResponse);
@@ -26,11 +31,69 @@ public class ProductService {
         return productRepository.findByTitleContainingIgnoreCase(query, pageable).map(this::mapToResponse);
     }
 
+    public Page<ProductResponse> getAllProductsAdmin(String title, UUID categoryId, String status, Pageable pageable) {
+        return productRepository.findFilteredProducts(title, categoryId, status, pageable).map(this::mapToResponse);
+    }
+
     @org.springframework.cache.annotation.Cacheable(value = "products", key = "#id")
     public ProductResponse getProductById(UUID id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
         return mapToResponse(product);
+    }
+
+    public ProductResponse createProduct(ProductRequest request) {
+        Category category = null;
+        if (request.getCategoryId() != null) {
+            category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+        }
+
+        Product product = Product.builder()
+                .title(request.getTitle())
+                .description(request.getDescription())
+                .price(request.getPrice())
+                .salePrice(request.getSalePrice())
+                .category(category)
+                .stockQuantity(0)
+                .status(request.getStatus() != null ? request.getStatus() : "ACTIVE")
+                .createdAt(LocalDateTime.now())
+                .build();
+
+        Product savedProduct = productRepository.save(product);
+        return mapToResponse(savedProduct);
+    }
+
+    @org.springframework.cache.annotation.CachePut(value = "products", key = "#id")
+    public ProductResponse updateProduct(UUID id, ProductRequest request) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+
+        Category category = null;
+        if (request.getCategoryId() != null) {
+            category = categoryRepository.findById(request.getCategoryId())
+                    .orElseThrow(() -> new RuntimeException("Category not found"));
+        }
+
+        product.setTitle(request.getTitle());
+        product.setDescription(request.getDescription());
+        product.setPrice(request.getPrice());
+        product.setSalePrice(request.getSalePrice());
+        product.setCategory(category);
+        if (request.getStatus() != null) {
+            product.setStatus(request.getStatus());
+        }
+
+        Product updatedProduct = productRepository.save(product);
+        return mapToResponse(updatedProduct);
+    }
+
+    @org.springframework.cache.annotation.CacheEvict(value = "products", key = "#id")
+    public void deleteProduct(UUID id) {
+        if (!productRepository.existsById(id)) {
+            throw new RuntimeException("Product not found");
+        }
+        productRepository.deleteById(id);
     }
 
     private ProductResponse mapToResponse(Product product) {

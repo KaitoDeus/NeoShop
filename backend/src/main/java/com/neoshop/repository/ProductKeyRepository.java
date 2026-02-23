@@ -11,11 +11,13 @@ import java.util.UUID;
 
 @Repository
 public interface ProductKeyRepository extends JpaRepository<ProductKey, UUID> {
-    
+
     @Query("SELECT pk FROM ProductKey pk WHERE pk.product.id = :productId AND pk.status = 'AVAILABLE'")
     List<ProductKey> findAvailableKeysByProduct(UUID productId, Pageable pageable);
 
     long countByProductIdAndStatus(UUID productId, ProductKey.KeyStatus status);
 
     Page<ProductKey> findByProductId(UUID productId, Pageable pageable);
+
+    List<ProductKey> findByProductId(UUID productId);
 }

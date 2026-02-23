@@ -34,6 +34,10 @@ public class AuthServiceImpl implements AuthService {
                 log.info("Attempting to authenticate user: {}", request.getUsername());
 
                 var userCheck = userRepository.findByUsername(request.getUsername());
+                if (userCheck.isEmpty() && request.getUsername().contains("@")) {
+                        userCheck = userRepository.findByEmail(request.getUsername());
+                }
+
                 if (userCheck.isPresent()) {
                         var user = userCheck.get();
                         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
@@ -43,12 +47,12 @@ public class AuthServiceImpl implements AuthService {
                         log.warn("User not found in DB: {}", request.getUsername());
                 }
 
+                var user = userCheck.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
                 authenticationManager.authenticate(
                                 new UsernamePasswordAuthenticationToken(
-                                                request.getUsername(),
+                                                user.getUsername(),
                                                 request.getPassword()));
-
-                var user = userCheck.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
                 var userDetails = org.springframework.security.core.userdetails.User.builder()
                                 .username(user.getUsername())
