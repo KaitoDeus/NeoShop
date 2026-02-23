@@ -108,7 +108,7 @@ BEGIN
 
     -- #1 Admin
     INSERT INTO users (username, email, password_hash, full_name) 
-    VALUES ('admin', 'admin@neoshop.com', '$2a$10$o45813dwtUHBrZpsfDyH9eYTc89tZaf4uOeIDy.a4rRnqVjVYL0rK', 'System Administrator')
+    VALUES ('admin', 'admin@neoshop.com', '$2a$10$nHbV5RKLZVkH.K5ovkUqS.HGNsHo853Zle5eDHeHjvrSA5MZ7hqZy', 'System Administrator')
     RETURNING id INTO v_uid;
     INSERT INTO user_roles (user_id, role_id) VALUES (v_uid, r_admin), (v_uid, r_user);
 
@@ -324,3 +324,12 @@ BEGIN
         END IF;
     END LOOP;
 END $$;
+
+-- 2.7. Reset Stock Quantity based on ACTUAL Available Keys
+UPDATE products p
+SET stock_quantity = (
+    SELECT COUNT(*) 
+    FROM product_keys pk 
+    WHERE pk.product_id = p.id 
+    AND pk.status = 'AVAILABLE'
+);

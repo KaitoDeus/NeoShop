@@ -114,18 +114,19 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
   - [x] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
   - [x] Danh sách Sản phẩm: Thay thế mock data bằng `GET /api/admin/products`.
   - [x] Danh sách Khách hàng: Thay thế mock data bằng `GET /api/admin/users`.
-- [ ] **Hoàn thiện các nút hành động (Event Handlers)**:
-  - [ ] Gắn sự kiện "Xem chi tiết" cho Đơn hàng (Hiển thị popup thông tin chi tiết đơn).
-  - [ ] Gắn sự kiện "Chỉnh sửa" & "Xóa" cho Sản phẩm (Gửi request cập nhật DB).
-  - [ ] Gắn sự kiện "Quản lý Key" (Xem/Thêm/Xóa key cho từng sản phẩm cụ thể).
-- [ ] **Trang Thống kê nâng cao**:
-  - [ ] Kết nối API lọc theo thời gian (7 ngày, 30 ngày, năm).
-  - [ ] Xuất báo cáo Excel/PDF từ dữ liệu thực.
-- [ ] **Trang Cấu hình (Settings)**:
-  - [ ] Lưu cấu hình hệ thống (Tên shop, thông tin liên hệ, cài đặt thanh toán) vào Database.
-- [ ] **Phân trang & Tìm kiếm**:
-  - [ ] Đồng bộ logic Pagination giữa Frontend và Backend API cho tất cả các bảng Admin.
-  - [ ] Filter đơn hàng theo trạng thái (Success, Pending, Failed) sử dụng API.
+- [x] **Hoàn thiện các nút hành động (Event Handlers)**:
+  - [x] Gắn sự kiện "Xem chi tiết" cho Đơn hàng (Hiển thị popup thông tin chi tiết đơn).
+  - [x] Gắn sự kiện "Chỉnh sửa" & "Xóa" cho Sản phẩm (Gửi request cập nhật DB).
+  - [x] Gắn sự kiện "Quản lý Key" (Xem/Thêm/Xóa key cho từng sản phẩm cụ thể).
+- [x] **Trang Thống kê nâng cao**:
+  - [x] Kết nối API lọc theo thời gian (7 ngày, 30 ngày, năm).
+  - [x] Xuất báo cáo CSV từ dữ liệu thực.
+- [x] **Trang Cấu hình (Settings)**:
+  - [x] Lưu cấu hình hệ thống (Tên shop, thông tin liên hệ, cài đặt thanh toán) vào Database.
+- [x] **Phân trang & Tìm kiếm**:
+  - [x] Đồng bộ logic Pagination giữa Frontend và Backend API cho tất cả các bảng Admin.
+  - [x] Filter đơn hàng theo trạng thái (Success, Pending, Failed) sử dụng API.
+  - [x] Tích hợp thanh tìm kiếm và bộ lọc trạng thái/danh mục cho Sản phẩm.
 
 ---
 
@@ -145,6 +146,8 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] Global **Exception Handler** (`@ControllerAdvice`) trả về lỗi chuẩn hóa.
 
 ### 17. CI/CD Pipeline
+
+`
 
 - [ ] Thiết lập **GitHub Actions** cho Build + Test tự động.
 - [ ] Auto-deploy lên môi trường staging khi merge vào `main`.
