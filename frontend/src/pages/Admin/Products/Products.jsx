@@ -6,6 +6,8 @@ import { useState, useEffect } from 'react';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
 import { productStats } from '../../../data/adminMockData'; // Keep mock stats for now
 import productService from '../../../services/productService';
+import ProductModal from './ProductModal';
+import KeyManagementModal from './KeyManagementModal';
 import './Products.css';
 
 const Products = () => {
@@ -14,15 +16,40 @@ const Products = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  
+  // Search & Filters state
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterCategory, setFilterCategory] = useState('');
+  const [filterStatus, setFilterStatus] = useState('');
+  const [categories, setCategories] = useState([]);
+  
+  // Modals state
+  const [isProductModalOpen, setIsProductModalOpen] = useState(false);
+  const [editingProduct, setEditingProduct] = useState(null);
+  const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
+  const [activeProductForKey, setActiveProductForKey] = useState(null);
 
   useEffect(() => {
     fetchProducts();
-  }, [page]);
+  }, [page, filterCategory, filterStatus]);
+
+  useEffect(() => {
+    // Fetch categories for filter dropdown
+    const fetchCats = async () => {
+      try {
+        const data = await (await import('../../../services/categoryService')).default.getAllCategories();
+        setCategories(data);
+      } catch (e) {
+        console.error(e);
+      }
+    };
+    fetchCats();
+  }, []);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const data = await productService.getAllProductsAdmin(page, 10);
+      const data = await productService.getAllProductsAdmin(page, 10, searchTerm, filterCategory, filterStatus);
       setProducts(data.content);
       setTotalPages(data.totalPages);
       setTotalElements(data.totalElements);
@@ -33,10 +60,58 @@ const Products = () => {
     }
   };
 
+  const handleSearchKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      setPage(0);
+      fetchProducts();
+    }
+  };
+
   const handlePageChange = (newPage) => {
     if (newPage >= 0 && newPage < totalPages) {
       setPage(newPage);
     }
+  };
+
+  const handleCreateProduct = () => {
+    setEditingProduct(null);
+    setIsProductModalOpen(true);
+  };
+
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    setIsProductModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (id) => {
+    if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+      try {
+        await productService.deleteProduct(id);
+        fetchProducts(); // Refresh list
+      } catch (error) {
+        console.error("Failed to delete product:", error);
+        alert("Lỗi khi xóa sản phẩm.");
+      }
+    }
+  };
+
+  const handleSaveProduct = async (formData) => {
+    try {
+      if (editingProduct) {
+        await productService.updateProduct(editingProduct.id, formData);
+      } else {
+        await productService.createProduct(formData);
+      }
+      fetchProducts(); // Refresh list after save
+    } catch (error) {
+      console.error("Failed to save product:", error);
+      throw error; // Re-throw to be handled in Modal
+    }
+  };
+
+  const handleOpenKeyManagement = (product) => {
+    setActiveProductForKey(product);
+    setIsKeyModalOpen(true);
   };
 
   return (
@@ -47,7 +122,7 @@ const Products = () => {
           <h1 className="page-title">Sản phẩm</h1>
           <p className="page-subtitle">Quản lý danh sách sản phẩm và kho key số của hệ thống</p>
         </div>
-        <button className="btn-primary">
+        <button className="btn-primary" onClick={handleCreateProduct}>
           <FiPlus size={20} />
           Thêm sản phẩm mới
         </button>
@@ -68,18 +143,33 @@ const Products = () => {
             <FiSearch className="search-icon" />
             <input 
               type="text" 
-              placeholder="Tìm kiếm theo tên, SKU..." 
+              placeholder="Tìm kiếm theo tên..." 
               className="search-input"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyPress={handleSearchKeyPress}
             />
           </div>
           <div className="filter-group">
-            <select className="filter-select">
-              <option>Tất cả danh mục</option>
-              {/* Add dynamic categories later */}
+            <select 
+              className="filter-select" 
+              value={filterCategory} 
+              onChange={(e) => { setFilterCategory(e.target.value); setPage(0); }}
+            >
+              <option value="">Tất cả danh mục</option>
+              {categories.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.name}</option>
+              ))}
             </select>
-            <select className="filter-select">
-              <option>Tất cả trạng thái</option>
-              {/* Add dynamic statuses later */}
+            <select 
+              className="filter-select" 
+              value={filterStatus} 
+              onChange={(e) => { setFilterStatus(e.target.value); setPage(0); }}
+            >
+              <option value="">Tất cả trạng thái</option>
+              <option value="ACTIVE">Hoạt động</option>
+              <option value="HIDDEN">Tạm ẩn</option>
+              <option value="OUT_OF_STOCK">Hết hàng</option>
             </select>
           </div>
         </div>
@@ -138,13 +228,25 @@ const Products = () => {
                     </td>
                     <td>
                       <div className="action-btn-group">
-                        <button className="btn-icon" title="Quản lý Key">
+                        <button 
+                          className="btn-icon" 
+                          title="Quản lý Key"
+                          onClick={() => handleOpenKeyManagement(product)}
+                        >
                           <FiKey />
                         </button>
-                        <button className="btn-icon" title="Chỉnh sửa">
+                        <button 
+                          className="btn-icon" 
+                          title="Chỉnh sửa"
+                          onClick={() => handleEditProduct(product)}
+                        >
                           <FiEdit2 />
                         </button>
-                        <button className="btn-icon" title="Xóa">
+                        <button 
+                          className="btn-icon text-danger" 
+                          title="Xóa"
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
                           <FiTrash2 />
                         </button>
                       </div>
@@ -171,6 +273,23 @@ const Products = () => {
           </div>
         </div>
       </div>
+
+      {/* Modals */}
+      {isProductModalOpen && (
+        <ProductModal 
+          product={editingProduct} 
+          onClose={() => setIsProductModalOpen(false)} 
+          onSave={handleSaveProduct}
+        />
+      )}
+
+      {isKeyModalOpen && activeProductForKey && (
+        <KeyManagementModal 
+          productId={activeProductForKey.id} 
+          productName={activeProductForKey.title}
+          onClose={() => setIsKeyModalOpen(false)} 
+        />
+      )}
     </div>
   );
 };

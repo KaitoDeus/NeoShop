@@ -1,15 +1,112 @@
+import { useState, useEffect } from 'react';
 import { 
-  FiCalendar, FiFilter, FiMoreHorizontal, FiDownload, FiPrinter 
+  FiCalendar, FiFilter, FiMoreHorizontal, FiDownload, FiPrinter, FiRefreshCw 
 } from 'react-icons/fi';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
-import { reportStats, categoryRevenue, topProducts, financialData } from '../../../data/adminMockData';
+import statsService from '../../../services/statsService';
 import './Stats.css';
 
 const Stats = () => {
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState({
+    overview: null,
+    monthly: [],
+  });
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const [overview, monthly] = await Promise.all([
+        statsService.getOverviewStats(),
+        statsService.getMonthlyFinancials()
+      ]);
+      setData({ overview, monthly });
+    } catch (error) {
+      console.error("Failed to fetch stats:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const exportToCSV = () => {
+    if (!data.monthly.length) return;
+    
+    const headers = ["Tháng", "Doanh thu", "Chi phí (Ước tính)", "Lợi nhuận (Ước tính)", "Trạng thái"];
+    const csvContent = [
+      headers.join(","),
+      ...data.monthly.map(row => 
+        `"${row.month}","${row.revenue}","${row.expense}","${row.profit}","${row.status}"`
+      )
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.setAttribute("href", url);
+    link.setAttribute("download", `BaoCao_NeoShop_${new Date().toLocaleDateString()}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  if (loading) {
+    return (
+      <div className="stats-page" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <FiRefreshCw className="spin" size={48} color="#2563eb" />
+      </div>
+    );
+  }
+
+  const kpiCards = [
+    {
+      id: 1,
+      title: 'Tổng doanh thu',
+      value: (data.overview?.totalRevenue || 0).toLocaleString() + ' đ',
+      change: '+12%',
+      isPositive: true,
+      icon: <FiDownload />,
+      color: 'blue'
+    },
+    {
+      id: 2,
+      title: 'Tổng đơn hàng',
+      value: (data.overview?.totalOrders || 0).toLocaleString(),
+      change: '+5%',
+      isPositive: true,
+      icon: <FiDownload />,
+      color: 'green'
+    },
+    {
+      id: 3,
+      title: 'Khách hàng',
+      value: (data.overview?.totalUsers || 0).toLocaleString(),
+      change: '+2%',
+      isPositive: true,
+      icon: <FiDownload />,
+      color: 'purple'
+    },
+    {
+      id: 4,
+      title: 'Sản phẩm active',
+      value: (data.overview?.activeProducts || 0).toLocaleString(),
+      change: '+0%',
+      isPositive: true,
+      icon: <FiDownload />,
+      color: 'orange'
+    }
+  ];
+
+  const categoryRevenue = data.overview?.categoryStats || [];
+  const topProducts = data.overview?.topProducts || [];
+
   return (
     <div className="stats-page">
-      {/* 1. Header & Filter */}
       <div className="page-header">
         <div>
           <div style={{ fontSize: '0.85rem', color: '#64748b', marginBottom: '0.5rem' }}>
@@ -23,31 +120,28 @@ const Stats = () => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Từ ngày</span>
             <div className="date-picker-btn" style={{ padding: '0.4rem 0.75rem' }}>
-              10/01/2023 <FiCalendar />
+              01/01/2026 <FiCalendar />
             </div>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
             <span style={{ fontSize: '0.7rem', fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase' }}>Đến ngày</span>
             <div className="date-picker-btn" style={{ padding: '0.4rem 0.75rem' }}>
-              10/31/2023 <FiCalendar />
+              23/02/2026 <FiCalendar />
             </div>
           </div>
-          <button className="btn-primary" style={{ height: '38px', alignSelf: 'flex-end' }}>
+          <button className="btn-primary" style={{ height: '38px', alignSelf: 'flex-end' }} onClick={fetchStats}>
             <FiFilter /> Lọc
           </button>
         </div>
       </div>
 
-      {/* 2. KPI Cards */}
       <div className="stats-grid">
-        {reportStats.map(stat => (
+        {kpiCards.map(stat => (
           <StatsCard key={stat.id} {...stat} />
         ))}
       </div>
 
-      {/* 3. Charts Row */}
       <div className="charts-row">
-        {/* Category Revenue Chart */}
         <div className="dashboard-widget">
           <div className="widget-header">
             <h3 className="widget-title">Tỷ lệ doanh thu theo danh mục</h3>
@@ -55,7 +149,7 @@ const Stats = () => {
           </div>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'center' }}>
-            <div className="chart-wrapper">
+            <div className="chart-wrapper" style={{ position: 'relative' }}>
               <ResponsiveContainer width="100%" height={250}>
                 <PieChart>
                   <Pie
@@ -71,9 +165,15 @@ const Stats = () => {
                   </Pie>
                 </PieChart>
               </ResponsiveContainer>
-              <div className="chart-center-text">
-                <span className="chart-center-label">Tổng cộng</span>
-                <span className="chart-center-value">100%</span>
+              <div style={{ 
+                position: 'absolute', 
+                top: '50%', 
+                left: '50%', 
+                transform: 'translate(-50%, -50%)',
+                textAlign: 'center'
+              }}>
+                <span style={{ display: 'block', fontSize: '0.8rem', color: '#64748b' }}>Tổng cộng</span>
+                <span style={{ display: 'block', fontSize: '1.2rem', fontWeight: 700, color: '#1e293b' }}>100%</span>
               </div>
             </div>
             
@@ -82,51 +182,50 @@ const Stats = () => {
                 <div key={index} className="legend-item">
                   <div className="legend-info">
                     <div className="legend-color" style={{ background: item.color }}></div>
-                    <span className="legend-name">{item.name}</span>
+                    <span className="legend-name" style={{ fontSize: '0.85rem' }}>{item.name}</span>
                   </div>
-                  <span className="legend-value">{item.value}%</span>
+                  <span className="legend-value">{item.value?.toLocaleString()} đ</span>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Top Products */}
         <div className="dashboard-widget">
           <div className="widget-header">
             <h3 className="widget-title">Top 5 sản phẩm bán chạy nhất</h3>
-            <a href="#" className="view-all-btn">Xem tất cả</a>
           </div>
           
-          <div className="top-products-list">
+          <div className="top-products-list" style={{ marginTop: '1rem' }}>
             {topProducts.map((product, index) => (
-              <div key={index} className="product-progress-item">
-                <div className="product-progress-header">
-                  <span className="font-medium text-primary">{product.name}</span>
-                  <span className="text-secondary">{product.sold} sold</span>
+              <div key={index} style={{ marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>{product.name}</span>
+                  <span style={{ color: '#64748b', fontSize: '0.85rem' }}>{product.sold} đã bán</span>
                 </div>
-                <div className="product-progress-bar">
+                <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '4px', overflow: 'hidden' }}>
                   <div 
-                    className="progress-fill" 
                     style={{ 
-                      width: `${product.percent}%`,
-                      opacity: 1 - (index * 0.15) // Fade effect for lower ranks
+                      height: '100%', 
+                      background: '#2563eb', 
+                      width: `${Math.min(100, (product.sold / (topProducts[0]?.sold || 1)) * 100)}%`,
+                      opacity: 1 - (index * 0.15)
                     }}
                   ></div>
                 </div>
               </div>
             ))}
+            {topProducts.length === 0 && <p style={{ textAlign: 'center', color: '#94a3b8' }}>Chưa có dữ liệu sản phẩm</p>}
           </div>
         </div>
       </div>
 
-      {/* 4. Financial Table */}
       <div className="dashboard-widget">
-        <div className="financial-table-header">
+        <div className="financial-table-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
           <h3 className="widget-title">Tổng kết tài chính theo tháng</h3>
           <div style={{ display: 'flex', gap: '0.75rem' }}>
-            <button className="btn-sm-outline"><FiDownload /> Xuất Excel</button>
-            <button className="btn-sm-primary"><FiPrinter /> In báo cáo</button>
+            <button className="btn-sm-outline" onClick={exportToCSV}><FiDownload /> Xuất CSV</button>
+            <button className="btn-sm-primary" onClick={() => window.print()}><FiPrinter /> In báo cáo</button>
           </div>
         </div>
         
@@ -136,26 +235,22 @@ const Stats = () => {
               <tr>
                 <th>Tháng</th>
                 <th>Tổng Thu</th>
-                <th>Tổng Chi</th>
-                <th>Lợi Nhuận</th>
-                <th>Đơn Hàng</th>
+                <th>Tổng Chi (Ước tính)</th>
+                <th>Lợi Nhuận (Ước tính)</th>
                 <th>Trạng Thái</th>
               </tr>
             </thead>
             <tbody>
-              {financialData.map((row, index) => (
+              {data.monthly.map((row, index) => (
                 <tr key={index}>
                   <td className="font-bold text-primary" style={{ textTransform: 'uppercase' }}>{row.month}</td>
-                  <td className="text-success font-bold">+ {row.revenue}</td>
-                  <td className="text-danger font-bold">- {row.expense}</td>
-                  <td className="text-indigo font-bold">{row.profit}</td>
-                  <td>{row.orders} đơn</td>
+                  <td className="text-success font-bold">+ {row.revenue?.toLocaleString()} đ</td>
+                  <td className="text-danger font-bold">- {row.expense?.toLocaleString()} đ</td>
+                  <td style={{ color: '#6366f1', fontWeight: 700 }}>{row.profit?.toLocaleString()} đ</td>
                   <td>
-                    {row.status === 'completed' ? (
-                      <span className="badge badge-success">Đã chốt</span>
-                    ) : (
-                      <span className="badge badge-warning">Chưa chốt</span>
-                    )}
+                    <span className="badge-success" style={{ background: '#dcfce7', color: '#166534', padding: '4px 12px', borderRadius: '99px', fontSize: '0.75rem', fontWeight: 600 }}>
+                      Đã chốt
+                    </span>
                   </td>
                 </tr>
               ))}

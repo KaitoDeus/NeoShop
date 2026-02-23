@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
 import { orderStats } from '../../../data/adminMockData'; // Keep stats mock for now or implement stats API later if requested
 import orderService from '../../../services/orderService';
+import OrderDetailModal from './OrderDetailModal';
 import './Orders.css';
 
 const Orders = () => {
@@ -14,15 +15,17 @@ const Orders = () => {
   const [page, setPage] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [totalElements, setTotalElements] = useState(0);
+  const [filterStatus, setFilterStatus] = useState('');
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
   useEffect(() => {
     fetchOrders();
-  }, [page]);
+  }, [page, filterStatus]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getAllOrders(page, 10);
+      const data = await orderService.getAllOrders(page, 10, filterStatus);
       setOrders(data.content);
       setTotalPages(data.totalPages);
       setTotalElements(data.totalElements);
@@ -107,9 +110,18 @@ const Orders = () => {
           
           <div className="filter-group">
             <div className="filter-tabs">
-               <button className="filter-tab active">Tất cả</button>
-               <button className="filter-tab">Thành công</button>
-               <button className="filter-tab">Chờ thanh toán</button>
+               <button 
+                 className={`filter-tab ${filterStatus === '' ? 'active' : ''}`}
+                 onClick={() => { setFilterStatus(''); setPage(0); }}
+               >Tất cả</button>
+               <button 
+                 className={`filter-tab ${filterStatus === 'PAID' ? 'active' : ''}`}
+                 onClick={() => { setFilterStatus('PAID'); setPage(0); }}
+               >Thanh toán</button>
+               <button 
+                 className={`filter-tab ${filterStatus === 'PENDING' ? 'active' : ''}`}
+                 onClick={() => { setFilterStatus('PENDING'); setPage(0); }}
+               >Chờ thanh toán</button>
             </div>
             <button className="date-picker-btn">
                <FiCalendar /> Ngày tạo
@@ -167,7 +179,11 @@ const Orders = () => {
                       <div style={{ fontSize: '0.8rem', color: '#94a3b8' }}>{new Date(order.orderDate).toLocaleTimeString('vi-VN')}</div>
                     </td>
                     <td>
-                      <button className="btn-outline" style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}>
+                      <button 
+                        className="btn-outline" 
+                        style={{ padding: '0.4rem 0.75rem', fontSize: '0.8rem' }}
+                        onClick={() => setSelectedOrder(order)}
+                      >
                         Xem chi tiết
                       </button>
                     </td>
@@ -193,6 +209,12 @@ const Orders = () => {
           </div>
         </div>
       </div>
+
+      {/* 4. Modal (Hiển thị khi selectedOrder có dữ liệu) */}
+      <OrderDetailModal 
+        order={selectedOrder} 
+        onClose={() => setSelectedOrder(null)} 
+      />
     </div>
   );
 };

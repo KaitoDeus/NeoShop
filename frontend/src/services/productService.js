@@ -32,10 +32,44 @@ const productService = {
     },
 
     // Admin: Lấy tất cả sản phẩm
-    getAllProductsAdmin: async (page = 0, size = 10) => {
+    getAllProductsAdmin: async (page = 0, size = 10, title = '', categoryId = '', status = '') => {
         const response = await api.get('/admin/products', {
-             params: { page, size }
+             params: { page, size, title, categoryId, status }
         });
+        return response.data;
+    },
+
+    // Admin: Tạo sản phẩm mới
+    createProduct: async (productData) => {
+        const response = await api.post('/admin/products', productData);
+        return response.data;
+    },
+
+    // Admin: Cập nhật sản phẩm
+    updateProduct: async (id, productData) => {
+        const response = await api.put(`/admin/products/${id}`, productData);
+        return response.data;
+    },
+
+    // Admin: Xóa sản phẩm
+    deleteProduct: async (id) => {
+        const response = await api.delete(`/admin/products/${id}`);
+        return response.data;
+    },
+
+    // Admin: Quản lý Key
+    getProductKeys: async (productId) => {
+        const response = await api.get(`/admin/products/${productId}/keys`);
+        return response.data;
+    },
+
+    addProductKey: async (productId, keyData) => {
+        const response = await api.post(`/admin/products/${productId}/keys`, keyData);
+        return response.data;
+    },
+
+    deleteProductKey: async (keyId) => {
+        const response = await api.delete(`/admin/keys/${keyId}`);
         return response.data;
     }
 };

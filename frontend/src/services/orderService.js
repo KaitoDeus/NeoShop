@@ -28,9 +28,9 @@ const orderService = {
     },
 
     // Admin: Lấy tất cả đơn hàng
-    getAllOrders: async (page = 0, size = 10) => {
+    getAllOrders: async (page = 0, size = 10, status = '') => {
         const response = await api.get('/admin/orders', {
-             params: { page, size }
+             params: { page, size, status }
         });
         return response.data;
     }
