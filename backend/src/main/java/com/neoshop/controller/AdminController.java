@@ -40,15 +40,31 @@ public class AdminController {
     private final CategoryService categoryService;
 
     @GetMapping("/orders")
-    @Operation(summary = "List all orders with optional status filter")
+    @Operation(summary = "List all orders with optional status, query and date filters")
     public ResponseEntity<Page<OrderResponse>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String query) {
+            @RequestParam(required = false) String query,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime startDate,
+            @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime endDate) {
+
+        // Normalize empty strings to null for repository filtering
+        String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
+        String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
+
         Pageable pageable = PageRequest.of(page, size,
                 org.springframework.data.domain.Sort.by("orderDate").descending());
-        return ResponseEntity.ok(orderService.getAllOrdersManaged(status, query, pageable));
+        return ResponseEntity
+                .ok(orderService.getAllOrdersManaged(filterStatus, filterQuery, startDate, endDate, pageable));
+    }
+
+    @PostMapping("/orders")
+    @Operation(summary = "Admin tạo đơn hàng cho người dùng cụ thể")
+    public ResponseEntity<OrderResponse> createOrderForUser(
+            @RequestParam UUID userId,
+            @jakarta.validation.Valid @RequestBody com.neoshop.model.dto.request.OrderRequest request) {
+        return ResponseEntity.ok(orderService.createOrder(userId, request));
     }
 
     @GetMapping("/products")
@@ -134,6 +150,34 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @DeleteMapping("/products/bulk")
+    @Operation(summary = "Bulk delete products")
+    public ResponseEntity<Void> bulkDeleteProducts(@RequestBody List<UUID> ids) {
+        productService.bulkDeleteProducts(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/products/bulk-status")
+    @Operation(summary = "Bulk update products status")
+    public ResponseEntity<Void> bulkUpdateProductStatus(@RequestBody List<UUID> ids, @RequestParam String status) {
+        productService.bulkUpdateProductStatus(ids, status);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/users/bulk")
+    @Operation(summary = "Bulk delete users")
+    public ResponseEntity<Void> bulkDeleteUsers(@RequestBody List<UUID> ids) {
+        userService.deleteUsersBulk(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/users/bulk-status")
+    @Operation(summary = "Bulk update users status")
+    public ResponseEntity<Void> bulkUpdateUserStatus(@RequestBody List<UUID> ids, @RequestParam boolean active) {
+        userService.updateUsersStatusBulk(ids, active);
+        return ResponseEntity.noContent().build();
+    }
+
     // Product Key Management
     @GetMapping("/keys")
     @Operation(summary = "Search all keys with filters and sorting")
@@ -210,6 +254,20 @@ public class AdminController {
     @Operation(summary = "Delete order")
     public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         orderService.deleteOrder(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/orders/bulk")
+    @Operation(summary = "Bulk delete orders")
+    public ResponseEntity<Void> bulkDeleteOrders(@RequestBody List<UUID> ids) {
+        orderService.bulkDeleteOrders(ids);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/orders/bulk-status")
+    @Operation(summary = "Bulk update orders status")
+    public ResponseEntity<Void> bulkUpdateOrderStatus(@RequestBody List<UUID> ids, @RequestParam String status) {
+        orderService.bulkUpdateOrderStatus(ids, status);
         return ResponseEntity.noContent().build();
     }
 }

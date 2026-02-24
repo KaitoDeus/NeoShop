@@ -97,10 +97,12 @@ public class OrderService {
         return orderRepository.findAll(pageable).map(this::mapToResponse);
     }
 
-    public Page<OrderResponse> getAllOrdersManaged(String status, String query, Pageable pageable) {
+    public Page<OrderResponse> getAllOrdersManaged(String status, String query, java.time.LocalDateTime startDate,
+            java.time.LocalDateTime endDate, Pageable pageable) {
         String filterStatus = (status != null && status.isBlank()) ? null : status;
         String filterQuery = (query != null && query.isBlank()) ? null : query;
-        return orderRepository.searchOrders(filterStatus, filterQuery, pageable).map(this::mapToResponse);
+        return orderRepository.searchOrders(filterStatus, filterQuery, startDate, endDate, pageable)
+                .map(this::mapToResponse);
     }
 
     public OrderResponse getOrderById(UUID orderId) {
@@ -114,6 +116,18 @@ public class OrderService {
             throw new RuntimeException("Order not found");
         }
         orderRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void bulkDeleteOrders(List<UUID> ids) {
+        orderRepository.deleteAllById(ids);
+    }
+
+    @Transactional
+    public void bulkUpdateOrderStatus(List<UUID> ids, String status) {
+        for (UUID id : ids) {
+            updateOrderStatus(id, status);
+        }
     }
 
     @Transactional
@@ -159,6 +173,7 @@ public class OrderService {
                 .id(order.getId())
                 .userId(order.getUser().getId())
                 .username(order.getUser().getUsername())
+                .fullName(order.getUser().getFullName())
                 .userEmail(order.getUser().getEmail())
                 .totalAmount(order.getTotalAmount())
                 .status(order.getStatus())

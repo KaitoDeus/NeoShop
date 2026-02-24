@@ -17,6 +17,7 @@ public class OrderResponse {
     private UUID id;
     private UUID userId;
     private String username;
+    private String fullName;
     private String userEmail;
     private BigDecimal totalAmount;
     private String status;

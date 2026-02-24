@@ -28,6 +28,7 @@ public class ApplicationConfig {
                         .roles(user.getRoles().stream()
                                 .map(com.neoshop.model.entity.Role::getName)
                                 .toArray(String[]::new))
+                        .disabled(!user.isActive())
                         .build())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

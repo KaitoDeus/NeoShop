@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -31,8 +32,11 @@ public class ProductService {
         return productRepository.findByTitleContainingIgnoreCase(query, pageable).map(this::mapToResponse);
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public Page<ProductResponse> getAllProductsAdmin(String title, UUID categoryId, String status, Pageable pageable) {
-        return productRepository.findFilteredProducts(title, categoryId, status, pageable).map(this::mapToResponse);
+        String searchTitle = (title != null && !title.isBlank()) ? "%" + title.toLowerCase() + "%" : null;
+        return productRepository.findFilteredProducts(searchTitle, categoryId, status, pageable)
+                .map(this::mapToResponse);
     }
 
     @org.springframework.cache.annotation.Cacheable(value = "products", key = "#id")
@@ -94,6 +98,18 @@ public class ProductService {
             throw new RuntimeException("Product not found");
         }
         productRepository.deleteById(id);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void bulkDeleteProducts(List<UUID> ids) {
+        productRepository.deleteAllById(ids);
+    }
+
+    @org.springframework.transaction.annotation.Transactional
+    public void bulkUpdateProductStatus(List<UUID> ids, String status) {
+        List<Product> products = productRepository.findAllById(ids);
+        products.forEach(product -> product.setStatus(status));
+        productRepository.saveAll(products);
     }
 
     private ProductResponse mapToResponse(Product product) {

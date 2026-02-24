@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -115,7 +116,7 @@ public class UserServiceImpl implements UserService {
                 .email(savedUser.getEmail())
                 .fullName(savedUser.getFullName())
                 .roles(savedUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
-                .active(true)
+                .active(savedUser.isActive())
                 .build();
     }
 
@@ -145,7 +146,7 @@ public class UserServiceImpl implements UserService {
                 .address(savedUser.getAddress())
                 .avatar(savedUser.getAvatar())
                 .roles(savedUser.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
-                .active(true)
+                .active(savedUser.isActive())
                 .build();
     }
 
@@ -155,6 +156,20 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("User not found");
         }
         userRepository.deleteById(id);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void deleteUsersBulk(List<UUID> ids) {
+        userRepository.deleteAllById(ids);
+    }
+
+    @Override
+    @org.springframework.transaction.annotation.Transactional
+    public void updateUsersStatusBulk(List<UUID> ids, boolean active) {
+        List<User> users = userRepository.findAllById(ids);
+        users.forEach(user -> user.setActive(active));
+        userRepository.saveAll(users);
     }
 
     private AuthResponse mapToAuthResponse(User user) {

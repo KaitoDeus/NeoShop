@@ -7,6 +7,7 @@ import com.neoshop.model.dto.response.UserResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import java.util.UUID;
+import java.util.List;
 
 public interface UserService {
     AuthResponse updateProfile(String username, UpdateProfileRequest request);
@@ -22,4 +23,8 @@ public interface UserService {
     UserResponse updateUserAdmin(UUID id, com.neoshop.model.dto.request.UpdateProfileRequest request);
 
     void deleteUser(UUID id);
+
+    void deleteUsersBulk(List<UUID> ids);
+
+    void updateUsersStatusBulk(List<UUID> ids, boolean active);
 }

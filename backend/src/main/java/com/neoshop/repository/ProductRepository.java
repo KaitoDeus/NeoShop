@@ -13,18 +13,10 @@ public interface ProductRepository extends JpaRepository<Product, UUID> {
 
         Page<Product> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
-        @org.springframework.data.jpa.repository.Query(value = "SELECT * FROM products p WHERE " +
-                        "(:title IS NULL OR p.title ILIKE CONCAT('%', :title, '%')) AND " +
-                        "(:categoryId IS NULL OR p.category_id = CAST(:categoryId AS uuid)) AND " +
-                        "(:status IS NULL OR p.status = :status)", countQuery = "SELECT count(*) FROM products p WHERE "
-                                        +
-                                        "(:title IS NULL OR p.title ILIKE CONCAT('%', :title, '%')) AND " +
-                                        "(:categoryId IS NULL OR p.category_id = CAST(:categoryId AS uuid)) AND " +
-                                        "(:status IS NULL OR p.status = :status)", nativeQuery = true)
-        Page<Product> findFilteredProducts(
-                        @org.springframework.data.repository.query.Param("title") String title,
-                        @org.springframework.data.repository.query.Param("categoryId") UUID categoryId,
-                        @org.springframework.data.repository.query.Param("status") String status,
-                        Pageable pageable);
+        @org.springframework.data.jpa.repository.Query("SELECT p FROM Product p LEFT JOIN p.category c WHERE " +
+                        "(?1 IS NULL OR LOWER(p.title) LIKE ?1) AND " +
+                        "(?2 IS NULL OR c.id = ?2) AND " +
+                        "(?3 IS NULL OR p.status = ?3)")
+        Page<Product> findFilteredProducts(String title, UUID categoryId, String status, Pageable pageable);
 
 }
