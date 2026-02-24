@@ -18,6 +18,7 @@ const Users = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     fetchUsers();
@@ -89,6 +90,44 @@ const Users = () => {
     }
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(filteredUsers.map(u => u.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Bạn có chắc muốn xóa ${selectedIds.length} khách hàng đã chọn?`)) {
+      try {
+        await userService.bulkDeleteUsers(selectedIds);
+        setSelectedIds([]);
+        fetchUsers();
+      } catch (error) {
+        console.error(error);
+        alert("Lỗi khi xóa hàng loạt.");
+      }
+    }
+  };
+
+  const handleBulkUpdateStatus = async (active) => {
+    try {
+      await userService.bulkUpdateUserStatus(selectedIds, active);
+      setSelectedIds([]);
+      fetchUsers();
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khi cập nhật trạng thái hàng loạt.");
+    }
+  };
+
   const getStatusBadge = (active) => {
     return active 
       ? <span className="status-badge status-active"><span className="status-dot"></span>Hoạt động</span>
@@ -131,9 +170,31 @@ const Users = () => {
           </div>
         </div>
 
+        {/* Bulk Actions Bar */}
+        {selectedIds.length > 0 && (
+          <div className="bulk-actions-bar" style={{ margin: '0 1rem 1rem 1rem' }}>
+            <span className="selected-count">Đã chọn <strong>{selectedIds.length}</strong> khách hàng</span>
+            <div className="bulk-btns">
+              <button className="btn-outline btn-sm" onClick={() => handleBulkUpdateStatus(true)}>Kích hoạt đã chọn</button>
+              <button className="btn-outline btn-sm" onClick={() => handleBulkUpdateStatus(false)}>Khóa tài khoản đã chọn</button>
+              <button className="btn-danger btn-sm" onClick={handleBulkDelete}>
+                <FiTrash2 size={14} /> Xóa đã chọn
+              </button>
+            </div>
+          </div>
+        )}
+
         <table className="admin-table">
           <thead>
             <tr>
+              <th className="checkbox-cell" style={{ width: '40px', textAlign: 'center' }}>
+                <input 
+                  type="checkbox" 
+                  className="custom-checkbox" 
+                  onChange={handleSelectAll}
+                  checked={filteredUsers.length > 0 && selectedIds.length === filteredUsers.length}
+                />
+              </th>
               <th>ID</th>
               <th>Khách hàng</th>
               <th>Số điện thoại</th>
@@ -144,12 +205,20 @@ const Users = () => {
           </thead>
           <tbody>
             {loading ? (
-                <tr><td colSpan="6" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
+                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
             ) : filteredUsers.length === 0 ? (
-                <tr><td colSpan="6" style={{textAlign: 'center', padding: '2rem'}}>Không có người dùng nào.</td></tr>
+                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Không có người dùng nào.</td></tr>
             ) : (
                 filteredUsers.map((user) => (
                   <tr key={user.id}>
+                    <td className="checkbox-cell" style={{ textAlign: 'center' }}>
+                      <input 
+                        type="checkbox" 
+                        className="custom-checkbox" 
+                        checked={selectedIds.includes(user.id)}
+                        onChange={() => handleSelectRow(user.id)}
+                      />
+                    </td>
                     <td style={{ color: '#94a3b8' }}>{user.id.substring(0, 8)}...</td>
                     <td>
                       <div className="user-cell">

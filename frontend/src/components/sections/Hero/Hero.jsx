@@ -7,6 +7,13 @@ import {
 } from 'react-icons/fi';
 import './Hero.css';
 
+// Import Hero Images
+import esimImg from '../../../assets/hero/esim.webp';
+import aiImg from '../../../assets/hero/chatgpt_midjourney.jpg';
+import steamImg from '../../../assets/hero/steam.webp';
+import officeImg from '../../../assets/hero/windows-and-office.jpg';
+import netflixImg from '../../../assets/hero/netflix.jpg';
+
 const SLIDES = [
   {
     id: 1,
@@ -15,6 +22,7 @@ const SLIDES = [
     subtitle: "Kết nối internet tốc độ cao tại hơn 200 quốc gia. Không cần tháo lắp SIM.",
     gradient: "linear-gradient(135deg, #2563eb, #1d4ed8)",
     icon: "🌏",
+    image: esimImg,
     link: "/category?type=esim"
   },
   {
@@ -24,6 +32,7 @@ const SLIDES = [
     subtitle: "Truy cập GPT-4, tạo hình ảnh AI chất lượng cao. Kích hoạt tức thì.",
     gradient: "linear-gradient(135deg, #059669, #10b981)",
     icon: "🧠",
+    image: aiImg,
     link: "/category?category=ai"
   },
   {
@@ -33,6 +42,7 @@ const SLIDES = [
     subtitle: "Hàng ngàn game bản quyền với giá ưu đãi. Giao key tự động 24/7.",
     gradient: "linear-gradient(135deg, #1e3a8a, #3b82f6)",
     icon: "🎯",
+    image: steamImg,
     link: "/category?platform=steam"
   },
   {
@@ -42,6 +52,7 @@ const SLIDES = [
     subtitle: "Key bản quyền vĩnh viễn. Hỗ trợ cài đặt và bảo hành trọn đời.",
     gradient: "linear-gradient(135deg, #ea580c, #f97316)",
     icon: "📊",
+    image: officeImg,
     link: "/category?category=office"
   },
   {
@@ -51,6 +62,7 @@ const SLIDES = [
     subtitle: "Tài khoản Premium giá rẻ. Xem phim, nghe nhạc không giới hạn.",
     gradient: "linear-gradient(135deg, #dc2626, #ef4444)",
     icon: "📺",
+    image: netflixImg,
     link: "/category?category=entertainment"
   }
 ];
@@ -123,47 +135,23 @@ const Hero = () => {
 
           {/* Center Main Banner - Carousel */}
           <div className="main-banner-wrapper">
-            <div 
+            <Link 
+              to={currentSlideData.link}
               className="main-banner" 
-              style={{ background: currentSlideData.gradient }}
+              style={{ 
+                backgroundImage: `url(${currentSlideData.image})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+              }}
             >
-              <div className="banner-pattern"></div>
-              
-              <div className="banner-content">
-                <span className="banner-badge">
-                  {currentSlideData.badge}
-                </span>
-                <h2 className="banner-title">{currentSlideData.title}</h2>
-                <p className="banner-sub">{currentSlideData.subtitle}</p>
-                <Link to={currentSlideData.link} className="banner-btn">
-                  Mua ngay <FiArrowRight />
-                </Link>
-              </div>
-
-              {/* Visual Element */}
-              <div className="banner-visual">
-                <span className="banner-icon">{currentSlideData.icon}</span>
-              </div>
-
               {/* Navigation Arrows */}
-              <button className="slide-arrow slide-prev" onClick={prevSlide}>
+              <button className="slide-arrow slide-prev" onClick={(e) => { e.preventDefault(); prevSlide(); }}>
                 <FiChevronLeft />
               </button>
-              <button className="slide-arrow slide-next" onClick={nextSlide}>
+              <button className="slide-arrow slide-next" onClick={(e) => { e.preventDefault(); nextSlide(); }}>
                 <FiChevronRight />
               </button>
-
-              {/* Slide Indicators - Inside Banner */}
-              <div className="slide-indicators">
-                {SLIDES.map((_, idx) => (
-                  <button 
-                    key={idx}
-                    className={`indicator ${idx === currentSlide ? 'active' : ''}`}
-                    onClick={() => goToSlide(idx)}
-                  />
-                ))}
-              </div>
-            </div>
+            </Link>
           </div>
 
         </div>

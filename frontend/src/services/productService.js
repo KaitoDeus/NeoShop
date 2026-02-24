@@ -34,7 +34,13 @@ const productService = {
     // Admin: Lấy tất cả sản phẩm
     getAllProductsAdmin: async (page = 0, size = 10, title = '', categoryId = '', status = '') => {
         const response = await api.get('/admin/products', {
-             params: { page, size, title, categoryId, status }
+             params: { 
+                 page, 
+                 size, 
+                 title: title || undefined, 
+                 categoryId: categoryId || undefined, 
+                 status: status || undefined 
+             }
         });
         return response.data;
     },
@@ -82,6 +88,18 @@ const productService = {
     bulkAddKeys: async (bulkData) => {
         // bulkData: { productId, keyCodes: [] }
         const response = await api.post('/admin/keys/bulk', bulkData);
+        return response.data;
+    },
+
+    bulkDeleteProducts: async (ids) => {
+        const response = await api.delete('/admin/products/bulk', { data: ids });
+        return response.data;
+    },
+
+    bulkUpdateProductStatus: async (ids, status) => {
+        const response = await api.patch('/admin/products/bulk-status', ids, {
+            params: { status }
+        });
         return response.data;
     }
 };

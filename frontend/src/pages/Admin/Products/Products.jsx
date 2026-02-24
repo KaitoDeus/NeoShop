@@ -28,6 +28,7 @@ const Products = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [isKeyModalOpen, setIsKeyModalOpen] = useState(false);
   const [activeProductForKey, setActiveProductForKey] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
 
   useEffect(() => {
     fetchProducts();
@@ -114,6 +115,44 @@ const Products = () => {
     setIsKeyModalOpen(true);
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(products.map(p => p.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Bạn có chắc muốn xóa ${selectedIds.length} sản phẩm đã chọn?`)) {
+      try {
+        await productService.bulkDeleteProducts(selectedIds);
+        setSelectedIds([]);
+        fetchProducts();
+      } catch (error) {
+        console.error(error);
+        alert("Lỗi khi xóa hàng loạt.");
+      }
+    }
+  };
+
+  const handleBulkUpdateStatus = async (status) => {
+    try {
+      await productService.bulkUpdateProductStatus(selectedIds, status);
+      setSelectedIds([]);
+      fetchProducts();
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khi cập nhật trạng thái hàng loạt.");
+    }
+  };
+
   return (
     <div className="products-page">
       {/* 1. Header */}
@@ -174,12 +213,31 @@ const Products = () => {
           </div>
         </div>
 
+        {/* Bulk Actions Bar */}
+        {selectedIds.length > 0 && (
+          <div className="bulk-actions-bar">
+            <span className="selected-count">Đã chọn <strong>{selectedIds.length}</strong> sản phẩm</span>
+            <div className="bulk-btns">
+              <button className="btn-outline btn-sm" onClick={() => handleBulkUpdateStatus('ACTIVE')}>Hiện sản phẩm</button>
+              <button className="btn-outline btn-sm" onClick={() => handleBulkUpdateStatus('HIDDEN')}>Ẩn sản phẩm</button>
+              <button className="btn-danger btn-sm" onClick={handleBulkDelete}>
+                <FiTrash2 size={14} /> Xóa đã chọn
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* Table */}
         <table className="admin-table">
           <thead>
             <tr>
               <th className="checkbox-cell">
-                <input type="checkbox" className="custom-checkbox" />
+                <input 
+                  type="checkbox" 
+                  className="custom-checkbox" 
+                  onChange={handleSelectAll}
+                  checked={products.length > 0 && selectedIds.length === products.length}
+                />
               </th>
               <th>Sản phẩm</th>
               <th>Danh mục</th>
@@ -198,7 +256,12 @@ const Products = () => {
                 products.map(product => (
                   <tr key={product.id}>
                     <td className="checkbox-cell">
-                      <input type="checkbox" className="custom-checkbox" />
+                      <input 
+                        type="checkbox" 
+                        className="custom-checkbox" 
+                        checked={selectedIds.includes(product.id)}
+                        onChange={() => handleSelectRow(product.id)}
+                      />
                     </td>
                     <td>
                       <div className="product-cell">

@@ -1,12 +1,13 @@
 import { 
   FiPlus, FiSearch, FiCalendar, FiDownload, FiUser, 
-  FiChevronLeft, FiChevronRight, FiCreditCard, FiSmartphone, FiBriefcase, FiCopy 
+  FiChevronLeft, FiChevronRight, FiCreditCard, FiSmartphone, FiBriefcase, FiCopy, FiTrash2 
 } from 'react-icons/fi';
 import { useState, useEffect } from 'react';
 import StatsCard from '../../../components/admin/Dashboard/StatsCard';
 import { orderStats } from '../../../data/adminMockData'; // Keep stats mock for now or implement stats API later if requested
 import orderService from '../../../services/orderService';
 import OrderDetailModal from './OrderDetailModal';
+import ManualOrderModal from './ManualOrderModal';
 import './Orders.css';
 
 const Orders = () => {
@@ -17,16 +18,25 @@ const Orders = () => {
   const [totalElements, setTotalElements] = useState(0);
   const [filterStatus, setFilterStatus] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [isDatePickerOpen, setIsDatePickerOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedIds, setSelectedIds] = useState([]);
+  const [isManualOrderOpen, setIsManualOrderOpen] = useState(false);
 
   useEffect(() => {
     fetchOrders();
-  }, [page, filterStatus, searchQuery]);
+  }, [page, filterStatus, searchQuery, startDate, endDate]);
 
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      const data = await orderService.getAllOrders(page, 10, filterStatus, searchQuery);
+      // Format dates for backend if needed (YYYY-MM-DDTHH:mm:ss)
+      let formattedStart = startDate ? `${startDate}T00:00:00` : '';
+      let formattedEnd = endDate ? `${endDate}T23:59:59` : '';
+      
+      const data = await orderService.getAllOrders(page, 10, filterStatus, searchQuery, formattedStart, formattedEnd);
       setOrders(data.content);
       setTotalPages(data.totalPages);
       setTotalElements(data.totalElements);
@@ -70,6 +80,74 @@ const Orders = () => {
     }
   };
 
+  const handleSelectAll = (e) => {
+    if (e.target.checked) {
+      setSelectedIds(orders.map(o => o.id));
+    } else {
+      setSelectedIds([]);
+    }
+  };
+
+  const handleSelectRow = (id) => {
+    setSelectedIds(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
+
+  const handleBulkDelete = async () => {
+    if (window.confirm(`Bạn có chắc muốn xóa ${selectedIds.length} đơn hàng đã chọn?`)) {
+      try {
+        await orderService.bulkDeleteOrders(selectedIds);
+        setSelectedIds([]);
+        fetchOrders();
+      } catch (error) {
+        console.error(error);
+        alert("Lỗi khi xóa hàng loạt.");
+      }
+    }
+  };
+
+  const handleBulkUpdateStatus = async (status) => {
+    try {
+      await orderService.bulkUpdateOrderStatus(selectedIds, status);
+      setSelectedIds([]);
+      fetchOrders();
+    } catch (error) {
+      console.error(error);
+      alert("Lỗi khi cập nhật trạng thái hàng loạt.");
+    }
+  };
+
+  const handleExportCSV = () => {
+    if (orders.length === 0) return;
+    
+    const headers = ['Mã đơn', 'Ngày tạo', 'Khách hàng', 'Email', 'Sản phẩm', 'Tổng tiền', 'PTTT', 'Trạng thái'];
+    const rows = orders.map(order => [
+      order.id,
+      new Date(order.orderDate).toLocaleString('vi-VN'),
+      order.username || 'Khách vãng lai',
+      order.userEmail || '',
+      order.items?.map(i => `${i.productTitle} x${i.quantity}`).join('; '),
+      order.totalAmount,
+      order.paymentMethod,
+      order.status
+    ]);
+    
+    let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+    csvContent += headers.join(",") + "\n";
+    rows.forEach(row => {
+      csvContent += row.map(cell => `"${cell}"`).join(",") + "\n";
+    });
+    
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `orders_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="orders-page">
       {/* 1. Header */}
@@ -79,10 +157,10 @@ const Orders = () => {
           <p className="page-subtitle">Theo dõi, kiểm tra và xử lý các đơn hàng sản phẩm số</p>
         </div>
         <div className="header-actions" style={{ display: 'flex', gap: '1rem' }}>
-          <button className="btn-outline">
+          <button className="btn-outline" onClick={handleExportCSV}>
             <FiDownload /> Xuất báo cáo
           </button>
-          <button className="btn-primary">
+          <button className="btn-primary" onClick={() => setIsManualOrderOpen(true)}>
             <FiPlus size={20} />
             Tạo đơn thủ công
           </button>
@@ -104,7 +182,7 @@ const Orders = () => {
             <FiSearch className="search-icon" />
             <input 
               type="text" 
-              placeholder="Tìm kiếm theo mã đơn, khách hàng hoặc email..." 
+              placeholder="Tìm theo sản phẩm, khách hàng..." 
               className="search-input"
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setPage(0); }}
@@ -126,16 +204,102 @@ const Orders = () => {
                  onClick={() => { setFilterStatus('PENDING'); setPage(0); }}
                >Chờ thanh toán</button>
             </div>
-            <button className="date-picker-btn">
-               <FiCalendar /> Ngày tạo
-            </button>
+            <div style={{ position: 'relative' }}>
+              <button 
+                className={`date-picker-btn ${startDate || endDate ? 'active' : ''}`}
+                onClick={() => setIsDatePickerOpen(!isDatePickerOpen)}
+              >
+                <FiCalendar /> {startDate || endDate ? 
+                  (() => {
+                    const formatDateStr = (dateStr) => {
+                      if (!dateStr) return '...';
+                      const p = dateStr.split('-');
+                      return p.length === 3 ? `${p[2]}/${p[1]}/${p[0]}` : dateStr;
+                    };
+                    return `${formatDateStr(startDate)} - ${formatDateStr(endDate)}`;
+                  })()
+                  : 'Ngày tạo'}
+              </button>
+              
+              {isDatePickerOpen && (
+                <div className="date-popover" style={{
+                  position: 'absolute',
+                  top: '100%',
+                  right: 0,
+                  zIndex: 100,
+                  background: 'white',
+                  padding: '1rem',
+                  borderRadius: '12px',
+                  boxShadow: '0 10px 25px rgba(0,0,0,0.1)',
+                  border: '1px solid #e2e8f0',
+                  marginTop: '0.5rem',
+                  minWidth: '300px'
+                }}>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label className="form-label" style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Từ ngày</label>
+                    <input 
+                      type="date" 
+                      className="form-control" 
+                      id="temp-start-date"
+                      defaultValue={startDate}
+                    />
+                  </div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label className="form-label" style={{ fontSize: '0.8rem', display: 'block', marginBottom: '0.4rem' }}>Đến ngày</label>
+                    <input 
+                      type="date" 
+                      className="form-control" 
+                      id="temp-end-date"
+                      defaultValue={endDate}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                    <button className="btn btn-sm btn-primary" onClick={() => {
+                      const start = document.getElementById('temp-start-date').value;
+                      const end = document.getElementById('temp-end-date').value;
+                      setStartDate(start);
+                      setEndDate(end);
+                      setPage(0);
+                      setIsDatePickerOpen(false);
+                    }} style={{ flex: 1 }}>Áp dụng</button>
+                    <button className="btn btn-sm btn-outline" onClick={() => { 
+                      setStartDate(''); 
+                      setEndDate(''); 
+                      setPage(0);
+                      setIsDatePickerOpen(false); 
+                    }} style={{ flex: 1 }}>Xóa</button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+      </div>
+
+        {/* Bulk Actions Bar */}
+        {selectedIds.length > 0 && (
+          <div className="bulk-actions-bar">
+            <span className="selected-count">Đã chọn <strong>{selectedIds.length}</strong> đơn hàng</span>
+            <div className="bulk-btns">
+              <button className="btn-outline btn-sm" onClick={() => handleBulkUpdateStatus('PAID')}>Đánh dấu Đã thanh toán</button>
+              <button className="btn-danger btn-sm" onClick={handleBulkDelete}>
+                <FiTrash2 size={14} /> Xóa đã chọn
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* Table */}
         <table className="admin-table">
           <thead>
             <tr>
+              <th className="checkbox-cell">
+                <input 
+                  type="checkbox" 
+                  className="custom-checkbox" 
+                  onChange={handleSelectAll}
+                  checked={orders.length > 0 && selectedIds.length === orders.length}
+                />
+              </th>
               <th>Mã đơn</th>
               <th>Sản phẩm & Khách hàng</th>
               <th>Tổng tiền</th>
@@ -147,12 +311,20 @@ const Orders = () => {
           </thead>
           <tbody>
             {loading ? (
-                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
+                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
             ) : orders.length === 0 ? (
-                <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Không có đơn hàng nào.</td></tr>
+                <tr><td colSpan="8" style={{textAlign: 'center', padding: '2rem'}}>Không có đơn hàng nào.</td></tr>
             ) : (
                 orders.map(order => (
                   <tr key={order.id}>
+                    <td className="checkbox-cell">
+                      <input 
+                        type="checkbox" 
+                        className="custom-checkbox" 
+                        checked={selectedIds.includes(order.id)}
+                        onChange={() => handleSelectRow(order.id)}
+                      />
+                    </td>
                     <td className="order-id">
                       <div className="id-wrapper">
                         {order.id.substring(0, 8)}...
@@ -166,7 +338,7 @@ const Orders = () => {
                           ) : 'Không có sản phẩm'}
                       </span>
                       <div className="order-customer">
-                        <FiUser size={14} /> {order.username || order.userEmail || 'Khách vãng lai'}
+                        <FiUser size={14} /> {order.fullName || order.username || order.userEmail || 'Khách vãng lai'}
                       </div>
                     </td>
                     <td className="font-bold text-primary">{order.totalAmount?.toLocaleString()} đ</td>
@@ -217,6 +389,12 @@ const Orders = () => {
       <OrderDetailModal 
         order={selectedOrder} 
         onClose={() => setSelectedOrder(null)} 
+      />
+
+      <ManualOrderModal 
+        isOpen={isManualOrderOpen}
+        onClose={() => setIsManualOrderOpen(false)}
+        onSuccess={fetchOrders}
       />
     </div>
   );

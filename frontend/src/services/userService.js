@@ -54,6 +54,18 @@ const userService = {
     deleteUser: async (id) => {
         const response = await api.delete(`/admin/users/${id}`);
         return response.data;
+    },
+
+    bulkDeleteUsers: async (ids) => {
+        const response = await api.delete('/admin/users/bulk', { data: ids });
+        return response.data;
+    },
+
+    bulkUpdateUserStatus: async (ids, active) => {
+        const response = await api.patch('/admin/users/bulk-status', ids, {
+            params: { active }
+        });
+        return response.data;
     }
 };
 

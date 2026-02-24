@@ -15,7 +15,7 @@
   background: white;
   border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -73,7 +73,7 @@
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   position: relative;
   display: flex;
   align-items: center;
@@ -82,94 +82,21 @@
   transition: all 0.5s ease;
 }
 
-.banner-pattern {
-  position: absolute;
-  inset: 0;
-  opacity: 0.15;
-  background-image: radial-gradient(circle at 50% 50%, white 2px, transparent 2.5px);
-  background-size: 32px 32px;
-}
-
-.banner-content {
-  position: absolute;
-  bottom: 40px;
-  left: 40px;
-  color: white;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  max-width: 55%;
-  z-index: 2;
-}
-
-.banner-badge {
-  background: rgba(255,255,255,0.2);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  margin-bottom: 1rem;
-  display: inline-block;
-  backdrop-filter: blur(4px);
-}
-
-.banner-title {
-  font-size: 2.5rem;
-  font-weight: 800;
-  margin-bottom: 0.5rem;
-  color: #fff;
-  line-height: 1.2;
-}
-
-.banner-sub {
-  font-size: 1.1rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.95;
-  line-height: 1.5;
-}
-
-.banner-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255,255,255,0.2);
-  color: white;
-  border: 1px solid rgba(255,255,255,0.3);
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
+/* Background Transition */
+/* Background Transition */
+.main-banner {
+  transition: background-image 0.6s ease-in-out;
   cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(4px);
-}
-
-.banner-btn:hover {
-  background: rgba(255,255,255,0.3);
-  transform: translateY(-2px);
-}
-
-/* Banner Visual */
-.banner-visual {
-  position: absolute;
-  right: 5%;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 35%;
-  height: 70%;
-  background: rgba(255,255,255,0.1);
-  border-radius: 20px;
-  border: 1px solid rgba(255,255,255,0.2);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(10px);
-}
-
-.banner-icon {
-  font-size: 6rem;
-  animation: float 3s ease-in-out infinite;
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
 /* Slide Navigation Arrows */
@@ -180,8 +107,8 @@
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.2);
-  border: 1px solid rgba(255,255,255,0.3);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
   display: flex;
   align-items: center;
@@ -199,7 +126,7 @@
 }
 
 .slide-arrow:hover {
-  background: rgba(255,255,255,0.4);
+  background: rgba(255, 255, 255, 0.4);
   transform: translateY(-50%) scale(1.1);
 }
 
@@ -211,37 +138,6 @@
   right: 16px;
 }
 
-/* Slide Indicators */
-.slide-indicators {
-  position: absolute;
-  bottom: 16px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  justify-content: center;
-  gap: 0.5rem;
-  z-index: 10;
-}
-
-.indicator {
-  width: 32px;
-  height: 4px;
-  border-radius: 2px;
-  border: none;
-  background: rgba(255, 255, 255, 0.4);
-  cursor: pointer;
-  transition: all 0.2s;
-  backdrop-filter: blur(4px);
-}
-
-.indicator:hover {
-  background: rgba(255, 255, 255, 0.7);
-}
-
-.indicator.active {
-  width: 48px;
-  background: white;
-}
 
 /* BOTTOM 4 GRID */
 .promo-grid {
@@ -255,7 +151,7 @@
   background: white;
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
   height: 100px;
   display: flex;
@@ -268,7 +164,7 @@
 
 .promo-box:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
 }
 
 .promo-title {

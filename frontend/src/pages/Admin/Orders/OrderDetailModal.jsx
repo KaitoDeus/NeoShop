@@ -138,17 +138,21 @@ const OrderDetailModal = ({ order, onClose }) => {
               <FiXCircle /> Xóa đơn
             </button>
           </div>
-          <div className="right-actions" style={{ display: 'flex', gap: '0.5rem' }}>
-            {order.status !== 'PAID' && order.status !== 'COMPLETED' && (
-              <button className="btn-success" onClick={() => handleUpdateStatus('PAID')} style={{ background: '#dcfce7', color: '#15803d', border: '1px solid #bbf7d0', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-                Đã thanh toán
-              </button>
-            )}
-            {order.status === 'PENDING' && (
-              <button className="btn-danger-outline" onClick={() => handleUpdateStatus('CANCELLED')} style={{ background: 'white', color: '#b91c1c', border: '1px solid #fee2e2', padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer' }}>
-                Hủy đơn
-              </button>
-            )}
+          <div className="right-actions" style={{ display: 'flex', gap: '0.8rem', alignItems: 'center' }}>
+            <div className="status-updater">
+              <select 
+                className="status-select"
+                value={order.status}
+                onChange={(e) => handleUpdateStatus(e.target.value)}
+                style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #e2e8f0' }}
+              >
+                <option value="PENDING">Chờ thanh toán</option>
+                <option value="PAID">Đã thanh toán</option>
+                <option value="COMPLETED">Hoàn tất</option>
+                <option value="CANCELLED">Đã hủy</option>
+                <option value="FAILED">Thất bại</option>
+              </select>
+            </div>
             <button className="btn-outline" onClick={onClose} style={{ padding: '0.5rem 1rem', borderRadius: '6px', cursor: 'pointer', border: '1px solid #e2e8f0', background: 'white' }}>Đóng</button>
           </div>
         </div>

@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { 
   FiSettings, FiCreditCard, FiShield, FiGlobe, FiMail, 
   FiDatabase, FiSave, FiRefreshCw, FiUpload, FiLock,
-  FiShoppingBag, FiInfo, FiServer, FiAlertCircle, FiX
+  FiShoppingBag, FiInfo, FiServer, FiAlertCircle, FiX,
+  FiDownload
 } from 'react-icons/fi';
 import settingsService from '../../../services/settingsService';
 import './Settings.css';
@@ -257,7 +258,148 @@ const Settings = () => {
     { id: 'sales', label: 'Bán hàng', icon: <FiShoppingBag /> },
     { id: 'security', label: 'Bảo mật', icon: <FiShield /> },
     { id: 'seo', label: 'SEO & Meta', icon: <FiGlobe /> },
+    { id: 'backup', label: 'Dữ liệu & Backup', icon: <FiDatabase /> },
   ];
+
+  const renderSecurity = () => (
+    <div className="settings-section animate-fade-in">
+        <div className="section-header">
+            <h3 className="section-title"><FiShield /> Bảo mật hệ thống</h3>
+        </div>
+        <div className="section-body">
+            <div className="setting-row">
+                <div className="setting-info">
+                    <h4>Xác thực 2 lớp (2FA)</h4>
+                    <p>Yêu cầu mã OTP cho tất cả tài khoản quản trị viên.</p>
+                </div>
+                <label className="switch">
+                    <input name="security2FA" type="checkbox" checked={settings.security2FA === 'true'} onChange={handleChange} />
+                    <span className="slider"></span>
+                </label>
+            </div>
+            <div className="setting-row">
+                <div className="setting-info">
+                    <h4>Chặn đăng nhập sai</h4>
+                    <p>Tạm khóa tài khoản sau 5 lần nhập sai mật khẩu.</p>
+                </div>
+                <label className="switch">
+                    <input name="lockoutEnabled" type="checkbox" checked={settings.lockoutEnabled === 'true'} onChange={handleChange} />
+                    <span className="slider"></span>
+                </label>
+            </div>
+            <div className="form-grid margin-top-lg">
+                <div className="form-group">
+                    <label className="form-label">Thời gian hết hạn phiên (phút)</label>
+                    <input name="sessionTimeout" type="number" className="form-control" value={settings.sessionTimeout || '120'} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Độ dài mật khẩu tối thiểu</label>
+                    <input name="minPasswordLength" type="number" className="form-control" value={settings.minPasswordLength || '8'} onChange={handleChange} />
+                </div>
+            </div>
+            <div className="form-group margin-top-lg" style={{marginTop: '1.5rem'}}>
+                <label className="form-label">Danh sách IP bị chặn</label>
+                <textarea 
+                    name="ipBlacklist"
+                    className="form-control" 
+                    rows="3" 
+                    placeholder="Nhập danh sách IP, mỗi IP một dòng..."
+                    value={settings.ipBlacklist || ''}
+                    onChange={handleChange}
+                ></textarea>
+            </div>
+        </div>
+    </div>
+  );
+
+  const renderSEO = () => (
+    <div className="settings-section animate-fade-in">
+        <div className="section-header">
+            <h3 className="section-title"><FiGlobe /> Cấu hình SEO & Marketing</h3>
+        </div>
+        <div className="section-body">
+            <div className="form-group">
+                <label className="form-label">Tiêu đề trang chủ (Meta Title)</label>
+                <input name="seoTitle" type="text" className="form-control" value={settings.seoTitle || ''} onChange={handleChange} />
+            </div>
+            <div className="form-group margin-top-md" style={{marginTop: '1rem'}}>
+                <label className="form-label">Mô tả trang chủ (Meta Description)</label>
+                <textarea name="seoDescription" className="form-control" rows="3" value={settings.seoDescription || ''} onChange={handleChange}></textarea>
+            </div>
+            <div className="form-group margin-top-md" style={{marginTop: '1rem'}}>
+                <label className="form-label">Từ khóa SEO (Keywords)</label>
+                <input name="seoKeywords" type="text" className="form-control" placeholder="game, digital key, neoshop..." value={settings.seoKeywords || ''} onChange={handleChange} />
+            </div>
+            <div className="form-grid margin-top-lg" style={{marginTop: '1.5rem'}}>
+                <div className="form-group">
+                    <label className="form-label">Google Analytics ID</label>
+                    <input name="gaId" type="text" className="form-control" placeholder="UA-XXXXXXXXX-X" value={settings.gaId || ''} onChange={handleChange} />
+                </div>
+                <div className="form-group">
+                    <label className="form-label">Facebook Pixel ID</label>
+                    <input name="fbPixelId" type="text" className="form-control" placeholder="1234567890" value={settings.fbPixelId || ''} onChange={handleChange} />
+                </div>
+            </div>
+        </div>
+    </div>
+  );
+
+  const renderBackup = () => (
+    <div className="settings-section animate-fade-in">
+        <div className="section-header">
+            <h3 className="section-title"><FiDatabase /> Sao lưu & Phục hồi</h3>
+        </div>
+        <div className="section-body">
+            <div className="setting-row">
+                <div className="setting-info">
+                    <h4>Tự động sao lưu hàng ngày</h4>
+                    <p>Sao lưu toàn bộ cơ sở dữ liệu và file cấu hình vào lúc 2:00 sáng.</p>
+                </div>
+                <label className="switch">
+                    <input name="autoBackup" type="checkbox" checked={settings.autoBackup === 'true'} onChange={handleChange} />
+                    <span className="slider"></span>
+                </label>
+            </div>
+            
+            <div className="backup-actions margin-top-lg" style={{marginTop: '2rem', padding: '1.5rem', background: '#f8fafc', borderRadius: '12px', textAlign: 'center'}}>
+                <FiServer size={32} color="#64748b" style={{marginBottom: '1rem'}} />
+                <h4>Sao lưu tức thời</h4>
+                <p className="text-secondary" style={{marginBottom: '1.5rem'}}>Tạo bản sao lưu dữ liệu hiện tại ngay bây giờ.</p>
+                <button className="btn btn-outline" style={{margin: '0 auto'}}>
+                    <FiDownload /> Tải bản sao lưu (.sql)
+                </button>
+            </div>
+
+            <div className="margin-top-lg" style={{marginTop: '2rem'}}>
+                <h4 style={{marginBottom: '1rem'}}>Lịch sử sao lưu gần đây</h4>
+                <table className="admin-table" style={{fontSize: '0.9rem'}}>
+                    <thead>
+                        <tr>
+                            <th>Ngày tạo</th>
+                            <th>Kích thước</th>
+                            <th>Loại</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{new Date().toLocaleDateString('vi-VN')} {new Date().toLocaleTimeString('vi-VN')}</td>
+                            <td>4.2 MB</td>
+                            <td>Automatic</td>
+                            <td><button className="btn-icon text-primary"><FiRefreshCw /></button></td>
+                        </tr>
+                        <tr>
+                            <td>22/02/2026 02:00:05</td>
+                            <td>4.1 MB</td>
+                            <td>Automatic</td>
+                            <td><button className="btn-icon text-primary"><FiRefreshCw /></button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+  );
 
   return (
     <div className="settings-container">
@@ -282,15 +424,9 @@ const Settings = () => {
         {activeTab === 'general' && renderGeneral()}
         {activeTab === 'payment' && renderPayment()}
         {activeTab === 'sales' && renderSales()}
-        {['security', 'seo'].includes(activeTab) && (
-           <div className="settings-section animate-fade-in">
-             <div className="section-body" style={{ textAlign: 'center', padding: '3rem' }}>
-                <FiServer size={48} color="#e2e8f0" style={{ marginBottom: '1rem' }} />
-                <h3>Tính năng đang phát triển</h3>
-                <p className="text-secondary">Cấu hình nâng cao cho {activeTab.toUpperCase()} sẽ sớm được cập nhật.</p>
-             </div>
-          </div>
-        )}
+        {activeTab === 'security' && renderSecurity()}
+        {activeTab === 'seo' && renderSEO()}
+        {activeTab === 'backup' && renderBackup()}
       </div>
 
       <div className="sticky-footer">
