@@ -108,7 +108,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] Trang **Admin Coupons** (`/admin/coupons`): CRUD mã giảm giá.
 - [x] Trang **Admin Dashboard**: Hiển thị thống kê Payment (thành công / thất bại).
 
-### 14.1. Admin Panel Depth — Kết nối dữ liệu thực & Chức năng (Đang thực hiện)
+### 14.1. Admin Panel Depth — Kết nối dữ liệu thực & Chức năng (Hoàn thành)
 
 - [x] **Kết nối API thực cho các danh sách Quản trị**:
   - [x] Danh sách Đơn hàng: Thay thế mock data bằng `GET /api/admin/orders`.
@@ -143,13 +143,16 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] **Nhập kho hàng loạt (Bulk Inventory)**:
   - [x] Chức năng nhập danh sách Key bằng Textarea, tự động tách dòng.
   - [x] API `POST /api/admin/keys/bulk` hỗ trợ xử lý hàng loạt.
-- [ ] **Các mục cần cải thiện (Pending/Broken)**:
+- [x] **Các mục đã cải thiện (Fixed)**:
   - [x] **Thẻ thống kê (Stats Cards)** trên Dashboard: Đã kết nối với API `getOverviewStats`.
-  - [ ] **Hành động hàng loạt (Bulk Actions)**: Checkbox trong bảng chưa có chức năng (Xóa hàng loạt, Đổi trạng thái hàng loạt).
-  - [x] **Quản lý Danh mục (Category CRUD)**: Đã trang bị trang quản lý riêng biệt với đầy đủ tính năng Thêm/Sửa/Xóa và chọn danh mục cha.
-  - [ ] **Placeholder Settings**: Các tab Bảo mật, SEO, Backup trong Settings hiện là placeholder UI.
-  - [x] **Xóa Đơn hàng**: Đã bổ sung logic xóa đơn hàng trong AdminController và UI.
-  - [x] **CRUD Toàn diện**: Đã sửa các lỗi validation Category/Coupon và bổ sung Update/Delete cho User/Coupon/Order.
+  - [x] **Hành động hàng loạt (Bulk Actions)**: Đã triển khai và Fix lỗi API 500 cho Sản phẩm & Người dùng.
+  - [x] **Quản lý Danh mục (Category CRUD)**: Hoàn thiện Thêm/Sửa/Xóa.
+  - [x] **Placeholder Settings**: Chuyển đổi thành các tab chức năng Bảo mật, SEO, Backup.
+  - [x] **Quản lý Đơn hàng (Nâng cao)**:
+    - [x] Tìm kiếm theo **tên sản phẩm** (Backend + Frontend).
+    - [x] Bộ lọc **Ngày tạo** (Date Range Picker).
+    - [x] Chức năng **Xuất báo cáo** (CSV Export).
+    - [x] Chức năng **Tạo đơn thủ công** (Manual Order Entry Modal & API).
 
 ---
 

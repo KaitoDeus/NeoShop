@@ -28,7 +28,8 @@ CREATE TABLE users (
     address TEXT,
     avatar VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
-    updated_at TIMESTAMP DEFAULT NOW()
+    updated_at TIMESTAMP DEFAULT NOW(),
+    active BOOLEAN DEFAULT TRUE
 );
 
 CREATE TABLE user_roles (
