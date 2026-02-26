@@ -151,88 +151,76 @@ BEGIN
     SELECT id, r_user FROM users WHERE username != 'admin';
 END $$;
 
--- 2.3. Categories (12 Main Categories)
+-- 2.3. Categories (11 Main Categories)
 INSERT INTO categories (name, slug, icon_url) VALUES 
-('Thẻ Game (Game Cards)', 'game-cards', 'https://cdn-icons-png.flaticon.com/512/3408/3408506.png'),
-('Phần mềm (Software License)', 'software', 'https://cdn-icons-png.flaticon.com/512/2643/2643509.png'),
-('Giải trí (Streaming & Media)', 'entertainment', 'https://cdn-icons-png.flaticon.com/512/3163/3163478.png'),
-('VPN & Tin học', 'vpn-services', 'https://cdn-icons-png.flaticon.com/512/2092/2092663.png'),
-('Học tập (Education)', 'education', 'https://cdn-icons-png.flaticon.com/512/2436/2436874.png'),
-('Ví điện tử & Nạp tiền', 'wallet-topup', 'https://cdn-icons-png.flaticon.com/512/893/893097.png'),
-('Tài khoản Premium (Account)', 'premium-account', 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png'),
-('Dịch vụ AI (ChatGPT, Midjourney)', 'ai-services', 'https://cdn-icons-png.flaticon.com/512/1693/1693746.png'),
-('Lưu trữ Đám mây (Cloud Storage)', 'cloud-storage', 'https://cdn-icons-png.flaticon.com/512/3305/3305498.png'),
-('Marketing & SEO Tools', 'marketing-seo', 'https://cdn-icons-png.flaticon.com/512/1998/1998087.png'),
-('Code & Script', 'code-script', 'https://cdn-icons-png.flaticon.com/512/1005/1005141.png'),
-('Other Services', 'others', 'https://cdn-icons-png.flaticon.com/512/2312/2312488.png');
+('Giải trí', 'giai-tri', 'https://cdn-icons-png.flaticon.com/512/3163/3163478.png'),
+('Làm việc', 'lam-viec', 'https://cdn-icons-png.flaticon.com/512/2643/2643509.png'),
+('Học tập', 'hoc-tap', 'https://cdn-icons-png.flaticon.com/512/2436/2436874.png'),
+('eSIM du lịch', 'esim-du-lich', 'https://cdn-icons-png.flaticon.com/512/1077/1077114.png'),
+('Edit Ảnh - Video', 'edit-anh-video', 'https://cdn-icons-png.flaticon.com/512/893/893097.png'),
+('Windows, Office', 'windows-office', 'https://cdn-icons-png.flaticon.com/512/3305/3305498.png'),
+('Google Drive', 'google-drive', 'https://cdn-icons-png.flaticon.com/512/1005/1005141.png'),
+('Thế giới AI', 'the-gioi-ai', 'https://cdn-icons-png.flaticon.com/512/1693/1693746.png'),
+('VPN, bảo mật', 'vpn-bao-mat', 'https://cdn-icons-png.flaticon.com/512/2092/2092663.png'),
+('Gift Card', 'gift-card', 'https://cdn-icons-png.flaticon.com/512/3408/3408506.png'),
+('Game trên Steam', 'game-tren-steam', 'https://cdn-icons-png.flaticon.com/512/3408/3408507.png');
 
--- 2.4. Products (Generation Loop for ~300 Products)
+-- 2.4. Products (Generation Loop for ~200 Products)
 DO $$ 
 DECLARE
-    cat_game UUID;
-    cat_soft UUID;
-    cat_ent UUID;
+    cat_giai_tri UUID;
+    cat_lam_viec UUID;
+    cat_hoc_tap UUID;
     cat_ai UUID;
-    cat_vpn UUID;
+    cat_game UUID;
+    cat_edit UUID;
+    cat_windows UUID;
     p_id UUID;
     product_counter INTEGER := 0;
 BEGIN
-    SELECT id INTO cat_game FROM categories WHERE slug = 'game-cards';
-    SELECT id INTO cat_soft FROM categories WHERE slug = 'software';
-    SELECT id INTO cat_ent FROM categories WHERE slug = 'entertainment';
-    SELECT id INTO cat_ai FROM categories WHERE slug = 'ai-services';
-    SELECT id INTO cat_vpn FROM categories WHERE slug = 'vpn-services';
+    SELECT id INTO cat_giai_tri FROM categories WHERE slug = 'giai-tri';
+    SELECT id INTO cat_lam_viec FROM categories WHERE slug = 'lam-viec';
+    SELECT id INTO cat_hoc_tap FROM categories WHERE slug = 'hoc-tap';
+    SELECT id INTO cat_ai FROM categories WHERE slug = 'the-gioi-ai';
+    SELECT id INTO cat_game FROM categories WHERE slug = 'game-tren-steam';
+    SELECT id INTO cat_edit FROM categories WHERE slug = 'edit-anh-video';
+    SELECT id INTO cat_windows FROM categories WHERE slug = 'windows-office';
 
-    -- [Sample 1] Steam Wallet (Multiple denominations)
-    FOR i IN 1..10 LOOP
-        INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status)
-        VALUES (
-            'Steam Wallet Code ' || (i * 10) || ' USD (Global)', 
-            'Mã nạp tiền Steam Wallet mệnh giá ' || (i * 10) || '$ sử dụng cho tài khoản Steam toàn cầu. Region Free.', 
-            (i * 10 * 25000), 
-            (i * 10 * 24500), 
-            cat_game, 
-            100 + (random() * 500)::int,
-            'ACTIVE'
-        );
-        product_counter := product_counter + 1;
-    END LOOP;
-
-    -- [Sample 2] Windows & Office
+    -- Game trên Steam
     INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status) VALUES 
-    ('Windows 11 Pro Retail Key', 'Key kích hoạt Windows 11 Pro bản quyền vĩnh viễn, update thoải mái.', 500000, 350000, cat_soft, 200, 'ACTIVE'),
-    ('Windows 10 Pro OEM Key', 'Key Windows 10 Pro giá rẻ cho máy tính cá nhân.', 300000, 150000, cat_soft, 500, 'ACTIVE'),
-    ('Microsoft Office 2021 Pro Plus', 'Bộ Office 2021 bản quyền trọn đời, bind vào tài khoản Microsoft.', 1200000, 890000, cat_soft, 100, 'ACTIVE'),
-    ('Microsoft 365 Personal (1 Year)', 'Gói Microsoft 365 cá nhân 1 năm, 1TB OneDrive.', 1400000, 1100000, cat_soft, 150, 'ACTIVE');
+    ('Cyberpunk 2077: Phantom Liberty', 'Cyberpunk 2077: Phantom Liberty expansion.', 749750, 374750, cat_game, 200, 'ACTIVE'),
+    ('Elden Ring: Shadow of the Erdtree', 'Elden Ring DLC.', 1499750, 1124750, cat_game, 500, 'ACTIVE'),
+    ('Baldur''s Gate 3: Deluxe Edition', 'Baldur''s Gate 3 Deluxe Edition.', 1499750, 1499750, cat_game, 100, 'ACTIVE'),
+    ('God of War Ragnarök', 'God of War Ragnarok for PC.', 1749750, 1249750, cat_game, 150, 'ACTIVE');
     product_counter := product_counter + 4;
 
-    -- [Sample 3] Entertainment (Netflix, Spotify, Youtube)
+    -- AI & Làm việc -> AI / Làm việc
     INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status) VALUES 
-    ('Netflix Premium 1 Tháng (4K HDR)', 'Tài khoản Netflix Premium xem phim 4K HDR, profile riêng.', 260000, 65000, cat_ent, 1000, 'ACTIVE'),
-    ('Netflix Premium 1 Năm (4K HDR)', 'Gói gia hạn Netflix 1 năm siêu tiết kiệm.', 2000000, 600000, cat_ent, 50, 'ACTIVE'),
-    ('Spotify Premium 1 Năm (Nâng cấp chính chủ)', 'Nâng cấp tài khoản Spotify của bạn lên Premium 1 năm.', 590000, 250000, cat_ent, 300, 'ACTIVE'),
-    ('Youtube Premium 6 Tháng (Upgrade)', 'Nâng cấp Youtube Premium xem không quảng cáo, Youtube Music.', 300000, 180000, cat_ent, 200, 'ACTIVE');
+    ('Midjourney Standard 1 Tháng', 'Midjourney Standard', 750000, 750000, cat_ai, 1000, 'ACTIVE'),
+    ('GitHub Copilot 1 Năm', 'GitHub Copilot', 2999750, 2500000, cat_lam_viec, 50, 'ACTIVE'),
+    ('Adobe Creative Cloud 1 Năm', 'Adobe CC', 14999750, 8725000, cat_edit, 300, 'ACTIVE'),
+    ('Canva Pro 1 Năm', 'Canva Pro', 2999750, 1375000, cat_lam_viec, 200, 'ACTIVE');
     product_counter := product_counter + 4;
 
-    -- [Sample 4] AI Services
+    -- Giải trí & Học tập
     INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status) VALUES 
-    ('ChatGPT Plus (1 Tháng)', 'Tài khoản ChatGPT Plus sử dụng model GPT-4o mới nhất.', 20000, 450000, cat_ai, 20, 'ACTIVE'),
-    ('Midjourney Standard Plan (1 Tháng)', 'Tài khoản Midjourney tạo ảnh AI nghệ thuật.', 800000, 750000, cat_ai, 10, 'ACTIVE'),
-    ('Canva Pro (Vĩnh viễn/Edu)', 'Nâng cấp Canva Pro vào Class Edu, bảo hành trọn đời.', 100000, 49000, cat_ai, 5000, 'ACTIVE');
-    product_counter := product_counter + 3;
+    ('Netflix Premium 6 Tháng', 'Netflix', 2249750, 1125000, cat_giai_tri, 20, 'ACTIVE'),
+    ('Spotify Premium 1 Năm', 'Spotify', 1499750, 875000, cat_giai_tri, 10, 'ACTIVE'),
+    ('Coursera Plus 1 Năm', 'Coursera', 9999750, 4975000, cat_hoc_tap, 5000, 'ACTIVE'),
+    ('Duolingo Plus 1 Năm', 'Duolingo', 2099750, 1125000, cat_hoc_tap, 50, 'ACTIVE');
+    product_counter := product_counter + 4;
 
-    -- [Sample 5] VPN
+    -- Sản phẩm mới
     INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status) VALUES 
-    ('NordVPN 1 Năm (Account)', 'Tài khoản NordVPN Premium hạn dùng 1 năm.', 1500000, 300000, cat_vpn, 50, 'ACTIVE'),
-    ('ExpressVPN 1 Tháng Key', 'Code kích hoạt ExpressVPN 1 tháng chính chủ.', 300000, 280000, cat_vpn, 100, 'ACTIVE');
-    product_counter := product_counter + 2;
+    ('PlayStation Plus 12 Tháng', 'PS Plus', 1499750, 1499750, cat_giai_tri, 100, 'ACTIVE');
+    product_counter := product_counter + 1;
 
     -- Fill generic products to reach ~200
     FOR i IN product_counter..200 LOOP
         INSERT INTO products (title, description, price, sale_price, category_id, stock_quantity, status)
         VALUES (
             'Random Product Package #' || i,
-            'Gói sản phẩm ngẫu nhiên dành cho testing hệ thống. Đây là mô tả dài để test layout.',
+            'Gói sản phẩm ngẫu nhiên dành cho testing hệ thống.',
             (floor(random() * 100 + 1) * 10000),
             (floor(random() * 80 + 1) * 10000),
             (SELECT id FROM categories ORDER BY random() LIMIT 1),
