@@ -10,7 +10,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.neoshop.model.dto.response.OrderResponse;
 import com.neoshop.model.dto.response.ProductResponse;
 import com.neoshop.model.dto.response.UserResponse;
+import com.neoshop.service.CategoryService;
 import com.neoshop.service.OrderService;
+import com.neoshop.service.ProductKeyService;
 import com.neoshop.service.ProductService;
 import com.neoshop.service.UserService;
 import java.util.Collections;
@@ -29,13 +31,23 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc(addFilters = false) // Disable security filters for this pure unit test
 class AdminControllerTest {
 
-  @Autowired private MockMvc mockMvc;
+  @Autowired
+  private MockMvc mockMvc;
 
-  @MockBean private OrderService orderService;
+  @MockBean
+  private OrderService orderService;
 
-  @MockBean private ProductService productService;
+  @MockBean
+  private ProductService productService;
 
-  @MockBean private UserService userService;
+  @MockBean
+  private UserService userService;
+
+  @MockBean
+  private ProductKeyService productKeyService;
+
+  @MockBean
+  private CategoryService categoryService;
 
   @Test
   void testGetAllOrders() throws Exception {
@@ -43,7 +55,7 @@ class AdminControllerTest {
     response.setId(java.util.UUID.randomUUID());
     Page<OrderResponse> page = new PageImpl<>(Collections.singletonList(response));
 
-    when(orderService.getAllOrders(any(Pageable.class))).thenReturn(page);
+    when(orderService.getAllOrdersManaged(any(), any(), any(), any(), any(Pageable.class))).thenReturn(page);
 
     mockMvc
         .perform(
@@ -61,7 +73,7 @@ class AdminControllerTest {
     response.setId(java.util.UUID.randomUUID());
     Page<ProductResponse> page = new PageImpl<>(Collections.singletonList(response));
 
-    when(productService.getAllProducts(any(Pageable.class))).thenReturn(page);
+    when(productService.getAllProductsAdmin(any(), any(), any(), any(Pageable.class))).thenReturn(page);
 
     mockMvc
         .perform(
