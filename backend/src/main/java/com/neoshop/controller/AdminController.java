@@ -28,9 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
-@Tag(
-    name = "Admin Management",
-    description = "Admin specific operations for Orders, Products, and Users")
+@Tag(name = "Admin Management", description = "Admin specific operations for Orders, Products, and Users")
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
 
@@ -47,22 +45,15 @@ public class AdminController {
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(required = false) String status,
       @RequestParam(required = false) String query,
-      @RequestParam(required = false)
-          @org.springframework.format.annotation.DateTimeFormat(
-              iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
-          java.time.LocalDateTime startDate,
-      @RequestParam(required = false)
-          @org.springframework.format.annotation.DateTimeFormat(
-              iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME)
-          java.time.LocalDateTime endDate) {
+      @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime startDate,
+      @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime endDate) {
 
     // Normalize empty strings to null for repository filtering
     String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
     String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
 
-    Pageable pageable =
-        PageRequest.of(
-            page, size, org.springframework.data.domain.Sort.by("orderDate").descending());
+    Pageable pageable = PageRequest.of(
+        page, size, org.springframework.data.domain.Sort.by("orderDate").descending());
     return ResponseEntity.ok(
         orderService.getAllOrdersManaged(filterStatus, filterQuery, startDate, endDate, pageable));
   }
@@ -83,10 +74,9 @@ public class AdminController {
       @RequestParam(required = false) String title,
       @RequestParam(required = false) String categoryId,
       @RequestParam(required = false) String status,
-      @RequestParam(defaultValue = "createdAt,desc") String sort) {
+      @RequestParam(defaultValue = "created_at,desc") String sort) {
     String[] sortParts = sort.split(",");
-    org.springframework.data.domain.Sort sortObj =
-        org.springframework.data.domain.Sort.by(sortParts[0]);
+    org.springframework.data.domain.Sort sortObj = org.springframework.data.domain.Sort.by(sortParts[0]);
     if (sortParts.length > 1 && "desc".equalsIgnoreCase(sortParts[1])) {
       sortObj = sortObj.descending();
     }
@@ -199,9 +189,8 @@ public class AdminController {
       @RequestParam(required = false) String query,
       @RequestParam(required = false) UUID productId,
       @RequestParam(required = false) String status) {
-    Pageable pageable =
-        PageRequest.of(
-            page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
+    Pageable pageable = PageRequest.of(
+        page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
     return ResponseEntity.ok(productKeyService.searchKeys(productId, query, status, pageable));
   }
 
