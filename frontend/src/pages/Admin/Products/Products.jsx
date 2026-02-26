@@ -265,7 +265,6 @@ const Products = () => {
                     </td>
                     <td>
                       <div className="product-cell">
-                        <img src={'https://via.placeholder.com/50'} alt="" className="product-thumb" loading="lazy" />
                         <div className="product-info">
                           <h4>{product.title}</h4>
                           <span className="product-sku">SKU: {product.id.substring(0, 8)}</span>

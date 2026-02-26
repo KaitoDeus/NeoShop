@@ -72,16 +72,16 @@ const Hero = () => {
   const [isAutoPlay, setIsAutoPlay] = useState(true);
 
   const categories = [
-    { icon: <FiMonitor />, label: "Giải trí", link: "/category?category=entertainment" },
-    { icon: <FiBriefcase />, label: "Làm việc", link: "/category?category=office" },
-    { icon: <FiBookOpen />, label: "Học tập", link: "/category?category=learning" },
-    { icon: <FiGlobe />, label: "eSIM du lịch", link: "/category?type=esim" },
-    { icon: <FiVideo />, label: "Edit Ảnh - Video", link: "/category?type=design" },
-    { icon: <FiLayout />, label: "Windows, Office", link: "/category?category=os" },
-    { icon: <FiHardDrive />, label: "Google Drive", link: "/category?type=storage" },
-    { icon: <FiCpu />, label: "Thế giới AI", link: "/category?category=ai" },
-    { icon: <FiShield />, label: "VPN, bảo mật", link: "/category?type=security" },
-    { icon: <FiGift />, label: "Gift Card", link: "/category?type=giftcard" },
+    { icon: <FiMonitor />, label: "Giải trí", link: "/category?category=giai-tri" },
+    { icon: <FiBriefcase />, label: "Làm việc", link: "/category?category=lam-viec" },
+    { icon: <FiBookOpen />, label: "Học tập", link: "/category?category=hoc-tap" },
+    { icon: <FiGlobe />, label: "eSIM du lịch", link: "/category?category=esim-du-lich" },
+    { icon: <FiVideo />, label: "Edit Ảnh - Video", link: "/category?category=edit-anh-video" },
+    { icon: <FiLayout />, label: "Windows, Office", link: "/category?category=windows-office" },
+    { icon: <FiHardDrive />, label: "Google Drive", link: "/category?category=google-drive" },
+    { icon: <FiCpu />, label: "Thế giới AI", link: "/category?category=the-gioi-ai" },
+    { icon: <FiShield />, label: "VPN, bảo mật", link: "/category?category=vpn-bao-mat" },
+    { icon: <FiGift />, label: "Gift Card", link: "/category?category=gift-card" },
   ];
 
   // Tự động chuyển slide

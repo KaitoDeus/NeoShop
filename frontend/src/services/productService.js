@@ -10,7 +10,8 @@ const productService = {
                 query: filters.query || undefined,
                 categoryId: filters.categoryId || undefined,
                 minPrice: typeof filters.minPrice === 'number' ? filters.minPrice : undefined,
-                maxPrice: typeof filters.maxPrice === 'number' ? filters.maxPrice : undefined
+                maxPrice: typeof filters.maxPrice === 'number' ? filters.maxPrice : undefined,
+                sort: filters.sort || undefined
             }
         });
         return response.data;

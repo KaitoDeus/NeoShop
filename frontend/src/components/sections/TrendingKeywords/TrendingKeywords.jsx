@@ -25,7 +25,6 @@ const TrendingKeywords = () => {
             >
               <span className="keyword-icon">{item.icon}</span>
               <span className="keyword-text">{item.keyword}</span>
-              <span className="keyword-count">{item.count.toLocaleString()}</span>
             </Link>
           ))}
         </div>

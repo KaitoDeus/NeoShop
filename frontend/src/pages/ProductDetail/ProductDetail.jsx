@@ -34,8 +34,8 @@ const ProductDetail = () => {
              id: data.id,
              name: data.title,
              title: data.title, // Cart uses 'title'
-             price: data.price,
-             originalPrice: data.salePrice || (data.price * 1.3),
+             price: data.salePrice || data.price,
+             originalPrice: data.price,
              description: data.description,
              rating: 4.8, // Mock
              reviews: Math.floor(Math.random() * 500) + 50, // Mock

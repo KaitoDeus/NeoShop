@@ -151,7 +151,7 @@ const Header = () => {
                      <img src="https://placehold.co/40" style={{background: product.imageColor, width: 32, height: 32, borderRadius: 4, objectFit: 'cover'}} alt="" />
                      <div className="suggestion-info">
                         <span className="suggest-title">{product.title}</span>
-                        <span className="suggest-price">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price * 25000)}</span>
+                        <span className="suggest-price">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>
                      </div>
                    </div>
                  ))

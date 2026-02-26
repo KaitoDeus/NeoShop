@@ -1,53 +1,71 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '../../components/sections/Hero/Hero';
 import QuickCategories from '../../components/sections/QuickCategories/QuickCategories';
 import FeaturedProducts from '../../components/sections/FeaturedProducts/FeaturedProducts';
 import TrendingKeywords from '../../components/sections/TrendingKeywords/TrendingKeywords';
 import ProductSection from '../../components/sections/ProductSection/ProductSection';
-import { 
-  MOCK_PRODUCTS, 
-  getBestSellers, 
-  getNewestProducts, 
-  getSteamGames, 
-  getAIProducts,
-  getProductsByCategory 
-} from '../../data/mockProducts';
+import productService from '../../services/productService';
+import categoryService from '../../services/categoryService';
 import './Home.css';
 
 const Home = () => {
-  // Lấy sản phẩm cho từng section
-  // FeaturedProducts tự load getBestSellers(4), nên ta lấy list đó ra để lọc không cho hiển thị lại
-  const featured = getBestSellers(4);
-  const featuredIds = new Set(featured.map(p => p.id));
+  const [categories, setCategories] = useState([]);
+  const [steamGames, setSteamGames] = useState([]);
+  const [aiOfficeProducts, setAiOfficeProducts] = useState([]);
+  const [entertainmentProducts, setEntertainmentProducts] = useState([]);
+  const [newestProducts, setNewestProducts] = useState([]);
 
-  // Hàm helper để lọc các sản phẩm trùng lặp
-  const filterUnique = (products, usedIds) => {
-    const unique = products.filter(p => !usedIds.has(p.id));
-    unique.forEach(p => usedIds.add(p.id)); // Thêm vào set để các section sau không dùng lại
-    return unique;
-  };
+  useEffect(() => {
+    const fetchHomeData = async () => {
+      try {
+        const catData = await categoryService.getAllCategories();
+        setCategories(catData);
 
-  const trackingIds = new Set(featuredIds);
+        // Fetch all products (or a generous page) to filter by category locally for sections
+        const productRes = await productService.getAllProducts(0, 50);
+        const allProducts = productRes.content || [];
+        
+        // Map backend product model to frontend expectations
+        const mappedProducts = allProducts.map(p => ({
+          ...p,
+          oldPrice: p.price,
+          price: p.salePrice || p.price,
+          discount: p.salePrice && p.price > p.salePrice ? `-${Math.round((1 - p.salePrice / p.price) * 100)}%` : null
+        }));
 
-  const steamGames = filterUnique(getSteamGames(10), trackingIds).slice(0, 4);
-  
-  // Gộp AI và Tiện ích văn phòng (Làm việc)
-  const allAiOffice = [...getAIProducts(8), ...getProductsByCategory('office')];
-  const aiProducts = filterUnique(allAiOffice, trackingIds).slice(0, 4);
+        const getProductsBySlugs = (slugs, limit) => {
+          const matchingCats = catData.filter(c => slugs.includes(c.slug)).map(c => c.id);
+          return mappedProducts.filter(p => p.category && matchingCats.includes(p.category.id)).slice(0, limit);
+        };
 
-  // Gộp Giải trí và Học tập
-  const allEnterLearn = [...getProductsByCategory('entertainment'), ...getProductsByCategory('learning')];
-  const entertainmentProducts = filterUnique(allEnterLearn, trackingIds).slice(0, 4);
+        const steam = getProductsBySlugs(['game-tren-steam'], 4);
+        setSteamGames(steam);
 
-  // Sản phẩm mới: Những gì còn lại mới nhất
-  const newestProducts = filterUnique(getNewestProducts(12), trackingIds).slice(0, 4);
+        const aiOffice = getProductsBySlugs(['the-gioi-ai', 'lam-viec'], 4);
+        setAiOfficeProducts(aiOffice);
+
+        const entLearn = getProductsBySlugs(['giai-tri', 'hoc-tap'], 4);
+        setEntertainmentProducts(entLearn);
+
+        // Define newest as anything not in the above sets, or just newest by some criteria
+        const usedIds = [...steam, ...aiOffice, ...entLearn].map(p => p.id);
+        const newest = mappedProducts.filter(p => !usedIds.includes(p.id)).slice(0, 4);
+        setNewestProducts(newest);
+
+      } catch (err) {
+        console.error("Error fetching homepage data:", err);
+      }
+    };
+
+    fetchHomeData();
+  }, []);
 
   return (
     <div className="home-page">
       <Hero />
       <QuickCategories />
       
-      {/* Sản phẩm nổi bật (Tự load best sellers) */}
+      {/* Nổi bật */}
       <FeaturedProducts />
       
       {/* Từ khóa nổi bật */}
@@ -60,19 +78,19 @@ const Home = () => {
           icon="🎮"
           subtitle="Key game Steam chính hãng giá tốt"
           products={steamGames}
-          categoryLink="/category?platform=steam"
+          categoryLink="/category?category=game-tren-steam"
           bgColor="bg-alt"
         />
       )}
       
       {/* Sản phẩm AI & Làm việc */}
-      {aiProducts.length > 0 && (
+      {aiOfficeProducts.length > 0 && (
         <ProductSection 
           title="AI & Làm việc"
           icon="🤖"
           subtitle="Các công cụ tăng năng suất và sáng tạo"
-          products={aiProducts}
-          categoryLink="/category?category=ai"
+          products={aiOfficeProducts}
+          categoryLink="/category?category=the-gioi-ai"
         />
       )}
       
@@ -83,7 +101,7 @@ const Home = () => {
           icon="🎬"
           subtitle="Netflix, Spotify, Duolingo, Coursera và hơn thế nữa"
           products={entertainmentProducts}
-          categoryLink="/category?category=entertainment"
+          categoryLink="/category?category=giai-tri"
           bgColor="bg-alt"
         />
       )}
@@ -95,7 +113,7 @@ const Home = () => {
           icon="✨"
           subtitle="Vừa được cập nhật trên cửa hàng"
           products={newestProducts}
-          categoryLink="/category?sort=newest"
+          categoryLink="/category"
         />
       )}
     </div>

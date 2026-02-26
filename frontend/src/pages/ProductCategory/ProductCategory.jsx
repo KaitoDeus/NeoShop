@@ -54,14 +54,15 @@ const ProductCategory = () => {
   }, [categoryParam]);
 
   // Stable trigger for fetching
-  const fetchProducts = useCallback(async (currentPage, isReset = false, currentFilters = filters) => {
+  const fetchProducts = useCallback(async (currentPage, isReset = false, currentFilters = filters, currentSort = sortBy) => {
     setIsLoading(true);
     try {
         const filterParams = {
             query: searchQuery || undefined,
             categoryId: currentFilters.categoryId || undefined,
             minPrice: currentFilters.priceRange[0],
-            maxPrice: currentFilters.priceRange[1]
+            maxPrice: currentFilters.priceRange[1],
+            sort: currentSort
         };
 
         const data = await productService.getAllProducts(currentPage, PRODUCTS_PER_LOAD, filterParams);
@@ -93,7 +94,7 @@ const ProductCategory = () => {
     } finally {
         setIsLoading(false);
     }
-  }, [searchQuery, filters]);
+  }, [searchQuery, filters, sortBy]);
 
   // Initial Load & URL Parameter Sync
   useEffect(() => {
@@ -134,6 +135,8 @@ const ProductCategory = () => {
   
   const handleSortChange = (newSort) => {
     setSortBy(newSort);
+    setPage(0);
+    fetchProducts(0, true, filters, newSort);
   };
 
   return (

@@ -50,7 +50,7 @@ export const CartProvider = ({ children }) => {
       }
       
       // Nếu chưa có, thêm mới
-      const priceVND = Math.round(product.price * 25000);
+      const priceVND = Math.round(product.price);
       return [...prev, {
         id: product.id,
         title: product.title,
