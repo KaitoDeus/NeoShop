@@ -1,9 +1,9 @@
 package com.neoshop.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Table(name = "image_uploads")
@@ -13,26 +13,26 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class ImageUpload {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Column(nullable = false)
-    private String fileName;
+  @Column(nullable = false)
+  private String fileName;
 
-    @Column(nullable = false)
-    private String fileUrl;
+  @Column(nullable = false)
+  private String fileUrl;
 
-    private String fileType;
+  private String fileType;
 
-    private long fileSize;
+  private long fileSize;
 
-    private String uploadedBy; // Username
+  private String uploadedBy; // Username
 
-    private LocalDateTime createdAt;
+  private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
+  @PrePersist
+  protected void onCreate() {
+    createdAt = LocalDateTime.now();
+  }
 }

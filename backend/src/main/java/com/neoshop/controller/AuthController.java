@@ -20,20 +20,22 @@ import org.springframework.web.bind.annotation.RestController;
 @lombok.extern.slf4j.Slf4j
 public class AuthController {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    @PostMapping("/login")
-    @Operation(summary = "Đăng nhập hệ thống", description = "Trả về JWT Token nếu đăng nhập thành công")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
-        log.info("Received login request for user: {}", request.getUsername());
-        return ResponseEntity.ok(authService.login(request));
-    }
+  @PostMapping("/login")
+  @Operation(
+      summary = "Đăng nhập hệ thống",
+      description = "Trả về JWT Token nếu đăng nhập thành công")
+  public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
+    log.info("Received login request for user: {}", request.getUsername());
+    return ResponseEntity.ok(authService.login(request));
+  }
 
-    @PostMapping("/register")
-    @Operation(summary = "Đăng ký tài khoản", description = "Tạo tài khoản mới và trả về JWT Token")
-    public ResponseEntity<AuthResponse> register(
-            @Valid @RequestBody com.neoshop.model.dto.request.RegisterRequest request) {
-        log.info("Received register request for user: {}", request.getUsername());
-        return ResponseEntity.ok(authService.register(request));
-    }
+  @PostMapping("/register")
+  @Operation(summary = "Đăng ký tài khoản", description = "Tạo tài khoản mới và trả về JWT Token")
+  public ResponseEntity<AuthResponse> register(
+      @Valid @RequestBody com.neoshop.model.dto.request.RegisterRequest request) {
+    log.info("Received register request for user: {}", request.getUsername());
+    return ResponseEntity.ok(authService.register(request));
+  }
 }

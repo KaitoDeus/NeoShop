@@ -13,14 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegisterRequest {
-    @NotBlank(message = "Username cannot be empty")
-    private String username;
+  @NotBlank(message = "Username cannot be empty")
+  private String username;
 
-    @NotBlank(message = "Email cannot be empty")
-    @Email(message = "Invalid email format")
-    private String email;
+  @NotBlank(message = "Email cannot be empty")
+  @Email(message = "Invalid email format")
+  private String email;
 
-    @NotBlank(message = "Password cannot be empty")
-    @Size(min = 6, message = "Password must be at least 6 characters")
-    private String password;
+  @NotBlank(message = "Password cannot be empty")
+  @Size(min = 6, message = "Password must be at least 6 characters")
+  private String password;
 }

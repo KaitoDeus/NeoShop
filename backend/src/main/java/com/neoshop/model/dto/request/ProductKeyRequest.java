@@ -11,6 +11,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProductKeyRequest {
-    @NotBlank(message = "Key code is required")
-    private String keyCode;
+  @NotBlank(message = "Key code is required")
+  private String keyCode;
 }

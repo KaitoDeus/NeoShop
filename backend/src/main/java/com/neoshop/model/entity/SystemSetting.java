@@ -11,9 +11,8 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class SystemSetting {
-    @Id
-    private String settingKey;
+  @Id private String settingKey;
 
-    @Column(columnDefinition = "TEXT")
-    private String settingValue;
+  @Column(columnDefinition = "TEXT")
+  private String settingValue;
 }

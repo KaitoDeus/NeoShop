@@ -1,10 +1,10 @@
 package com.neoshop.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Table(name = "products")
@@ -14,30 +14,30 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private UUID id;
 
-    @Column(nullable = false)
-    private String title;
+  @Column(nullable = false)
+  private String title;
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
+  @Column(columnDefinition = "TEXT")
+  private String description;
 
-    private BigDecimal price;
+  private BigDecimal price;
 
-    @Column(name = "sale_price")
-    private BigDecimal salePrice;
+  @Column(name = "sale_price")
+  private BigDecimal salePrice;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
-    private Category category;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "category_id")
+  private Category category;
 
-    @Column(name = "stock_quantity")
-    private Integer stockQuantity;
+  @Column(name = "stock_quantity")
+  private Integer stockQuantity;
 
-    private String status;
+  private String status;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 }

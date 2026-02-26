@@ -1,8 +1,8 @@
 package com.neoshop.model.entity;
 
 import jakarta.persistence.*;
-import lombok.*;
 import java.util.UUID;
+import lombok.*;
 
 @Entity
 @Table(name = "categories")
@@ -12,19 +12,19 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 public class Category {
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
 
-    @Column(nullable = false)
-    private String name;
+  @Column(nullable = false)
+  private String name;
 
-    @Column(unique = true, nullable = false)
-    private String slug;
+  @Column(unique = true, nullable = false)
+  private String slug;
 
-    @Column(name = "parent_id")
-    private UUID parentId;
+  @Column(name = "parent_id")
+  private UUID parentId;
 
-    @Column(name = "icon_url")
-    private String iconUrl;
+  @Column(name = "icon_url")
+  private String iconUrl;
 }

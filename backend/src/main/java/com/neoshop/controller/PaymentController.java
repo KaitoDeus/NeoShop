@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(name = "Payment Gateway", description = "APIs xử lý thanh toán (Mock)")
 public class PaymentController {
 
-    private final PaymentService paymentService;
+  private final PaymentService paymentService;
 
-    @PostMapping("/process")
-    @Operation(summary = "Xử lý thanh toán cho đơn hàng")
-    public ResponseEntity<PaymentResponse> processPayment(
-            @jakarta.validation.Valid @RequestBody PaymentRequest request) {
-        return ResponseEntity.ok(paymentService.processPayment(request));
-    }
+  @PostMapping("/process")
+  @Operation(summary = "Xử lý thanh toán cho đơn hàng")
+  public ResponseEntity<PaymentResponse> processPayment(
+      @jakarta.validation.Valid @RequestBody PaymentRequest request) {
+    return ResponseEntity.ok(paymentService.processPayment(request));
+  }
 }

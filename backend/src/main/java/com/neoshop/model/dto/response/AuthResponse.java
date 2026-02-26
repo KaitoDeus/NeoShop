@@ -10,12 +10,12 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponse {
-    private String token;
-    private String username;
-    private String email;
-    private String fullName;
-    private String phoneNumber;
-    private String address;
-    private String avatar;
-    private java.util.Set<String> roles;
+  private String token;
+  private String username;
+  private String email;
+  private String fullName;
+  private String phoneNumber;
+  private String address;
+  private String avatar;
+  private java.util.Set<String> roles;
 }
