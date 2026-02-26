@@ -173,8 +173,8 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 17. CI/CD Pipeline
 
-- [ ] Thiết lập **GitHub Actions** cho Build + Test tự động.
-- [ ] Auto-deploy lên môi trường staging khi merge vào `main`.
+- [x] Thiết lập **GitHub Actions** cho Build + Test tự động.
+- [x] Auto-deploy lên môi trường staging khi merge vào `main`.
 
 ---
 
