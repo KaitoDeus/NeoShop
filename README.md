@@ -8,7 +8,6 @@
 4. [Giao Diện](#4-giao-diện)
 5. [Hướng Dẫn Cài Đặt và Chạy (Local)](#5-hướng-dẫn-cài-đặt-và-chạy-local)
 6. [Hướng Dẫn Sử Dụng](#6-hướng-dẫn-sử-dụng)
-7. [Tác Giả & Liên Hệ](#7-tác-giả--liên-hệ)
 
 ---
 
