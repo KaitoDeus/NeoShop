@@ -100,9 +100,7 @@
 
 ## 4. Giao Diện
 
-_Giao diện cửa hàng hiện đại, tốc độ phản hồi cực nhanh, lấy cảm hứng từ các thiết kế UI/UX công nghệ._
-
-![Giao diện trang chủ](/frontend/docs/homepage.png) _(Hình minh họa)_
+![Giao diện trang chủ](/frontend/public/homepage.png)
 
 ---
 
@@ -146,12 +144,3 @@ Sau quá trình cài đặt và khởi động (khoảng vài phút):
     - Chuyển hướng sang trang **Checkout**.
 4.  **Thanh Toán**:
     - Ở trang Checkout, chọn loại tài khoản/ví thanh toán. Hệ thống xác nhận và hiển thị mã Code tức thời lên màn hình và gửi qua Email đăng ký.
-
----
-
-## 7. Tác Giả & Liên Hệ
-
-| Thông Tin     | Chi Tiết                                                |
-| :------------ | :------------------------------------------------------ |
-| **Developer** | Võ Anh Khải                                             |
-| **Email**     | [khaivo300605@gmail.com](mailto:khaivo300605@gmail.com) |
