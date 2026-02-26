@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@io.swagger.v3.oas.annotations.tags.Tag(
-    name = "Product Catalog",
-    description = "Quản lý và tra cứu thông tin sản phẩm")
+@io.swagger.v3.oas.annotations.tags.Tag(name = "Product Catalog", description = "Quản lý và tra cứu thông tin sản phẩm")
 public class ProductController {
   private final ProductService productService;
 
@@ -25,18 +23,29 @@ public class ProductController {
       @RequestParam(required = false) UUID categoryId,
       @RequestParam(required = false) Double minPrice,
       @RequestParam(required = false) Double maxPrice,
+      @RequestParam(required = false) String sort,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
-    System.out.println(
-        "DEBUG: Filtering - query: "
-            + query
-            + ", cat: "
-            + categoryId
-            + ", min: "
-            + minPrice
-            + ", max: "
-            + maxPrice);
-    Pageable pageable = PageRequest.of(page, size);
+    org.springframework.data.domain.Sort sortObj = org.springframework.data.domain.Sort.unsorted();
+    if (sort != null) {
+      switch (sort) {
+        case "price_asc":
+          sortObj = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.ASC,
+              "price");
+          break;
+        case "price_desc":
+          sortObj = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC,
+              "price");
+          break;
+        case "newest":
+          sortObj = org.springframework.data.domain.Sort.by(org.springframework.data.domain.Sort.Direction.DESC,
+              "created_at");
+          break;
+        default:
+          break;
+      }
+    }
+    Pageable pageable = PageRequest.of(page, size, sortObj);
     return ResponseEntity.ok(
         productService.getFilteredProducts(query, categoryId, minPrice, maxPrice, pageable));
   }
