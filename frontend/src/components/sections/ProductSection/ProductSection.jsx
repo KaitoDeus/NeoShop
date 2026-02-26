@@ -40,13 +40,9 @@ const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor
                   style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 1, zIndex: 0 }} 
                 />
                 {product.discount && <span className="discount-badge" style={{ zIndex: 1 }}>{product.discount}</span>}
-                <span className="tag-badge" style={{ zIndex: 1 }}>{product.tag}</span>
               </div>
               <div className="card-content">
                 <h3 className="card-title">{product.title}</h3>
-                <div className="card-meta">
-                  <span className="delivery-tag"><FiZap size={12} /> Giao ngay</span>
-                </div>
                 <div className="card-footer">
                   <div className="price-box">
                     {product.oldPrice && (

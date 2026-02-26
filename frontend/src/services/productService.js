@@ -1,10 +1,17 @@
 import api from './api';
 
 const productService = {
-    // Lấy danh sách sản phẩm (có phân trang)
-    getAllProducts: async (page = 0, size = 12) => {
+    // Lấy danh sách sản phẩm (có phân trang và lọc)
+    getAllProducts: async (page = 0, size = 12, filters = {}) => {
         const response = await api.get('/products', {
-            params: { page, size }
+            params: { 
+                page, 
+                size,
+                query: filters.query || undefined,
+                categoryId: filters.categoryId || undefined,
+                minPrice: typeof filters.minPrice === 'number' ? filters.minPrice : undefined,
+                maxPrice: typeof filters.maxPrice === 'number' ? filters.maxPrice : undefined
+            }
         });
         return response.data;
     },

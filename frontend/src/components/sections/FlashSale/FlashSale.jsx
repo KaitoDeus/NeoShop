@@ -67,9 +67,6 @@ const FlashSale = () => {
               </div>
               <div className="product-info">
                 <h3>{product.name}</h3>
-                <div className="delivery-tag">
-                  <FiZap size={12} /> Giao ngay
-                </div>
                 <div className="price-row">
                   <div>
                     <span className="old-price">{formatUSDtoVND(product.oldPrice)}</span>

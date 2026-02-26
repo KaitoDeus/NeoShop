@@ -89,10 +89,6 @@ const Cart = () => {
 
             <div className="trust-badges">
                <div className="trust-item">
-                  <FiZap className="trust-icon" />
-                  <span>Giao ngay</span>
-               </div>
-               <div className="trust-item">
                   <FiShield className="trust-icon" />
                   <span>Bảo mật 100%</span>
                </div>
@@ -145,7 +141,6 @@ const CartItem = ({ item, onRemove, onUpdateQty }) => {
             
             <div className="item-badges">
                <span className="badge-platform">{item.platform === 'steam' ? 'Steam' : item.platform}</span>
-               <span className="badge-instant"><FiZap size={12}/> Giao ngay</span>
             </div>
          </div>
 

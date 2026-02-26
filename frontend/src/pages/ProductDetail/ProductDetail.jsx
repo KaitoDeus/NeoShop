@@ -44,10 +44,8 @@ const ProductDetail = () => {
              platform: 'steam', // Mock
              category: data.categoryName || 'games',
              features: [
-                  { icon: <FiZap />, title: "Giao ngay", desc: "Nhận key kích hoạt tự động qua email 24/7." },
-                  { icon: <FiGlobe />, title: "Global Key", desc: "Kích hoạt và sử dụng tại mọi quốc gia." },
-                  { icon: <FiShield />, title: "Bảo hành uy tín", desc: "Hỗ trợ kỹ thuật và bảo hành suốt đời." },
-                  { icon: <FiCheckCircle />, title: "Chính hãng", desc: "Sản phẩm bản quyền 100% từ nhà phát hành." }
+                   { icon: <FiShield />, title: "Bảo hành uy tín", desc: "Hỗ trợ kỹ thuật và bảo hành suốt đời." },
+                   { icon: <FiCheckCircle />, title: "Chính hãng", desc: "Sản phẩm bản quyền 100% từ nhà phát hành." }
              ]
          };
          setProduct(mappedProduct);
@@ -118,9 +116,6 @@ const ProductDetail = () => {
             {/* 1. Header & Banner */}
             <div className="product-banner" style={{ background: product.banner ? `url(${product.banner}) center/cover` : product.imageColor }}>
                <div className="banner-overlay">
-                  <div className="badge-delivery">
-                    <FiZap /> Giao hàng tức thì
-                  </div>
                   <h1 className="pd-title">{product.name}</h1>
                   <p className="pd-subtitle">{product.description}</p>
                </div>
@@ -136,9 +131,6 @@ const ProductDetail = () => {
                </div>
                <div className="verified-badge">
                   <FiCheckCircle /> Người bán uy tín
-               </div>
-               <div className="global-badge">
-                  <FiGlobe /> Kích hoạt toàn cầu
                </div>
             </div>
 
@@ -256,13 +248,6 @@ const ProductDetail = () => {
                 </button>
              </div>
 
-             <div className="digital-delivery-note">
-                <FiZap size={24} style={{flexShrink: 0}} />
-                <div>
-                   <strong>Giao hàng kỹ thuật số tức thì.</strong>
-                   <br/>Thông tin tài khoản sẽ được gửi tự động qua email ngay sau khi thanh toán thành công.
-                </div>
-             </div>
              
              <div style={{marginTop: '1.5rem', textAlign: 'center'}}>
                 <div style={{display: 'flex', justifyContent: 'space-around', fontSize: '0.75rem', color: '#64748b'}}>

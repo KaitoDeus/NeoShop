@@ -68,7 +68,6 @@ const ProductList = ({
                   loading="lazy" 
                   style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 1, zIndex: 0 }} 
                 />
-                <span className="badge-instant" style={{ zIndex: 1 }}><FiZap size={10} /> {prod.tag}</span>
                 {prod.discount && <span className="badge-sale" style={{ zIndex: 1 }}>{prod.discount}</span>}
               </div>
               <div className="card-content">

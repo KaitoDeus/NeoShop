@@ -21,7 +21,6 @@ const TrendingProducts = () => {
           {products.map((p) => (
              <div key={p.id} className="trending-card">
                <div className="trending-image-container">
-                  <span className="product-tag">{p.tag}</span>
                   {/* Placeholder Icon */}
                   <div style={{ fontSize: '3rem', opacity: 0.5 }}>
                      {p.icon === 'win' && '🪟'}
@@ -33,10 +32,9 @@ const TrendingProducts = () => {
                </div>
                <div className="trending-info">
                  <h3 className="trending-name">{p.name}</h3>
-                 <div className="trending-meta">
-                   <span style={{ fontSize: '0.8rem', color: '#94a3b8' }}>Giao ngay</span>
-                   <span className="trending-price">{formatUSDtoVND(p.price)}</span>
-                 </div>
+                  <div className="trending-meta">
+                    <span className="trending-price">{formatUSDtoVND(p.price)}</span>
+                  </div>
                </div>
              </div>
           ))}

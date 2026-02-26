@@ -1,44 +1,30 @@
-import React, { useState } from 'react';
-import { FiFilter, FiChevronDown, FiRotateCcw } from 'react-icons/fi';
+import React, { useState, useEffect } from 'react';
+import { FiChevronDown, FiRotateCcw } from 'react-icons/fi';
 import './FilterBar.css';
 import './FilterBarSlider.css';
 
 const FilterBar = ({ 
+  categories = [],
   filters, 
   onFilterChange, 
   onReset,
   sortBy,
-  onSortChange
+  onSortChange,
+  onFilterSubmit
 }) => {
-  const [minPrice, setMinPrice] = useState(filters.priceRange[0] || '');
-  const [maxPrice, setMaxPrice] = useState(filters.priceRange[1] || '');
+  // Use range values [0, 50,000,000]
+  const [minPrice, setMinPrice] = useState(filters.priceRange[0] ?? 0);
+  const [maxPrice, setMaxPrice] = useState(filters.priceRange[1] ?? 50000000);
 
-  const handlePriceBlur = () => {
-    let min = minPrice === '' ? 0 : Number(minPrice);
-    let max = maxPrice === '' ? 50000000 : Number(maxPrice);
-    
-    // Validate
-    if (min < 0) min = 0;
-    if (max > 100000000) max = 100000000; // 100 Mil VND limit
-    if (min > max) {
-       // Swap if inverted (optional UX decision, or just clamp)
-       const temp = min;
-       min = max;
-       max = temp;
-    }
-
-    onFilterChange('priceRange', [min, max]);
-    setMinPrice(min); // Sync local state
-    setMaxPrice(max); // Sync local state
-  };
+  // Sync with props when changed externally (e.g. reset)
+  useEffect(() => {
+    setMinPrice(filters.priceRange[0] ?? 0);
+    setMaxPrice(filters.priceRange[1] ?? 50000000);
+  }, [filters.priceRange]);
 
   const handleCategoryChange = (e) => {
-    // Mapping: "Danh mục" -> Category or Platform
-    // Let's assume "Danh mục" here allows selecting specific categories defined in mockProducts (games, ai, office...)
-    // ... (rest of logic)
-    
     const val = e.target.value;
-    onFilterChange('platforms', val === 'all' ? [] : [val]);
+    onFilterChange('categoryId', val === 'all' ? '' : val);
   };
 
   const handleFeatureChange = (e) => {
@@ -46,33 +32,41 @@ const FilterBar = ({
       onFilterChange('features', val === 'all' ? [] : [val]);
   };
 
+  const onMinChange = (e) => {
+    const value = Math.min(Number(e.target.value), maxPrice - 500000);
+    setMinPrice(value);
+    onFilterChange('priceRange', [value, maxPrice]);
+  };
+
+  const onMaxChange = (e) => {
+    const value = Math.max(Number(e.target.value), minPrice + 500000);
+    setMaxPrice(value);
+    onFilterChange('priceRange', [minPrice, value]);
+  };
+
   return (
     <div className="filter-bar-container">
-      {/* Title is handled in parent, this is just the bar */}
-      
       <div className="filter-bar">
-        
         {/* NHÓM 1: Bộ lọc Danh mục & Thể loại */}
         <div className="filter-group-left">
-            {/* Lọc theo Danh mục */}
             <div className="filter-item">
                 <label>Danh mục</label>
                 <div className="select-wrapper">
                     <select 
                         onChange={handleCategoryChange}
-                        value={filters.platforms?.[0] || 'all'}
+                        value={filters.categoryId || 'all'}
                     >
-                        <option value="all">Tất cả</option>
-                        <option value="Steam">Steam Game</option>
-                        <option value="Xbox Live">Xbox Live</option>
-                        <option value="PlayStation Network">PlayStation</option>
-                        <option value="Epic Games">Epic Games</option>
+                        <option value="all">Tất cả danh mục</option>
+                        {categories.map((cat) => (
+                            <option key={cat.id} value={cat.id}>
+                                {cat.name}
+                            </option>
+                        ))}
                     </select>
                     <FiChevronDown className="select-icon" />
                 </div>
             </div>
 
-            {/* Lọc theo Thể loại */}
             <div className="filter-item">
                 <label>Thể loại</label>
                  <div className="select-wrapper">
@@ -80,10 +74,10 @@ const FilterBar = ({
                         onChange={handleFeatureChange}
                         value={filters.features?.[0] || 'all'}
                     >
-                        <option value="all">Tất cả</option>
-                        <option value="Instant Delivery">Giao ngay</option>
-                        <option value="Subscription">Gói đăng ký</option>
-                        <option value="Global Key">Global Key</option>
+                        <option value="all">Tất cả thể loại</option>
+                        <option value="best_seller">Bán chạy</option>
+                        <option value="new_arrival">Mới về</option>
+                        <option value="on_sale">Đang giảm giá</option>
                     </select>
                     <FiChevronDown className="select-icon" />
                 </div>
@@ -98,58 +92,44 @@ const FilterBar = ({
                 </div>
                 
                 <div className="range-slider-compact">
-                    {/* Thanh trượt & Nút kéo */}
                     <div className="slider-track-wrapper">
                         <div className="slider-track"></div>
                         <div 
                             className="slider-range"
                             style={{
-                                left: `${(Number(minPrice) / 50000000) * 100}%`,
-                                width: `${((Number(maxPrice) - Number(minPrice)) / 50000000) * 100}%`
+                                left: `${(minPrice / 50000000) * 100}%`,
+                                width: `${((maxPrice - minPrice) / 50000000) * 100}%`
                             }}
                         ></div>
-                        {/* Nút kéo giá thấp nhất (Min) */}
                         <input 
                             type="range"
                             min="0"
                             max="50000000"
                             step="100000"
-                            value={minPrice === '' ? 0 : minPrice}
-                            onChange={(e) => {
-                                const val = Math.min(Number(e.target.value), (maxPrice === '' ? 50000000 : maxPrice) - 100000);
-                                setMinPrice(val);
-                            }}
-                            onMouseUp={() => onFilterChange('priceRange', [Number(minPrice), Number(maxPrice)])}
-                            onTouchEnd={() => onFilterChange('priceRange', [Number(minPrice), Number(maxPrice)])}
-                            className="thumb-input"
-                            style={{ zIndex: minPrice > 45000000 ? 5 : 3 }}
+                            value={minPrice}
+                            onChange={onMinChange}
+                            className="thumb-input min-thumb"
+                            style={{ zIndex: minPrice > 25000000 ? 5 : 4 }}
                         />
-                        {/* Nút kéo giá cao nhất (Max) */}
                         <input 
                             type="range" 
                             min="0"
                             max="50000000"
                             step="100000"
-                            value={maxPrice === '' ? 50000000 : maxPrice}
-                            onChange={(e) => {
-                                const val = Math.max(Number(e.target.value), (minPrice === '' ? 0 : minPrice) + 100000);
-                                setMaxPrice(val);
-                            }}
-                            onMouseUp={() => onFilterChange('priceRange', [Number(minPrice), Number(maxPrice)])}
-                            onTouchEnd={() => onFilterChange('priceRange', [Number(minPrice), Number(maxPrice)])}
-                            className="thumb-input"
+                            value={maxPrice}
+                            onChange={onMaxChange}
+                            className="thumb-input max-thumb"
                             style={{ zIndex: 4 }}
                         />
                     </div>
 
-                    {/* Hiển thị giá trị (Chỉ đọc) */}
                     <div className="price-badges">
                         <span className="price-badge">
-                            {new Intl.NumberFormat('vi-VN').format(minPrice === '' ? 0 : minPrice)} ₫
+                            {new Intl.NumberFormat('vi-VN').format(minPrice)} ₫
                         </span>
                         <span className="price-separator">-</span>
                         <span className="price-badge">
-                            {new Intl.NumberFormat('vi-VN').format(maxPrice === '' ? 50000000 : maxPrice)} ₫
+                            {new Intl.NumberFormat('vi-VN').format(maxPrice)} ₫
                         </span>
                     </div>
                 </div>
@@ -172,20 +152,20 @@ const FilterBar = ({
                 </div>
             </div>
 
-            <button className="btn-filter-submit">
+            <button className="btn-filter-submit" onClick={(e) => {
+                e.preventDefault();
+                onFilterSubmit();
+            }}>
                 Lọc
             </button>
 
-            {/* Nút khôi phục bộ lọc */}
-            <button className="btn-reset-text" onClick={() => {
-                setMinPrice('');
-                setMaxPrice('');
+            <button className="btn-reset-text" onClick={(e) => {
+                e.preventDefault();
                 onReset();
             }} title="Khôi phục bộ lọc">
                 <FiRotateCcw /> 
             </button>
         </div>
-
       </div>
     </div>
   );
