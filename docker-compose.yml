@@ -5,10 +5,12 @@ services:
     image: postgres:15-alpine
     container_name: neoshop-database
     restart: always
+    env_file:
+      - .env
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=123456
-      - POSTGRES_DB=neoshop
+      - POSTGRES_USER=${POSTGRES_USER:-postgres}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-123456}
+      - POSTGRES_DB=${POSTGRES_DB:-neoshop}
     ports:
       - "5433:5432"
     volumes:
@@ -27,11 +29,13 @@ services:
     volumes:
       - ./backend:/app
       - /app/target
+    env_file:
+      - .env
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/neoshop
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=123456
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://database:5432/neoshop}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-123456}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=update
     depends_on:
       - database
@@ -46,7 +50,7 @@ services:
     container_name: neoshop-frontend
     restart: always
     ports:
-      - "3000:3000"
+      - "5173:5173"
     volumes:
       - ./frontend:/app
       - /app/node_modules
