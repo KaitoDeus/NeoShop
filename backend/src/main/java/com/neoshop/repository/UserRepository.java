@@ -15,4 +15,14 @@ public interface UserRepository extends JpaRepository<User, UUID> {
   boolean existsByUsername(String username);
 
   boolean existsByEmail(String email);
+
+  @org.springframework.data.jpa.repository.Query("SELECT u FROM User u WHERE " +
+      "(:query IS NULL OR :query = '' OR " +
+      "LOWER(u.username) LIKE LOWER(CONCAT('%', CAST(:query AS string), '%')) OR " +
+      "LOWER(u.email) LIKE LOWER(CONCAT('%', CAST(:query AS string), '%')) OR " +
+      "LOWER(u.fullName) LIKE LOWER(CONCAT('%', CAST(:query AS string), '%')) OR " +
+      "LOWER(u.phoneNumber) LIKE LOWER(CONCAT('%', CAST(:query AS string), '%')))")
+  org.springframework.data.domain.Page<User> searchUsers(
+      @org.springframework.data.repository.query.Param("query") String query,
+      org.springframework.data.domain.Pageable pageable);
 }

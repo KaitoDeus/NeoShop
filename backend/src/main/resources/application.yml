@@ -7,7 +7,7 @@ spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/neoshop}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
-    password: ${SPRING_DATASOURCE_PASSWORD:123456}
+    password: ${SPRING_DATASOURCE_PASSWORD:your_db_password}
     driver-class-name: org.postgresql.Driver
     hikari:
       connection-timeout: 30000
@@ -49,3 +49,20 @@ logging:
   level:
     org.springframework.security: DEBUG
     com.neoshop: DEBUG
+
+# VNPay Configuration
+vnpay:
+  tmnCode: ${VNPAY_TMN_CODE:your_vnpay_tmn_code}
+  hashSecret: ${VNPAY_HASH_SECRET:your_vnpay_hash_secret}
+  payUrl: ${VNPAY_PAY_URL:https://sandbox.vnpayment.vn/paymentv2/vpcpay.html}
+  returnUrl: ${VNPAY_RETURN_URL:http://localhost:5173/order-success/}
+  apiUrl: ${VNPAY_API_URL:https://sandbox.vnpayment.vn/merchant_webapi/api/transaction}
+
+# MoMo Configuration
+momo:
+  partnerCode: ${MOMO_PARTNER_CODE:your_momo_partner_code}
+  accessKey: ${MOMO_ACCESS_KEY:your_momo_access_key}
+  secretKey: ${MOMO_SECRET_KEY:your_momo_secret_key}
+  endpoint: ${MOMO_ENDPOINT:https://test-payment.momo.vn/v2/gateway/api/create}
+  redirectUrl: ${MOMO_REDIRECT_URL:http://localhost:5173/order-success/}
+  ipnUrl: ${MOMO_IPN_URL:http://localhost:8080/api/payments/momo/ipn}

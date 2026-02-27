@@ -91,7 +91,7 @@ class AdminControllerTest {
     response.setId(java.util.UUID.randomUUID());
     Page<UserResponse> page = new PageImpl<>(Collections.singletonList(response));
 
-    when(userService.getAllUsers(any(Pageable.class))).thenReturn(page);
+    when(userService.getAllUsers(any(), any(Pageable.class))).thenReturn(page);
 
     mockMvc
         .perform(

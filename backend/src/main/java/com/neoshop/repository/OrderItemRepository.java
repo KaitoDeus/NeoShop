@@ -10,18 +10,20 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OrderItemRepository extends JpaRepository<OrderItem, UUID> {
 
-  @Query(
-      "SELECT c.name, SUM(oi.unitPrice * oi.quantity) as revenue "
-          + "FROM OrderItem oi JOIN oi.product p JOIN p.category c "
-          + "WHERE oi.order.status IN ('PAID', 'COMPLETED') "
-          + "GROUP BY c.name")
+  @Query("SELECT c.name, SUM(oi.unitPrice * oi.quantity) as revenue "
+      + "FROM OrderItem oi JOIN oi.product p JOIN p.category c "
+      + "WHERE oi.order.status IN ('PAID', 'COMPLETED') "
+      + "GROUP BY c.name")
   List<Object[]> getRevenueByCategory();
 
-  @Query(
-      "SELECT p.title, SUM(oi.quantity) as totalSold "
-          + "FROM OrderItem oi JOIN oi.product p "
-          + "WHERE oi.order.status IN ('PAID', 'COMPLETED') "
-          + "GROUP BY p.id, p.title "
-          + "ORDER BY totalSold DESC")
+  @Query("SELECT p.title, SUM(oi.quantity) as totalSold "
+      + "FROM OrderItem oi JOIN oi.product p "
+      + "WHERE oi.order.status IN ('PAID', 'COMPLETED') "
+      + "GROUP BY p.id, p.title "
+      + "ORDER BY totalSold DESC")
   List<Object[]> getTopSellingProducts();
+
+  List<OrderItem> findByProductId(UUID productId);
+
+  List<OrderItem> findByProductIdIn(List<UUID> productIds);
 }

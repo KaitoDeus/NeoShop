@@ -26,15 +26,18 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public AuthResponse updateProfile(String username, UpdateProfileRequest request) {
-    User user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    User user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
-    if (request.getFullName() != null) user.setFullName(request.getFullName());
-    if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
-    if (request.getAddress() != null) user.setAddress(request.getAddress());
-    if (request.getAvatar() != null) user.setAvatar(request.getAvatar());
+    if (request.getFullName() != null)
+      user.setFullName(request.getFullName());
+    if (request.getPhoneNumber() != null)
+      user.setPhoneNumber(request.getPhoneNumber());
+    if (request.getAddress() != null)
+      user.setAddress(request.getAddress());
+    if (request.getAvatar() != null)
+      user.setAvatar(request.getAvatar());
 
     user.setUpdatedAt(java.time.LocalDateTime.now());
     userRepository.save(user);
@@ -44,10 +47,9 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public void changePassword(String username, ChangePasswordRequest request) {
-    User user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    User user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
       throw new RuntimeException("Old password does not match");
@@ -60,31 +62,29 @@ public class UserServiceImpl implements UserService {
 
   @Override
   public AuthResponse getCurrentUser(String username) {
-    User user =
-        userRepository
-            .findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+    User user = userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
     return mapToAuthResponse(user);
   }
 
   @Override
-  public org.springframework.data.domain.Page<com.neoshop.model.dto.response.UserResponse>
-      getAllUsers(org.springframework.data.domain.Pageable pageable) {
+  public org.springframework.data.domain.Page<com.neoshop.model.dto.response.UserResponse> getAllUsers(String query,
+      org.springframework.data.domain.Pageable pageable) {
     return userRepository
-        .findAll(pageable)
+        .searchUsers(query, pageable)
         .map(
-            user ->
-                com.neoshop.model.dto.response.UserResponse.builder()
-                    .id(user.getId())
-                    .username(user.getUsername())
-                    .email(user.getEmail())
-                    .fullName(user.getFullName())
-                    .phoneNumber(user.getPhoneNumber())
-                    .address(user.getAddress())
-                    .avatar(user.getAvatar())
-                    .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
-                    .active(true)
-                    .build());
+            user -> com.neoshop.model.dto.response.UserResponse.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .email(user.getEmail())
+                .fullName(user.getFullName())
+                .phoneNumber(user.getPhoneNumber())
+                .address(user.getAddress())
+                .avatar(user.getAvatar())
+                .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+                .active(true)
+                .build());
   }
 
   @Override
@@ -97,23 +97,21 @@ public class UserServiceImpl implements UserService {
       throw new RuntimeException("Email already exists");
     }
 
-    Role userRole =
-        roleRepository
-            .findByName("USER")
-            .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
+    Role userRole = roleRepository
+        .findByName("USER")
+        .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
 
-    User user =
-        User.builder()
-            .username(request.getUsername())
-            .email(request.getEmail())
-            .passwordHash(passwordEncoder.encode(request.getPassword()))
-            .fullName(request.getUsername())
-            .address("")
-            .phoneNumber("")
-            .roles(java.util.Collections.singleton(userRole))
-            .createdAt(java.time.LocalDateTime.now())
-            .updatedAt(java.time.LocalDateTime.now())
-            .build();
+    User user = User.builder()
+        .username(request.getUsername())
+        .email(request.getEmail())
+        .passwordHash(passwordEncoder.encode(request.getPassword()))
+        .fullName(request.getUsername())
+        .address("")
+        .phoneNumber("")
+        .roles(java.util.Collections.singleton(userRole))
+        .createdAt(java.time.LocalDateTime.now())
+        .updatedAt(java.time.LocalDateTime.now())
+        .build();
 
     User savedUser = userRepository.save(user);
 
@@ -130,13 +128,16 @@ public class UserServiceImpl implements UserService {
   @Override
   public com.neoshop.model.dto.response.UserResponse updateUserAdmin(
       UUID id, UpdateProfileRequest request) {
-    User user =
-        userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
 
-    if (request.getFullName() != null) user.setFullName(request.getFullName());
-    if (request.getPhoneNumber() != null) user.setPhoneNumber(request.getPhoneNumber());
-    if (request.getAddress() != null) user.setAddress(request.getAddress());
-    if (request.getAvatar() != null) user.setAvatar(request.getAvatar());
+    if (request.getFullName() != null)
+      user.setFullName(request.getFullName());
+    if (request.getPhoneNumber() != null)
+      user.setPhoneNumber(request.getPhoneNumber());
+    if (request.getAddress() != null)
+      user.setAddress(request.getAddress());
+    if (request.getAvatar() != null)
+      user.setAvatar(request.getAvatar());
 
     user.setUpdatedAt(java.time.LocalDateTime.now());
     User savedUser = userRepository.save(user);

@@ -102,9 +102,12 @@ public class AdminController {
   @GetMapping("/users")
   @Operation(summary = "List all users")
   public ResponseEntity<Page<UserResponse>> getAllUsers(
-      @RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size) {
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size,
+      @RequestParam(required = false) String query) {
     Pageable pageable = PageRequest.of(page, size);
-    return ResponseEntity.ok(userService.getAllUsers(pageable));
+    String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
+    return ResponseEntity.ok(userService.getAllUsers(filterQuery, pageable));
   }
 
   @PostMapping("/users")
@@ -189,9 +192,14 @@ public class AdminController {
       @RequestParam(required = false) String query,
       @RequestParam(required = false) UUID productId,
       @RequestParam(required = false) String status) {
+
+    // Normalize empty strings to null
+    String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
+    String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
+
     Pageable pageable = PageRequest.of(
         page, size, org.springframework.data.domain.Sort.by("createdAt").descending());
-    return ResponseEntity.ok(productKeyService.searchKeys(productId, query, status, pageable));
+    return ResponseEntity.ok(productKeyService.searchKeys(productId, filterQuery, filterStatus, pageable));
   }
 
   @PostMapping("/keys/bulk")

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -37,26 +37,27 @@ public class AuthServiceImpl implements AuthService {
       userCheck = userRepository.findByEmail(request.getUsername());
     }
 
-    if (userCheck.isPresent()) {
-      var user = userCheck.get();
-      if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-        log.warn("Password mismatch for user: {}", user.getUsername());
-      }
-    } else {
-      log.warn("User not found in DB: {}", request.getUsername());
+    if (userCheck.isEmpty()) {
+      log.warn("Login failed: User not found: {}", request.getUsername());
+      throw new org.springframework.security.authentication.BadCredentialsException(
+          "Thông tin đăng nhập không chính xác");
     }
 
-    var user = userCheck.orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    var user = userCheck.get();
+    if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
+      log.warn("Login failed: Password mismatch for user: {}", user.getUsername());
+      throw new org.springframework.security.authentication.BadCredentialsException(
+          "Thông tin đăng nhập không chính xác");
+    }
 
     authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(user.getUsername(), request.getPassword()));
 
-    var userDetails =
-        org.springframework.security.core.userdetails.User.builder()
-            .username(user.getUsername())
-            .password(user.getPasswordHash())
-            .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
-            .build();
+    var userDetails = org.springframework.security.core.userdetails.User.builder()
+        .username(user.getUsername())
+        .password(user.getPasswordHash())
+        .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
+        .build();
 
     var jwtToken = jwtService.generateToken(userDetails);
 
@@ -75,37 +76,34 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public AuthResponse register(RegisterRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
-      throw new RuntimeException("Username already exists");
+      throw new IllegalArgumentException("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác");
     }
     if (userRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("Email already exists");
+      throw new IllegalArgumentException("Email đã được sử dụng, vui lòng chọn email khác");
     }
 
-    Role userRole =
-        roleRepository
-            .findByName("USER")
-            .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
+    Role userRole = roleRepository
+        .findByName("USER")
+        .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
 
-    User user =
-        User.builder()
-            .username(request.getUsername())
-            .email(request.getEmail())
-            .passwordHash(passwordEncoder.encode(request.getPassword()))
-            .fullName(request.getUsername())
-            .roles(Collections.singleton(userRole))
-            .createdAt(java.time.LocalDateTime.now())
-            .updatedAt(java.time.LocalDateTime.now())
-            .build();
+    User user = User.builder()
+        .username(request.getUsername())
+        .email(request.getEmail())
+        .passwordHash(passwordEncoder.encode(request.getPassword()))
+        .fullName(request.getUsername())
+        .roles(Collections.singleton(userRole))
+        .createdAt(java.time.LocalDateTime.now())
+        .updatedAt(java.time.LocalDateTime.now())
+        .build();
 
     userRepository.save(user);
 
     // Auto login after register
-    var userDetails =
-        org.springframework.security.core.userdetails.User.builder()
-            .username(user.getUsername())
-            .password(user.getPasswordHash())
-            .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
-            .build();
+    var userDetails = org.springframework.security.core.userdetails.User.builder()
+        .username(user.getUsername())
+        .password(user.getPasswordHash())
+        .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
+        .build();
 
     var jwtToken = jwtService.generateToken(userDetails);
 

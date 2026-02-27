@@ -48,7 +48,7 @@ public class StatisticsService {
     List<Object[]> results = orderItemRepository.getRevenueByCategory();
     List<Map<String, Object>> stats = new ArrayList<>();
 
-    String[] colors = {"#2563eb", "#7c3aed", "#db2777", "#ea580c", "#16a34a", "#475569"};
+    String[] colors = { "#2563eb", "#7c3aed", "#db2777", "#ea580c", "#16a34a", "#475569" };
     int colorIdx = 0;
 
     for (Object[] row : results) {
@@ -68,7 +68,8 @@ public class StatisticsService {
 
     int count = 0;
     for (Object[] row : results) {
-      if (count >= limit) break;
+      if (count >= limit)
+        break;
       Map<String, Object> item = new HashMap<>();
       item.put("name", row[0]);
       item.put("sold", row[1]);
@@ -119,12 +120,12 @@ public class StatisticsService {
     return paymentStats;
   }
 
-  public List<Map<String, Object>> getRevenueChartData() {
+  public List<Map<String, Object>> getRevenueChartData(int days) {
     List<Map<String, Object>> chartData = new ArrayList<>();
     LocalDate today = LocalDate.now();
-    String[] dayNames = {"CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7"};
+    String[] dayNames = { "CN", "Thứ 2", "Thứ 3", "Thứ 4", "Thứ 5", "Thứ 6", "Thứ 7" };
 
-    for (int i = 6; i >= 0; i--) {
+    for (int i = days - 1; i >= 0; i--) {
       LocalDate date = today.minusDays(i);
       LocalDateTime startOfDay = date.atStartOfDay();
       LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
@@ -134,8 +135,13 @@ public class StatisticsService {
         dailyRevenue = BigDecimal.ZERO;
       }
 
-      int dayOfWeek = date.getDayOfWeek().getValue();
-      String name = dayNames[dayOfWeek % 7];
+      String name;
+      if (days <= 7) {
+        int dayOfWeek = date.getDayOfWeek().getValue();
+        name = dayNames[dayOfWeek % 7];
+      } else {
+        name = String.format("%02d/%02d", date.getDayOfMonth(), date.getMonthValue());
+      }
 
       Map<String, Object> point = new LinkedHashMap<>();
       point.put("name", name);
@@ -153,11 +159,11 @@ public class StatisticsService {
     for (int i = 5; i >= 0; i--) {
       LocalDate monthDate = now.minusMonths(i);
       LocalDateTime startOfMonth = monthDate.withDayOfMonth(1).atStartOfDay();
-      LocalDateTime endOfMonth =
-          monthDate.withDayOfMonth(monthDate.lengthOfMonth()).atTime(LocalTime.MAX);
+      LocalDateTime endOfMonth = monthDate.withDayOfMonth(monthDate.lengthOfMonth()).atTime(LocalTime.MAX);
 
       BigDecimal revenue = orderRepository.sumRevenueBetween(startOfMonth, endOfMonth);
-      if (revenue == null) revenue = BigDecimal.ZERO;
+      if (revenue == null)
+        revenue = BigDecimal.ZERO;
 
       Map<String, Object> monthRow = new LinkedHashMap<>();
       monthRow.put("month", "Tháng " + monthDate.getMonthValue());

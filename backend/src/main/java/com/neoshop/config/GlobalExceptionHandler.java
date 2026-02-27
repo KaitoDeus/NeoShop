@@ -33,46 +33,52 @@ public class GlobalExceptionHandler {
 
     String validationMessage = "Validation failed: " + errors.toString();
 
-    ErrorResponse errorResponse =
-        ErrorResponse.builder()
-            .status(HttpStatus.BAD_REQUEST.value())
-            .message(validationMessage)
-            .timestamp(LocalDateTime.now())
-            .build();
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.BAD_REQUEST.value())
+        .message(validationMessage)
+        .timestamp(LocalDateTime.now())
+        .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<ErrorResponse> handleBadCredentials(BadCredentialsException ex) {
-    ErrorResponse errorResponse =
-        ErrorResponse.builder()
-            .status(HttpStatus.UNAUTHORIZED.value())
-            .message("Invalid username or password")
-            .timestamp(LocalDateTime.now())
-            .build();
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.UNAUTHORIZED.value())
+        .message("Invalid username or password")
+        .timestamp(LocalDateTime.now())
+        .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
   }
 
   @ExceptionHandler(AccessDeniedException.class)
   public ResponseEntity<ErrorResponse> handleAccessDenied(AccessDeniedException ex) {
-    ErrorResponse errorResponse =
-        ErrorResponse.builder()
-            .status(HttpStatus.FORBIDDEN.value())
-            .message("Access denied: You don't have permission to access this resource")
-            .timestamp(LocalDateTime.now())
-            .build();
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.FORBIDDEN.value())
+        .message("Access denied: You don't have permission to access this resource")
+        .timestamp(LocalDateTime.now())
+        .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.FORBIDDEN);
+  }
+
+  @ExceptionHandler(IllegalArgumentException.class)
+  public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex) {
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.BAD_REQUEST.value())
+        .message(ex.getMessage())
+        .timestamp(LocalDateTime.now())
+        .build();
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
     log.error("Unexpected error occurred: ", ex);
-    ErrorResponse errorResponse =
-        ErrorResponse.builder()
-            .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-            .message("An unexpected error occurred")
-            .timestamp(LocalDateTime.now())
-            .build();
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+        .message("An unexpected error occurred")
+        .timestamp(LocalDateTime.now())
+        .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
   }
 }

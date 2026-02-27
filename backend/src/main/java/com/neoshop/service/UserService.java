@@ -16,7 +16,7 @@ public interface UserService {
 
   AuthResponse getCurrentUser(String username);
 
-  Page<UserResponse> getAllUsers(Pageable pageable);
+  Page<UserResponse> getAllUsers(String query, Pageable pageable);
 
   UserResponse createUser(com.neoshop.model.dto.request.RegisterRequest request);
 

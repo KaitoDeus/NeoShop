@@ -33,49 +33,40 @@ public class OrderService {
 
   @Transactional
   public OrderResponse createOrder(UUID userId, OrderRequest request) {
-    User user =
-        userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
-    Order order =
-        Order.builder()
-            .user(user)
-            .status("PENDING")
-            .paymentMethod(request.getPaymentMethod())
-            .shippingAddress(request.getShippingAddress())
-            .orderDate(LocalDateTime.now())
-            .items(new ArrayList<>())
-            .build();
+    Order order = Order.builder()
+        .user(user)
+        .status("PENDING")
+        .paymentMethod(request.getPaymentMethod())
+        .shippingAddress(request.getShippingAddress())
+        .orderDate(LocalDateTime.now())
+        .items(new ArrayList<>())
+        .build();
 
     BigDecimal totalAmount = BigDecimal.ZERO;
 
     for (OrderRequest.OrderItemRequest itemRequest : request.getItems()) {
-      Product product =
-          productRepository
-              .findById(itemRequest.getProductId())
-              .orElseThrow(
-                  () -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
+      Product product = productRepository
+          .findById(itemRequest.getProductId())
+          .orElseThrow(
+              () -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
 
       if (product.getStockQuantity() < itemRequest.getQuantity()) {
         throw new RuntimeException("Insufficient stock for product: " + product.getTitle());
       }
 
-      // Update stock
-      product.setStockQuantity(product.getStockQuantity() - itemRequest.getQuantity());
-      productRepository.save(product);
-
-      OrderItem orderItem =
-          OrderItem.builder()
-              .order(order)
-              .product(product)
-              .quantity(itemRequest.getQuantity())
-              .unitPrice(
-                  product.getSalePrice() != null ? product.getSalePrice() : product.getPrice())
-              .build();
+      OrderItem orderItem = OrderItem.builder()
+          .order(order)
+          .product(product)
+          .quantity(itemRequest.getQuantity())
+          .unitPrice(
+              product.getSalePrice() != null ? product.getSalePrice() : product.getPrice())
+          .build();
 
       order.getItems().add(orderItem);
-      totalAmount =
-          totalAmount.add(
-              orderItem.getUnitPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
+      totalAmount = totalAmount.add(
+          orderItem.getUnitPrice().multiply(BigDecimal.valueOf(orderItem.getQuantity())));
     }
 
     order.setTotalAmount(totalAmount);
@@ -117,23 +108,44 @@ public class OrderService {
   }
 
   public OrderResponse getOrderById(UUID orderId) {
-    Order order =
-        orderRepository
-            .findById(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+    Order order = orderRepository
+        .findById(orderId)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
     return mapToResponse(order);
   }
 
+  @Transactional
   public void deleteOrder(UUID id) {
     if (!orderRepository.existsById(id)) {
       throw new RuntimeException("Order not found");
     }
+    unlinkKeysFromOrders(List.of(id));
     orderRepository.deleteById(id);
   }
 
   @Transactional
   public void bulkDeleteOrders(List<UUID> ids) {
+    unlinkKeysFromOrders(ids);
     orderRepository.deleteAllById(ids);
+  }
+
+  private void unlinkKeysFromOrders(List<UUID> orderIds) {
+    List<com.neoshop.model.entity.ProductKey> keys = productKeyRepository.findByOrderIdIn(orderIds);
+    if (!keys.isEmpty()) {
+      java.util.Set<com.neoshop.model.entity.Product> productsToUpdate = new java.util.HashSet<>();
+      for (com.neoshop.model.entity.ProductKey key : keys) {
+        key.setStatus(com.neoshop.model.entity.ProductKey.KeyStatus.AVAILABLE);
+        key.setOrderId(null);
+        productsToUpdate.add(key.getProduct());
+      }
+      productKeyRepository.saveAll(keys);
+
+      for (com.neoshop.model.entity.Product product : productsToUpdate) {
+        product.setStockQuantity((int) productKeyRepository.countByProductIdAndStatus(product.getId(),
+            com.neoshop.model.entity.ProductKey.KeyStatus.AVAILABLE));
+        productRepository.save(product);
+      }
+    }
   }
 
   @Transactional
@@ -145,10 +157,9 @@ public class OrderService {
 
   @Transactional
   public OrderResponse updateOrderStatus(UUID orderId, String status) {
-    Order order =
-        orderRepository
-            .findById(orderId)
-            .orElseThrow(() -> new RuntimeException("Order not found"));
+    Order order = orderRepository
+        .findById(orderId)
+        .orElseThrow(() -> new RuntimeException("Order not found"));
 
     String oldStatus = order.getStatus();
     order.setStatus(status);
@@ -166,10 +177,9 @@ public class OrderService {
 
   private void assignKeysToOrder(Order order) {
     for (OrderItem item : order.getItems()) {
-      List<com.neoshop.model.entity.ProductKey> availableKeys =
-          productKeyRepository.findAvailableKeysByProduct(
-              item.getProduct().getId(),
-              org.springframework.data.domain.PageRequest.of(0, item.getQuantity()));
+      List<com.neoshop.model.entity.ProductKey> availableKeys = productKeyRepository.findAvailableKeysByProduct(
+          item.getProduct().getId(),
+          org.springframework.data.domain.PageRequest.of(0, item.getQuantity()));
 
       if (availableKeys.size() < item.getQuantity()) {
         // Trong thực tế, cần có cơ chế xử lý khi thiếu key (thông báo admin, hoàn
@@ -183,6 +193,12 @@ public class OrderService {
         key.setOrderId(order.getId());
       }
       productKeyRepository.saveAll(availableKeys);
+
+      // Update stock properly since now it's PAID
+      com.neoshop.model.entity.Product product = item.getProduct();
+      product.setStockQuantity((int) productKeyRepository.countByProductIdAndStatus(product.getId(),
+          com.neoshop.model.entity.ProductKey.KeyStatus.AVAILABLE));
+      productRepository.save(product);
     }
   }
 
@@ -201,14 +217,13 @@ public class OrderService {
         .items(
             order.getItems().stream()
                 .map(
-                    item ->
-                        OrderResponse.OrderItemResponse.builder()
-                            .id(item.getId())
-                            .productId(item.getProduct().getId())
-                            .productTitle(item.getProduct().getTitle())
-                            .quantity(item.getQuantity())
-                            .unitPrice(item.getUnitPrice())
-                            .build())
+                    item -> OrderResponse.OrderItemResponse.builder()
+                        .id(item.getId())
+                        .productId(item.getProduct().getId())
+                        .productTitle(item.getProduct().getTitle())
+                        .quantity(item.getQuantity())
+                        .unitPrice(item.getUnitPrice())
+                        .build())
                 .collect(Collectors.toList()))
         .build();
   }

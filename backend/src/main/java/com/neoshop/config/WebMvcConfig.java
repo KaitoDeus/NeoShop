@@ -12,7 +12,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
     // Broaden CORS for all API and uploads endpoints
     registry
         .addMapping("/**")
-        .allowedOrigins("http://localhost:3000", "http://localhost:5173", "http://localhost:8080")
+        .allowedOrigins("http://localhost:5173", "http://localhost:8080")
         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
         .allowedHeaders("*")
         .allowCredentials(true);

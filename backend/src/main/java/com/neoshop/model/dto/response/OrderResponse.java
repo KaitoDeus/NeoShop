@@ -24,6 +24,7 @@ public class OrderResponse {
   private String paymentMethod;
   private String shippingAddress;
   private LocalDateTime orderDate;
+  private String paymentUrl;
   private List<OrderItemResponse> items;
 
   @Data

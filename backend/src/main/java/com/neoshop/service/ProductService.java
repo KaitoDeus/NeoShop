@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 public class ProductService {
   private final ProductRepository productRepository;
   private final CategoryRepository categoryRepository;
+  private final com.neoshop.repository.ProductKeyRepository productKeyRepository;
+  private final com.neoshop.repository.OrderItemRepository orderItemRepository;
 
   public Page<ProductResponse> getAllProducts(Pageable pageable) {
     return productRepository.findAll(pageable).map(this::mapToResponse);
@@ -106,15 +108,41 @@ public class ProductService {
   }
 
   @org.springframework.cache.annotation.CacheEvict(value = "products", key = "#id")
+  @org.springframework.transaction.annotation.Transactional
   public void deleteProduct(UUID id) {
     if (!productRepository.existsById(id)) {
       throw new RuntimeException("Product not found");
     }
+
+    // 1. Unlink from order items (để giữ lại lịch sử đơn hàng nhưng cho phép xoá
+    // sản phẩm)
+    List<com.neoshop.model.entity.OrderItem> items = orderItemRepository.findByProductId(id);
+    for (com.neoshop.model.entity.OrderItem item : items) {
+      item.setProduct(null);
+    }
+    orderItemRepository.saveAll(items);
+
+    // 2. Xoá các key của sản phẩm trước để tránh lỗi khoá ngoại
+    List<com.neoshop.model.entity.ProductKey> keys = productKeyRepository.findByProductId(id);
+    productKeyRepository.deleteAll(keys);
+
     productRepository.deleteById(id);
   }
 
   @org.springframework.transaction.annotation.Transactional
   public void bulkDeleteProducts(List<UUID> ids) {
+    // 1. Unlink from order items
+    List<com.neoshop.model.entity.OrderItem> allItems = orderItemRepository.findByProductIdIn(ids);
+    for (com.neoshop.model.entity.OrderItem item : allItems) {
+      item.setProduct(null);
+    }
+    orderItemRepository.saveAll(allItems);
+
+    // 2. Xoá các key
+    for (UUID id : ids) {
+      List<com.neoshop.model.entity.ProductKey> keys = productKeyRepository.findByProductId(id);
+      productKeyRepository.deleteAll(keys);
+    }
     productRepository.deleteAllById(ids);
   }
 

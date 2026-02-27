@@ -21,17 +21,39 @@ import org.springframework.web.bind.annotation.*;
 public class OrderController {
   private final OrderService orderService;
   private final com.neoshop.repository.UserRepository userRepository;
+  private final com.neoshop.service.VNPayService vnPayService;
+  private final com.neoshop.service.MoMoService moMoService;
 
   @PostMapping
   @Operation(summary = "Tạo đơn hàng mới")
   public ResponseEntity<OrderResponse> createOrder(
       java.security.Principal principal,
+      jakarta.servlet.http.HttpServletRequest httpRequest,
       @jakarta.validation.Valid @RequestBody OrderRequest request) {
-    User user =
-        userRepository
-            .findByUsername(principal.getName())
-            .orElseThrow(() -> new RuntimeException("User not found"));
-    return ResponseEntity.ok(orderService.createOrder(user.getId(), request));
+    User user = userRepository
+        .findByUsername(principal.getName())
+        .orElseThrow(() -> new RuntimeException("User not found"));
+    OrderResponse response = orderService.createOrder(user.getId(), request);
+
+    if ("VNPAY".equals(request.getPaymentMethod())) {
+      try {
+        String paymentUrl = vnPayService.createPaymentUrl(response.getId(), response.getTotalAmount().longValue(),
+            "Thanh toan don hang " + response.getId(), httpRequest);
+        response.setPaymentUrl(paymentUrl);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    } else if ("MOMO".equals(request.getPaymentMethod())) {
+      try {
+        String paymentUrl = moMoService.createPaymentUrl(response.getId(), response.getTotalAmount().longValue(),
+            "Thanh toan don hang " + response.getId());
+        response.setPaymentUrl(paymentUrl);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+    }
+
+    return ResponseEntity.ok(response);
   }
 
   @GetMapping("/my-orders")
@@ -40,10 +62,9 @@ public class OrderController {
       java.security.Principal principal,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
-    User user =
-        userRepository
-            .findByUsername(principal.getName())
-            .orElseThrow(() -> new RuntimeException("User not found"));
+    User user = userRepository
+        .findByUsername(principal.getName())
+        .orElseThrow(() -> new RuntimeException("User not found"));
     Pageable pageable = PageRequest.of(page, size);
     return ResponseEntity.ok(orderService.getOrdersByUser(user.getId(), pageable));
   }
