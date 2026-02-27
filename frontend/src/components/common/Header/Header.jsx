@@ -10,6 +10,8 @@ import './Header.css';
 import Logo from '../Logo/Logo';
 
 import productService from '../../../services/productService';
+import { getProductCover } from '../../../utils/imageHelpers';
+
 // Debounce helper
 const useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
@@ -50,8 +52,8 @@ const Header = () => {
                 const mapped = data.content.map(p => ({
                     id: p.id,
                     title: p.title,
-                    price: p.price,
-                    imageColor: 'linear-gradient(135deg, #1e1b4b, #312e81)' // Placeholder
+                    price: p.salePrice || p.price,
+                    imageCover: getProductCover(p.title)
                 }));
                 setSuggestions(mapped);
                 setShowSuggestions(true);
@@ -148,7 +150,7 @@ const Header = () => {
                       className="suggestion-item"
                       onClick={() => handleSuggestionClick(product.id)}
                    >
-                     <img src="https://placehold.co/40" style={{background: product.imageColor, width: 32, height: 32, borderRadius: 4, objectFit: 'cover'}} alt="" />
+                     <img src={product.imageCover} style={{width: 32, height: 32, borderRadius: 4, objectFit: 'cover'}} alt={product.title} />
                      <div className="suggestion-info">
                         <span className="suggest-title">{product.title}</span>
                         <span className="suggest-price">{new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}</span>

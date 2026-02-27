@@ -37,8 +37,7 @@ public class ProductService {
   @org.springframework.transaction.annotation.Transactional(readOnly = true)
   public Page<ProductResponse> getAllProductsAdmin(
       String title, UUID categoryId, String status, Pageable pageable) {
-    String searchTitle =
-        (title != null && !title.isBlank()) ? "%" + title.toLowerCase() + "%" : null;
+    String searchTitle = (title != null && !title.isBlank()) ? "%" + title.toLowerCase() + "%" : null;
     return productRepository
         .findFilteredProducts(searchTitle, categoryId, status, null, null, pageable)
         .map(this::mapToResponse);
@@ -55,31 +54,28 @@ public class ProductService {
 
   @org.springframework.cache.annotation.Cacheable(value = "products", key = "#id")
   public ProductResponse getProductById(UUID id) {
-    Product product =
-        productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+    Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
     return mapToResponse(product);
   }
 
   public ProductResponse createProduct(ProductRequest request) {
     Category category = null;
     if (request.getCategoryId() != null) {
-      category =
-          categoryRepository
-              .findById(request.getCategoryId())
-              .orElseThrow(() -> new RuntimeException("Category not found"));
+      category = categoryRepository
+          .findById(request.getCategoryId())
+          .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
-    Product product =
-        Product.builder()
-            .title(request.getTitle())
-            .description(request.getDescription())
-            .price(request.getPrice())
-            .salePrice(request.getSalePrice())
-            .category(category)
-            .stockQuantity(0)
-            .status(request.getStatus() != null ? request.getStatus() : "ACTIVE")
-            .createdAt(LocalDateTime.now())
-            .build();
+    Product product = Product.builder()
+        .title(request.getTitle())
+        .description(request.getDescription())
+        .price(request.getPrice())
+        .salePrice(request.getSalePrice())
+        .category(category)
+        .stockQuantity(0)
+        .status(request.getStatus() != null ? request.getStatus() : "ACTIVE")
+        .createdAt(LocalDateTime.now())
+        .build();
 
     Product savedProduct = productRepository.save(product);
     return mapToResponse(savedProduct);
@@ -87,15 +83,13 @@ public class ProductService {
 
   @org.springframework.cache.annotation.CachePut(value = "products", key = "#id")
   public ProductResponse updateProduct(UUID id, ProductRequest request) {
-    Product product =
-        productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
+    Product product = productRepository.findById(id).orElseThrow(() -> new RuntimeException("Product not found"));
 
     Category category = null;
     if (request.getCategoryId() != null) {
-      category =
-          categoryRepository
-              .findById(request.getCategoryId())
-              .orElseThrow(() -> new RuntimeException("Category not found"));
+      category = categoryRepository
+          .findById(request.getCategoryId())
+          .orElseThrow(() -> new RuntimeException("Category not found"));
     }
 
     product.setTitle(request.getTitle());
@@ -143,6 +137,8 @@ public class ProductService {
         .stockQuantity(product.getStockQuantity())
         .status(product.getStatus())
         .createdAt(product.getCreatedAt())
+        .averageRating(product.getAverageRating() != null ? product.getAverageRating() : 0.0)
+        .reviewCount(product.getReviewCount() != null ? product.getReviewCount() : 0)
         .build();
   }
 }

@@ -40,4 +40,12 @@ public class Product {
 
   @Column(name = "created_at")
   private LocalDateTime createdAt;
+
+  @Column(name = "average_rating")
+  @Builder.Default
+  private Double averageRating = 0.0;
+
+  @Column(name = "review_count")
+  @Builder.Default
+  private Integer reviewCount = 0;
 }

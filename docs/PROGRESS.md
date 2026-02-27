@@ -154,6 +154,13 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
     - [x] Chức năng **Xuất báo cáo** (CSV Export).
     - [x] Chức năng **Tạo đơn thủ công** (Manual Order Entry Modal & API).
 
+### 14.3. Tính năng Đánh giá & Nhận xét (Reviews & Ratings)
+
+- [x] Backend: Thiết kế Entity `Review`, API CRUD cho bình luận và chấm điểm.
+- [x] Backend: Tự động tính toán điểm trung bình (Average Rating) của sản phẩm.
+- [x] Frontend: Giao diện hiển thị danh sách đánh giá tại trang Chi tiết sản phẩm.
+- [x] Frontend: Form cho phép người dùng viết đánh giá mới.
+
 ---
 
 ## 🔒 Giai đoạn 7: Tối ưu & Bảo mật
@@ -182,7 +189,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ### 18. Deploy Production
 
-- [ ] Deploy **Frontend** lên Vercel / Netlify.
+- [x] Deploy **Frontend** lên Vercel / Netlify.
 - [ ] Deploy **Backend** lên Railway / Render.
 - [ ] Cấu hình **Supabase PostgreSQL** cho production database.
 - [ ] Thiết lập **Custom Domain** + SSL.

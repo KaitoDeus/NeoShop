@@ -309,15 +309,15 @@ export const MOCK_PRODUCTS = [
 
 // Từ khóa xu hướng cho trang chủ
 export const TRENDING_KEYWORDS = [
-  { id: 1, keyword: "ChatGPT", icon: "🤖", count: 2450 },
-  { id: 2, keyword: "Windows 11", icon: "🪟", count: 1820 },
-  { id: 3, keyword: "Steam Game", icon: "🎮", count: 1650 },
+  { id: 1, keyword: "Cyberpunk", icon: "🕹️", count: 2450 },
+  { id: 2, keyword: "Elden Ring", icon: "💍", count: 1820 },
+  { id: 3, keyword: "Baldur's Gate", icon: "🐉", count: 1650 },
   { id: 4, keyword: "Netflix", icon: "📺", count: 1420 },
-  { id: 5, keyword: "Office 365", icon: "📊", count: 1380 },
-  { id: 6, keyword: "Spotify", icon: "🎵", count: 1250 },
+  { id: 5, keyword: "God of War", icon: "🪓", count: 1380 },
+  { id: 6, keyword: "Duolingo", icon: "🦉", count: 1250 },
   { id: 7, keyword: "Adobe", icon: "🎨", count: 980 },
   { id: 8, keyword: "Midjourney", icon: "🖼️", count: 890 },
-  { id: 9, keyword: "Game Pass", icon: "🎯", count: 750 },
+  { id: 9, keyword: "Copilot", icon: "🤖", count: 750 },
   { id: 10, keyword: "Canva Pro", icon: "✨", count: 680 }
 ];
 

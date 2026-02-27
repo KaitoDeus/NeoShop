@@ -23,4 +23,6 @@ public class ProductResponse {
   private Integer stockQuantity;
   private String status;
   private LocalDateTime createdAt;
+  private Double averageRating;
+  private Integer reviewCount;
 }

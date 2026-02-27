@@ -109,6 +109,20 @@ const productService = {
             params: { status }
         });
         return response.data;
+    },
+
+    // User: Lấy danh sách đánh giá
+    getProductReviews: async (productId, page = 0, size = 10) => {
+        const response = await api.get(`/products/${productId}/reviews`, {
+            params: { page, size }
+        });
+        return response.data;
+    },
+
+    // User: Đăng đánh giá
+    createReview: async (productId, reviewData) => {
+        const response = await api.post(`/products/${productId}/reviews`, reviewData);
+        return response.data;
     }
 };
 

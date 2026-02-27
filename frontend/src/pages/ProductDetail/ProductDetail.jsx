@@ -8,16 +8,25 @@ import productService from '../../services/productService';
 import { useCart } from '../../context/CartContext';
 import { formatUSDtoVND } from '../../utils/formatPrice';
 import { getProductCover } from '../../utils/imageHelpers';
+import { useAuth } from '../../context/AuthContext';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
+  const { user } = useAuth();
+  
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [duration, setDuration] = useState(12);
+
+  // Review states
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState('');
 
   // Fetch Product Data
   useEffect(() => {
@@ -37,8 +46,8 @@ const ProductDetail = () => {
              price: data.salePrice || data.price,
              originalPrice: data.price,
              description: data.description,
-             rating: 4.8, // Mock
-             reviews: Math.floor(Math.random() * 500) + 50, // Mock
+             rating: data.averageRating || 0,
+             reviews: data.reviewCount || 0,
              banner: getProductCover(data.title), 
              imageColor: 'linear-gradient(135deg, #1e1b4b, #312e81)', // Default holder
              platform: 'steam', // Mock
@@ -49,6 +58,12 @@ const ProductDetail = () => {
              ]
          };
          setProduct(mappedProduct);
+
+         // Lấy danh sách đánh giá
+         try {
+             const reviewsData = await productService.getProductReviews(id);
+             setReviews(reviewsData.content || []);
+         } catch(e) { console.error("Could not fetch reviews", e); }
 
          // 2. Fetch Related (Just fetch 4 newest for now)
          const relatedData = await productService.getAllProducts(0, 4);
@@ -183,6 +198,83 @@ const ProductDetail = () => {
                   </div>
                </div>
             </div>
+
+            {/* 6. Đánh giá và nhận xét */}
+            <div className="pd-section">
+               <h3 className="section-title"><FiStar /> Đánh giá & Nhận xét</h3>
+               
+               {user ? (
+                 <div className="review-form-box" style={{background: '#f8fafc', padding: '1.5rem', borderRadius: '8px', marginBottom: '2rem'}}>
+                    <h4 style={{marginTop: 0, marginBottom: '1rem'}}>Viết đánh giá của bạn</h4>
+                    {reviewError && <div style={{color: '#ef4444', marginBottom: '1rem', fontSize: '0.9rem'}}>{reviewError}</div>}
+                    <div style={{display: 'flex', gap: '5px', marginBottom: '1rem', cursor: 'pointer'}}>
+                      {[1,2,3,4,5].map(star => (
+                        <FiStar 
+                           key={star} 
+                           fill={rating >= star ? "#facc15" : "none"} 
+                           color={rating >= star ? "#facc15" : "#cbd5e1"}
+                           size={24}
+                           onClick={() => setRating(star)}
+                        />
+                      ))}
+                    </div>
+                    <textarea 
+                      placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."
+                      style={{width: '100%', minHeight: '100px', padding: '1rem', borderRadius: '6px', border: '1px solid #cbd5e1', marginBottom: '1rem', resize: 'vertical', fontFamily: 'inherit'}}
+                      value={comment}
+                      onChange={e => setComment(e.target.value)}
+                    />
+                    <button 
+                      className="btn-buy-now" 
+                      style={{padding: '0.75rem 1.5rem', width: 'auto'}}
+                      disabled={isSubmittingReview}
+                      onClick={async () => {
+                        if (!comment.trim()) { setReviewError("Vui lòng nhập nội dung đánh giá"); return; }
+                        setIsSubmittingReview(true); setReviewError("");
+                        try {
+                           const res = await productService.createReview(id, {rating, comment});
+                           setReviews([res, ...reviews]);
+                           setComment("");
+                           setRating(5);
+                           setProduct(p => ({...p, reviews: p.reviews + 1}));
+                        } catch (e) {
+                           setReviewError(e.response?.data?.message || "Đã xảy ra lỗi hoặc bạn đã đánh giá rồi.");
+                        } finally {
+                           setIsSubmittingReview(false);
+                        }
+                      }}
+                    >
+                      {isSubmittingReview ? "Đang gửi..." : "Gửi đánh giá"}
+                    </button>
+                 </div>
+               ) : (
+                 <div style={{background: '#f8fafc', padding: '1rem', borderRadius: '8px', marginBottom: '2rem', textAlign: 'center'}}>
+                    Vui lòng <Link to="/login" style={{color: '#2563eb', fontWeight: 'bold'}}>đăng nhập</Link> để viết đánh giá.
+                 </div>
+               )}
+
+               <div className="reviews-list">
+                 {reviews.length > 0 ? reviews.map(r => (
+                   <div key={r.id} style={{borderBottom: '1px solid #e2e8f0', paddingBottom: '1.5rem', marginBottom: '1.5rem'}}>
+                      <div style={{display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem'}}>
+                         <img src={r.userAvatar || 'https://ui-avatars.com/api/?name='+r.userName} style={{width: 40, height: 40, borderRadius: '50%'}} alt="" />
+                         <div>
+                            <div style={{fontWeight: 'bold'}}>{r.userName}</div>
+                            <div style={{display: 'flex', gap: '2px', marginTop: '2px'}}>
+                               {[1,2,3,4,5].map(star => (
+                                 <FiStar key={star} fill={r.rating >= star ? "#facc15" : "none"} color={r.rating >= star ? "#facc15" : "#cbd5e1"} size={14} />
+                               ))}
+                               <span style={{fontSize: '0.8rem', color: '#64748b', marginLeft: '8px'}}>
+                                 {new Date(r.createdAt).toLocaleDateString('vi-VN')}
+                               </span>
+                            </div>
+                         </div>
+                      </div>
+                      <p style={{margin: '0.5rem 0 0', lineHeight: 1.5, color: '#334155'}}>{r.comment}</p>
+                   </div>
+                 )) : <p style={{color: '#64748b', textAlign: 'center'}}>Chưa có đánh giá nào. Hãy là người đầu tiên đánh giá sản phẩm này!</p>}
+               </div>
+            </div>
           </div>
 
           {/* RIGHT COLUMN: Buy Box */}
@@ -198,33 +290,6 @@ const ProductDetail = () => {
                 </div>
                 <div className="original-price">{formatUSDtoVND(product.originalPrice)}</div>
                 <div style={{fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem'}}>Đã bao gồm thuế VAT</div>
-             </div>
-
-             {/* Options */}
-             <div className="options-group">
-                <label className="option-label">Khu vực</label>
-                <select className="option-selector">
-                   <option>Việt Nam</option>
-                   <option>Global (Toàn cầu)</option>
-                </select>
-             </div>
-
-             <div className="options-group">
-                <label className="option-label">Phiên bản</label>
-                <div className="duration-options">
-                   <button 
-                     className={`duration-btn ${duration === 12 ? 'active' : ''}`}
-                     onClick={() => setDuration(12)}
-                   >
-                     Tiêu chuẩn
-                   </button>
-                   <button 
-                     className={`duration-btn ${duration === 6 ? 'active' : ''}`}
-                     onClick={() => setDuration(6)}
-                   >
-                     Cao cấp
-                   </button>
-                </div>
              </div>
 
              {/* Nút hành động */}
