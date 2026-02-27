@@ -1,16 +1,26 @@
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import './DashboardWidgets.css';
+import {
+  PieChart,
+  Pie,
+  Cell,
+  Tooltip,
+  ResponsiveContainer,
+  Legend,
+} from "recharts";
+import "./DashboardWidgets.css";
 
 const PaymentPieChart = ({ data }) => {
   // Default data if none provided
   // Ensure data is a non-empty array, otherwise use default
-  const chartData = (data && data.length > 0) ? data : [
-    { name: 'Thành công', value: 1 },
-    { name: 'Thất bại', value: 0 }, 
-    { name: 'Chờ xử lý', value: 0 },
-  ];
+  const chartData =
+    data && data.length > 0
+      ? data
+      : [
+          { name: "Thành công", value: 1 },
+          { name: "Thất bại", value: 0 },
+          { name: "Chờ xử lý", value: 0 },
+        ];
 
-  const COLORS = ['#10b981', '#ef4444', '#f59e0b'];
+  const COLORS = ["#10b981", "#ef4444", "#f59e0b"];
 
   return (
     <div className="dashboard-widget chart-widget">
@@ -18,7 +28,7 @@ const PaymentPieChart = ({ data }) => {
         <h3 className="widget-title">Thống kê thanh toán</h3>
       </div>
 
-      <div className="chart-container" style={{ height: '300px' }}>
+      <div className="chart-container" style={{ height: "300px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
             <Pie
@@ -31,14 +41,17 @@ const PaymentPieChart = ({ data }) => {
               dataKey="value"
             >
               {chartData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                <Cell
+                  key={`cell-${index}`}
+                  fill={COLORS[index % COLORS.length]}
+                />
               ))}
             </Pie>
-            <Tooltip 
-              formatter={(value) => [`${value} đơn`, 'Số lượng']}
-              contentStyle={{ borderRadius: '8px', border: 'none' }}
+            <Tooltip
+              formatter={(value) => [`${value} đơn`, "Số lượng"]}
+              contentStyle={{ borderRadius: "8px", border: "none" }}
             />
-            <Legend verticalAlign="bottom" height={36}/>
+            <Legend verticalAlign="bottom" height={36} />
           </PieChart>
         </ResponsiveContainer>
       </div>

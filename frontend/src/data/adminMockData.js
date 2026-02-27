@@ -6,7 +6,7 @@ export const statsData = [
     percent: 12,
     isIncrease: true,
     compareText: "so với hôm qua",
-    iconType: "money"
+    iconType: "money",
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ export const statsData = [
     percent: 5,
     isIncrease: true,
     compareText: "so với hôm qua",
-    iconType: "bag"
+    iconType: "bag",
   },
   {
     id: 3,
@@ -24,7 +24,7 @@ export const statsData = [
     percent: 2.4,
     isIncrease: false,
     compareText: "so với tuần trước",
-    iconType: "key"
+    iconType: "key",
   },
   {
     id: 4,
@@ -33,18 +33,18 @@ export const statsData = [
     percent: 2,
     isIncrease: true,
     compareText: "so với hôm qua",
-    iconType: "user"
-  }
+    iconType: "user",
+  },
 ];
 
 export const revenueData = [
-  { name: 'Thứ 2', value: 4000000 },
-  { name: 'Thứ 3', value: 3000000 },
-  { name: 'Thứ 4', value: 2000000 },
-  { name: 'Thứ 5', value: 2780000 },
-  { name: 'Thứ 6', value: 1890000 },
-  { name: 'Thứ 7', value: 2390000 },
-  { name: 'CN', value: 3490000 },
+  { name: "Thứ 2", value: 4000000 },
+  { name: "Thứ 3", value: 3000000 },
+  { name: "Thứ 4", value: 2000000 },
+  { name: "Thứ 5", value: 2780000 },
+  { name: "Thứ 6", value: 1890000 },
+  { name: "Thứ 7", value: 2390000 },
+  { name: "CN", value: 3490000 },
 ];
 
 export const recentOrders = [
@@ -52,57 +52,57 @@ export const recentOrders = [
     id: "#1024",
     customer: {
       name: "Nguyễn Văn A",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d"
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
     },
     product: "Netflix Premium (1 Tháng)",
     date: "20/10/2023",
     status: "success",
-    total: "90.000 đ"
+    total: "90.000 đ",
   },
   {
     id: "#1023",
     customer: {
       name: "Trần Minh",
-      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d"
+      avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
     },
     product: "Spotify Premium (1 Năm)",
     date: "20/10/2023",
     status: "processing",
-    total: "350.000 đ"
+    total: "350.000 đ",
   },
   {
     id: "#1022",
     customer: {
       name: "Lê Thị B",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026302d"
+      avatar: "https://i.pravatar.cc/150?u=a04258114e29026302d",
     },
     product: "Windows 11 Pro Key",
     date: "19/10/2023",
     status: "failed",
-    total: "150.000 đ"
+    total: "150.000 đ",
   },
   {
     id: "#1021",
     customer: {
       name: "Phạm Văn C",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d"
+      avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
     },
     product: "Adobe Creative Cloud",
     date: "19/10/2023",
     status: "success",
-    total: "1.200.000 đ"
+    total: "1.200.000 đ",
   },
   {
     id: "#1020",
     customer: {
       name: "Hoàng T",
-      avatar: "https://i.pravatar.cc/150?u=a04258114e29026708c"
+      avatar: "https://i.pravatar.cc/150?u=a04258114e29026708c",
     },
     product: "Youtube Premium",
     date: "18/10/2023",
     status: "success",
-    total: "45.000 đ"
-  }
+    total: "45.000 đ",
+  },
 ];
 
 export const productStats = [
@@ -113,7 +113,7 @@ export const productStats = [
     percent: 12,
     isIncrease: true,
     compareText: "so với tháng trước",
-    iconType: "box"
+    iconType: "box",
   },
   {
     id: 2,
@@ -122,7 +122,7 @@ export const productStats = [
     percent: 5,
     isIncrease: true,
     compareText: "",
-    iconType: "check"
+    iconType: "check",
   },
   {
     id: 3,
@@ -131,7 +131,7 @@ export const productStats = [
     percent: -2,
     isIncrease: false,
     compareText: "sản phẩm",
-    iconType: "alert"
+    iconType: "alert",
   },
   {
     id: 4,
@@ -140,8 +140,8 @@ export const productStats = [
     percent: 15,
     isIncrease: true,
     compareText: "",
-    iconType: "trend"
-  }
+    iconType: "trend",
+  },
 ];
 
 export const productsData = [
@@ -153,7 +153,8 @@ export const productsData = [
     price: "69.000 đ",
     stock: 15,
     status: "active",
-    image: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
   },
   {
     id: 2,
@@ -163,7 +164,8 @@ export const productsData = [
     price: "890.000 đ",
     stock: 2,
     status: "active",
-    image: "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg"
+    image:
+      "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1245620/header.jpg",
   },
   {
     id: 3,
@@ -173,7 +175,8 @@ export const productsData = [
     price: "150.000 đ",
     stock: 0,
     status: "hidden",
-    image: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg",
   },
   {
     id: 4,
@@ -183,7 +186,8 @@ export const productsData = [
     price: "290.000 đ",
     stock: 45,
     status: "active",
-    image: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg",
   },
   {
     id: 5,
@@ -193,8 +197,9 @@ export const productsData = [
     price: "990.000 đ",
     stock: 12,
     status: "active",
-    image: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Microsoft_Office_logo_%282019%E2%80%93present%29.svg"
-  }
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/5/5f/Microsoft_Office_logo_%282019%E2%80%93present%29.svg",
+  },
 ];
 
 export const orderStats = [
@@ -205,7 +210,7 @@ export const orderStats = [
     percent: 12,
     isIncrease: true,
     compareText: "so với tháng trước",
-    iconType: "file-text"
+    iconType: "file-text",
   },
   {
     id: 2,
@@ -214,7 +219,7 @@ export const orderStats = [
     percent: 5,
     isIncrease: true,
     compareText: "so với tháng trước",
-    iconType: "money"
+    iconType: "money",
   },
   {
     id: 3,
@@ -223,8 +228,8 @@ export const orderStats = [
     percent: -2,
     isIncrease: false,
     compareText: "so với tháng trước",
-    iconType: "alert"
-  }
+    iconType: "alert",
+  },
 ];
 
 export const ordersData = [
@@ -236,7 +241,7 @@ export const ordersData = [
     payment: "Momo",
     status: "success",
     date: "24/10/2023",
-    time: "10:30 AM"
+    time: "10:30 AM",
   },
   {
     id: "#NEO-8822",
@@ -246,7 +251,7 @@ export const ordersData = [
     payment: "Bank",
     status: "pending",
     date: "24/10/2023",
-    time: "09:15 AM"
+    time: "09:15 AM",
   },
   {
     id: "#NEO-8821",
@@ -256,7 +261,7 @@ export const ordersData = [
     payment: "Momo",
     status: "failed",
     date: "23/10/2023",
-    time: "18:45 PM"
+    time: "18:45 PM",
   },
   {
     id: "#NEO-8820",
@@ -266,7 +271,7 @@ export const ordersData = [
     payment: "Visa",
     status: "success",
     date: "23/10/2023",
-    time: "14:20 PM"
+    time: "14:20 PM",
   },
   {
     id: "#NEO-8819",
@@ -276,8 +281,8 @@ export const ordersData = [
     payment: "Bank",
     status: "success",
     date: "22/10/2023",
-    time: "08:10 AM"
-  }
+    time: "08:10 AM",
+  },
 ];
 
 export const reportStats = [
@@ -288,7 +293,7 @@ export const reportStats = [
     percent: 12.5,
     isIncrease: true,
     compareText: "",
-    iconType: "money"
+    iconType: "money",
   },
   {
     id: 2,
@@ -297,7 +302,7 @@ export const reportStats = [
     percent: 5.2,
     isIncrease: true,
     compareText: "",
-    iconType: "bag"
+    iconType: "bag",
   },
   {
     id: 3,
@@ -306,7 +311,7 @@ export const reportStats = [
     percent: -2.1,
     isIncrease: false,
     compareText: "",
-    iconType: "user-add"
+    iconType: "user-add",
   },
   {
     id: 4,
@@ -315,30 +320,58 @@ export const reportStats = [
     percent: 8.4,
     isIncrease: true,
     compareText: "",
-    iconType: "box"
-  }
+    iconType: "box",
+  },
 ];
 
 export const categoryRevenue = [
-  { name: 'Khóa học Online', value: 40, color: '#312e81' }, // indigo-900
-  { name: 'E-books', value: 25, color: '#4f46e5' }, // indigo-600
-  { name: 'Templates', value: 20, color: '#818cf8' }, // indigo-400
-  { name: 'Software', value: 15, color: '#c7d2fe' }, // indigo-200
+  { name: "Khóa học Online", value: 40, color: "#312e81" }, // indigo-900
+  { name: "E-books", value: 25, color: "#4f46e5" }, // indigo-600
+  { name: "Templates", value: 20, color: "#818cf8" }, // indigo-400
+  { name: "Software", value: 15, color: "#c7d2fe" }, // indigo-200
 ];
 
 export const topProducts = [
-  { name: 'NeoShop Bundle 2023', sold: 1200, percent: 100 },
-  { name: 'React Course Pro', sold: 980, percent: 80 },
-  { name: 'UI Kit Premium', sold: 750, percent: 60 },
-  { name: 'Icon Set Ultimate', sold: 540, percent: 45 },
-  { name: 'Figma Masterclass', sold: 320, percent: 25 },
+  { name: "NeoShop Bundle 2023", sold: 1200, percent: 100 },
+  { name: "React Course Pro", sold: 980, percent: 80 },
+  { name: "UI Kit Premium", sold: 750, percent: 60 },
+  { name: "Icon Set Ultimate", sold: 540, percent: 45 },
+  { name: "Figma Masterclass", sold: 320, percent: 25 },
 ];
 
 export const financialData = [
-  { month: 'Tháng 1', revenue: '500tr', expense: '200tr', profit: '300tr', orders: 450, status: 'completed' },
-  { month: 'Tháng 2', revenue: '450tr', expense: '180tr', profit: '270tr', orders: 420, status: 'completed' },
-  { month: 'Tháng 3', revenue: '600tr', expense: '250tr', profit: '350tr', orders: 550, status: 'completed' },
-  { month: 'Tháng 4', revenue: '550tr', expense: '220tr', profit: '330tr', orders: 500, status: 'pending' },
+  {
+    month: "Tháng 1",
+    revenue: "500tr",
+    expense: "200tr",
+    profit: "300tr",
+    orders: 450,
+    status: "completed",
+  },
+  {
+    month: "Tháng 2",
+    revenue: "450tr",
+    expense: "180tr",
+    profit: "270tr",
+    orders: 420,
+    status: "completed",
+  },
+  {
+    month: "Tháng 3",
+    revenue: "600tr",
+    expense: "250tr",
+    profit: "350tr",
+    orders: 550,
+    status: "completed",
+  },
+  {
+    month: "Tháng 4",
+    revenue: "550tr",
+    expense: "220tr",
+    profit: "330tr",
+    orders: 500,
+    status: "pending",
+  },
 ];
 
 export const keyStats = [
@@ -349,7 +382,7 @@ export const keyStats = [
     percent: 12,
     isIncrease: true,
     compareText: "so với tháng trước",
-    iconType: "grid"
+    iconType: "grid",
   },
   {
     id: 2,
@@ -358,7 +391,7 @@ export const keyStats = [
     percent: 0,
     isIncrease: true,
     compareText: "Sẵn sàng để bán ngay",
-    iconType: "check-square"
+    iconType: "check-square",
   },
   {
     id: 3,
@@ -367,8 +400,8 @@ export const keyStats = [
     percent: 18,
     isIncrease: true,
     compareText: "doanh thu",
-    iconType: "shopping-bag"
-  }
+    iconType: "shopping-bag",
+  },
 ];
 
 export const keysData = [
@@ -380,7 +413,8 @@ export const keysData = [
     date: "24/10/2023",
     time: "10:30",
     status: "available",
-    image: "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg",
   },
   {
     id: "#1023",
@@ -390,7 +424,8 @@ export const keysData = [
     date: "23/10/2023",
     time: "14:15",
     status: "sold",
-    image: "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg",
   },
   {
     id: "#1022",
@@ -400,7 +435,8 @@ export const keysData = [
     date: "22/10/2023",
     time: "09:00",
     status: "available",
-    image: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/e/e6/Windows_11_logo.svg",
   },
   {
     id: "#1021",
@@ -410,7 +446,8 @@ export const keysData = [
     date: "21/10/2023",
     time: "16:45",
     status: "sold",
-    image: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Adobe_Creative_Cloud_2020_icon.svg/1200px-Adobe_Creative_Cloud_2020_icon.svg.png"
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Adobe_Creative_Cloud_2020_icon.svg/1200px-Adobe_Creative_Cloud_2020_icon.svg.png",
   },
   {
     id: "#1020",
@@ -420,13 +457,46 @@ export const keysData = [
     date: "20/10/2023",
     time: "11:20",
     status: "available",
-    image: "https://upload.wikimedia.org/wikipedia/commons/1/1c/Kaspersky_logo_2019.svg"
-  }
+    image:
+      "https://upload.wikimedia.org/wikipedia/commons/1/1c/Kaspersky_logo_2019.svg",
+  },
 ];
 
 export const userStats = [
-  { id: 1, title: "Tổng khách hàng", value: "1,250", percent: 12, isIncrease: true, compareText: "so với tháng trước", iconType: "user" },
-  { id: 2, title: "Khách mới (Tháng)", value: "340", percent: 5, isIncrease: true, compareText: "so với tháng trước", iconType: "user-add" },
-  { id: 3, title: "Đang hoạt động", value: "1,180", percent: 2, isIncrease: true, compareText: "người dùng", iconType: "check" },
-  { id: 4, title: "Bị khóa", value: "70", percent: -1, isIncrease: false, compareText: "tài khoản", iconType: "alert" }
+  {
+    id: 1,
+    title: "Tổng khách hàng",
+    value: "1,250",
+    percent: 12,
+    isIncrease: true,
+    compareText: "so với tháng trước",
+    iconType: "user",
+  },
+  {
+    id: 2,
+    title: "Khách mới (Tháng)",
+    value: "340",
+    percent: 5,
+    isIncrease: true,
+    compareText: "so với tháng trước",
+    iconType: "user-add",
+  },
+  {
+    id: 3,
+    title: "Đang hoạt động",
+    value: "1,180",
+    percent: 2,
+    isIncrease: true,
+    compareText: "người dùng",
+    iconType: "check",
+  },
+  {
+    id: 4,
+    title: "Bị khóa",
+    value: "70",
+    percent: -1,
+    isIncrease: false,
+    compareText: "tài khoản",
+    iconType: "alert",
+  },
 ];

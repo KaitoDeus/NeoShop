@@ -12,7 +12,9 @@
 .neo-logo-icon {
   width: 36px;
   height: 36px;
-  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+    filter 0.3s ease;
   filter: drop-shadow(0 0 2px rgba(34, 211, 238, 0.3));
 }
 
@@ -26,7 +28,11 @@
 
 /* Text Styles */
 .neo-logo-text {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family:
+    "Inter",
+    system-ui,
+    -apple-system,
+    sans-serif;
   font-weight: 800;
   font-size: 1.6rem;
   line-height: 1;
@@ -42,7 +48,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   /* Fallback color */
-  color: #2563eb; 
+  color: #2563eb;
 }
 
 /* "Shop" - Adaptive Color */
@@ -52,7 +58,7 @@
 }
 
 /* Dark Mode Support (Assuming parent has .dark class or data-theme) */
-[data-theme='dark'] .text-shop,
+[data-theme="dark"] .text-shop,
 .dark .text-shop {
   color: #ffffff;
 }

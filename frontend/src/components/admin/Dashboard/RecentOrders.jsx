@@ -1,15 +1,15 @@
-import { Link } from 'react-router-dom';
-import { recentOrders } from '../../../data/adminMockData';
-import './DashboardWidgets.css';
+import { Link } from "react-router-dom";
+import { recentOrders } from "../../../data/adminMockData";
+import "./DashboardWidgets.css";
 
 const RecentOrders = () => {
   const getStatusBadge = (status) => {
     switch (status) {
-      case 'success':
+      case "success":
         return <span className="badge badge-success">Thành công</span>;
-      case 'processing':
+      case "processing":
         return <span className="badge badge-warning">Đang xử lý</span>;
-      case 'failed':
+      case "failed":
         return <span className="badge badge-error">Thất bại</span>;
       default:
         return <span className="badge badge-gray">{status}</span>;
@@ -20,7 +20,9 @@ const RecentOrders = () => {
     <div className="dashboard-widget table-widget">
       <div className="widget-header">
         <h3 className="widget-title">Đơn hàng gần đây</h3>
-        <Link to="/admin/orders" className="view-all-btn">Xem tất cả</Link>
+        <Link to="/admin/orders" className="view-all-btn">
+          Xem tất cả
+        </Link>
       </div>
 
       <div className="table-responsive">
@@ -41,7 +43,11 @@ const RecentOrders = () => {
                 <td className="font-medium text-primary">{order.id}</td>
                 <td>
                   <div className="customer-cell">
-                    <img src={order.customer.avatar} alt="" className="customer-avatar" />
+                    <img
+                      src={order.customer.avatar}
+                      alt=""
+                      className="customer-avatar"
+                    />
                     <span>{order.customer.name}</span>
                   </div>
                 </td>

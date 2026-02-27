@@ -1,11 +1,18 @@
-import { Link } from 'react-router-dom';
-import { FiShoppingCart, FiArrowRight, FiZap, FiCheck } from 'react-icons/fi';
-import { getProductCover } from '../../../utils/imageHelpers';
-import { formatUSDtoVND } from '../../../utils/formatPrice';
-import { useCart } from '../../../context/CartContext';
-import './ProductSection.css';
+import { Link } from "react-router-dom";
+import { FiShoppingCart, FiArrowRight, FiZap, FiCheck } from "react-icons/fi";
+import { getProductCover } from "../../../utils/imageHelpers";
+import { formatUSDtoVND } from "../../../utils/formatPrice";
+import { useCart } from "../../../context/CartContext";
+import "./ProductSection.css";
 
-const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor }) => {
+const ProductSection = ({
+  title,
+  icon,
+  subtitle,
+  products,
+  categoryLink,
+  bgColor,
+}) => {
   const { addToCart, isInCart } = useCart();
 
   const handleAddToCart = (e, product) => {
@@ -15,7 +22,7 @@ const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor
   };
 
   return (
-    <section className={`product-section ${bgColor || ''}`}>
+    <section className={`product-section ${bgColor || ""}`}>
       <div className="container">
         <div className="section-header">
           <div className="header-left">
@@ -24,34 +31,62 @@ const ProductSection = ({ title, icon, subtitle, products, categoryLink, bgColor
             </h2>
             {subtitle && <p className="section-subtitle">{subtitle}</p>}
           </div>
-          <Link to={categoryLink || '/category'} className="btn-link">
+          <Link to={categoryLink || "/category"} className="btn-link">
             Xem tất cả <FiArrowRight />
           </Link>
         </div>
 
         <div className="products-grid">
           {products.map((product) => (
-            <Link to={`/product/${product.id}`} key={product.id} className="product-card">
-              <div className="card-image" style={{ background: product.imageColor, position: 'relative', overflow: 'hidden' }}>
-                <img 
-                  src={getProductCover(product.title)} 
-                  alt={product.title} 
-                  loading="lazy" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 1, zIndex: 0 }} 
+            <Link
+              to={`/product/${product.id}`}
+              key={product.id}
+              className="product-card"
+            >
+              <div
+                className="card-image"
+                style={{
+                  background: product.imageColor,
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <img
+                  src={getProductCover(product.title)}
+                  alt={product.title}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: 1,
+                    zIndex: 0,
+                  }}
                 />
-                {product.discount && <span className="discount-badge" style={{ zIndex: 1 }}>{product.discount}</span>}
+                {product.discount && (
+                  <span className="discount-badge" style={{ zIndex: 1 }}>
+                    {product.discount}
+                  </span>
+                )}
               </div>
               <div className="card-content">
                 <h3 className="card-title">{product.title}</h3>
                 <div className="card-footer">
                   <div className="price-box">
                     {product.oldPrice && (
-                      <span className="price-old">{formatUSDtoVND(product.oldPrice)}</span>
+                      <span className="price-old">
+                        {formatUSDtoVND(product.oldPrice)}
+                      </span>
                     )}
-                    <span className="price-new">{formatUSDtoVND(product.price)}</span>
+                    <span className="price-new">
+                      {formatUSDtoVND(product.price)}
+                    </span>
                   </div>
-                  <button 
-                    className={`cart-btn ${isInCart(product.id) ? 'in-cart' : ''}`}
+                  <button
+                    className={`cart-btn ${isInCart(product.id) ? "in-cart" : ""}`}
                     onClick={(e) => handleAddToCart(e, product)}
                   >
                     {isInCart(product.id) ? <FiCheck /> : <FiShoppingCart />}

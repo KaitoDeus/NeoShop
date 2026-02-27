@@ -236,7 +236,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .all-loaded {
@@ -293,44 +295,44 @@
   .product-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .sort-bar {
     flex-direction: column;
     align-items: stretch;
     gap: 1rem;
   }
-  
+
   .sort-options {
     overflow-x: auto;
     padding-bottom: 0.5rem;
     gap: 0.5rem;
     -webkit-overflow-scrolling: touch;
   }
-  
+
   .sort-btn {
     white-space: nowrap;
     flex-shrink: 0;
     font-size: 0.8rem;
     padding: 0.4rem 0.75rem;
   }
-  
+
   .product-grid.list-view .product-card {
     flex-direction: column;
   }
-  
+
   .product-grid.list-view .card-image {
     width: 100%;
     height: 180px;
   }
-  
+
   .card-image {
     height: 150px;
   }
-  
+
   .card-title {
     font-size: 1rem;
   }
-  
+
   .price-new {
     font-size: 1.1rem;
   }

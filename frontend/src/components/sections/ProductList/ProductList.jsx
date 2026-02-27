@@ -1,12 +1,19 @@
-import React from 'react';
-import { FiGrid, FiList, FiZap, FiShoppingCart, FiChevronDown, FiCheck } from 'react-icons/fi';
-import { useNavigate } from 'react-router-dom';
-import { formatUSDtoVND } from '../../../utils/formatPrice';
-import { useCart } from '../../../context/CartContext';
-import './ProductList.css';
+import React from "react";
+import {
+  FiGrid,
+  FiList,
+  FiZap,
+  FiShoppingCart,
+  FiChevronDown,
+  FiCheck,
+} from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
+import { formatUSDtoVND } from "../../../utils/formatPrice";
+import { useCart } from "../../../context/CartContext";
+import "./ProductList.css";
 
-const ProductList = ({ 
-  products, 
+const ProductList = ({
+  products,
   sortBy,
   onSortChange,
   viewMode,
@@ -14,7 +21,7 @@ const ProductList = ({
   hasMore = false,
   onLoadMore,
   totalProducts = 0,
-  isLoading = false
+  isLoading = false,
 }) => {
   const navigate = useNavigate();
   const { addToCart, isInCart } = useCart();
@@ -32,54 +39,80 @@ const ProductList = ({
     <div className="product-list-container">
       {/* Sort and View Bar */}
       <div className="sort-bar">
-
         <div className="view-options">
-          <button 
-            className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-            onClick={() => onViewChange('grid')}
+          <button
+            className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+            onClick={() => onViewChange("grid")}
           >
             <FiGrid />
           </button>
-          <button 
-            className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
-            onClick={() => onViewChange('list')}
+          <button
+            className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+            onClick={() => onViewChange("list")}
           >
             <FiList />
           </button>
         </div>
       </div>
 
-
-
       {/* Product Grid */}
-      <div className={`product-grid ${viewMode === 'list' ? 'list-view' : ''}`}>
+      <div className={`product-grid ${viewMode === "list" ? "list-view" : ""}`}>
         {products.length > 0 ? (
           products.map((prod) => (
-            <div 
-                key={prod.id} 
-                className="product-card" 
-                onClick={() => handleProductClick(prod.id)}
-                style={{ cursor: 'pointer' }}
+            <div
+              key={prod.id}
+              className="product-card"
+              onClick={() => handleProductClick(prod.id)}
+              style={{ cursor: "pointer" }}
             >
-              <div className="card-image" style={{ background: prod.imageColor, position: 'relative', overflow: 'hidden' }}>
-                <img 
-                  src={prod.image || 'https://via.placeholder.com/300?text=No+Image'} 
-                  alt={prod.title} 
-                  loading="lazy" 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', position: 'absolute', top: 0, left: 0, opacity: 1, zIndex: 0 }} 
+              <div
+                className="card-image"
+                style={{
+                  background: prod.imageColor,
+                  position: "relative",
+                  overflow: "hidden",
+                }}
+              >
+                <img
+                  src={
+                    prod.image ||
+                    "https://via.placeholder.com/300?text=No+Image"
+                  }
+                  alt={prod.title}
+                  loading="lazy"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    opacity: 1,
+                    zIndex: 0,
+                  }}
                 />
-                {prod.discount && <span className="badge-sale" style={{ zIndex: 1 }}>{prod.discount}</span>}
+                {prod.discount && (
+                  <span className="badge-sale" style={{ zIndex: 1 }}>
+                    {prod.discount}
+                  </span>
+                )}
               </div>
               <div className="card-content">
                 <h3 className="card-title">{prod.title}</h3>
                 <p className="card-desc">{prod.desc}</p>
                 <div className="card-footer">
                   <div className="price-box">
-                    {prod.oldPrice && <span className="price-old">{formatUSDtoVND(prod.oldPrice)}</span>}
-                    <span className="price-new">{formatUSDtoVND(prod.price)}</span>
+                    {prod.oldPrice && (
+                      <span className="price-old">
+                        {formatUSDtoVND(prod.oldPrice)}
+                      </span>
+                    )}
+                    <span className="price-new">
+                      {formatUSDtoVND(prod.price)}
+                    </span>
                   </div>
-                  <button 
-                    className={`cart-btn ${isInCart(prod.id) ? 'in-cart' : ''}`} 
+                  <button
+                    className={`cart-btn ${isInCart(prod.id) ? "in-cart" : ""}`}
                     onClick={(e) => handleAddToCart(e, prod)}
                   >
                     {isInCart(prod.id) ? <FiCheck /> : <FiShoppingCart />}
@@ -98,8 +131,8 @@ const ProductList = ({
       {/* Load More Button */}
       {hasMore && (
         <div className="load-more-wrapper">
-          <button 
-            className={`btn-load-more ${isLoading ? 'loading' : ''}`}
+          <button
+            className={`btn-load-more ${isLoading ? "loading" : ""}`}
             onClick={onLoadMore}
             disabled={isLoading}
           >
@@ -119,9 +152,7 @@ const ProductList = ({
 
       {/* All Loaded Message */}
       {!hasMore && products.length > 0 && products.length === totalProducts && (
-        <div className="all-loaded">
-          Đã hiển thị tất cả sản phẩm
-        </div>
+        <div className="all-loaded">Đã hiển thị tất cả sản phẩm</div>
       )}
     </div>
   );

@@ -1,112 +1,112 @@
 /* Dual Range Slider styling */
 /* COMPACT SLIDER STYLES */
 .range-slider-compact {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
 }
 
 .slider-track-wrapper {
-    position: relative;
-    height: 32px; /* Increased hit area */
-    width: 100%;
+  position: relative;
+  height: 32px; /* Increased hit area */
+  width: 100%;
 }
 
 /* Base Track */
 .slider-track {
-    position: absolute;
-    border-radius: 999px;
-    height: 4px;
-    background-color: #e2e8f0;
-    width: 100%;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 1;
+  position: absolute;
+  border-radius: 999px;
+  height: 4px;
+  background-color: #e2e8f0;
+  width: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
 }
 
 /* Active Range */
 .slider-range {
-    position: absolute;
-    border-radius: 999px;
-    height: 4px;
-    background-color: #2563eb;
-    z-index: 2;
-    top: 50%;
-    transform: translateY(-50%);
+  position: absolute;
+  border-radius: 999px;
+  height: 4px;
+  background-color: #2563eb;
+  z-index: 2;
+  top: 50%;
+  transform: translateY(-50%);
 }
 
 /* Invisible Range Inputs */
 .thumb-input {
-    -webkit-appearance: none;
-    appearance: none;
-    pointer-events: none;
-    position: absolute;
-    height: 32px; /* Full height hit area */
-    width: 100%;
-    outline: none;
-    background: none;
-    top: 0;
-    margin: 0;
-    z-index: 3;
+  -webkit-appearance: none;
+  appearance: none;
+  pointer-events: none;
+  position: absolute;
+  height: 32px; /* Full height hit area */
+  width: 100%;
+  outline: none;
+  background: none;
+  top: 0;
+  margin: 0;
+  z-index: 3;
 }
 
 /* Webkit Thumbs */
 .thumb-input::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    pointer-events: all;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    border: 3px solid #2563eb;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    position: relative; 
-    z-index: 4;
-    transition: transform 0.1s;
-    margin-top: 0; /* Important since input has height now */
+  -webkit-appearance: none;
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: white;
+  border: 3px solid #2563eb;
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  z-index: 4;
+  transition: transform 0.1s;
+  margin-top: 0; /* Important since input has height now */
 }
 
 .thumb-input::-webkit-slider-thumb:active {
-    cursor: grabbing;
-    transform: scale(1.15);
+  cursor: grabbing;
+  transform: scale(1.15);
 }
 
 /* Firefox Thumbs */
 .thumb-input::-moz-range-thumb {
-    pointer-events: all;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    border: 3px solid #2563eb;
-    cursor: grab;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    z-index: 4; 
+  pointer-events: all;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background-color: white;
+  border: 3px solid #2563eb;
+  cursor: grab;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 4;
 }
 
 /* Price Badges Row */
 .price-badges {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .price-badge {
-    background: #f1f5f9;
-    color: #334155;
-    font-size: 0.8rem;
-    font-weight: 600;
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    border: 1px solid #e2e8f0;
-    min-width: 90px;
-    text-align: center;
-    white-space: nowrap;
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  border: 1px solid #e2e8f0;
+  min-width: 90px;
+  text-align: center;
+  white-space: nowrap;
 }
 
 .price-separator {
-    color: #cbd5e1;
-    font-weight: 300;
+  color: #cbd5e1;
+  font-weight: 300;
 }

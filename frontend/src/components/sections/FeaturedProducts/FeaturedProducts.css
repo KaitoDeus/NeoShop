@@ -52,7 +52,9 @@
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .featured-card:hover {
@@ -180,7 +182,7 @@
   .featured-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .section-header {
     flex-direction: column;
     gap: 1rem;

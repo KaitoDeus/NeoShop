@@ -77,7 +77,7 @@
   position: absolute;
   top: calc(100% + 4px);
   /* Align to the width of .search-wrapper inside the flex center container */
-  width: 100%; 
+  width: 100%;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 8px;
@@ -184,8 +184,9 @@
   .mobile-menu-btn {
     display: block;
   }
-  
-  .user-btn span, .cart-box span {
+
+  .user-btn span,
+  .cart-box span {
     display: none;
   }
 }
@@ -211,7 +212,7 @@
 .mobile-nav-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   z-index: 150;
 }
 
