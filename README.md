@@ -8,6 +8,7 @@
 4. [Giao Diện](#4-giao-diện)
 5. [Hướng Dẫn Cài Đặt và Chạy (Local)](#5-hướng-dẫn-cài-đặt-và-chạy-local)
 6. [Hướng Dẫn Sử Dụng](#6-hướng-dẫn-sử-dụng)
+7. [Các Chức năng Hiện tại (Features)](#7-các-chức-năng-hiện-tại-features)
 
 ---
 
@@ -24,7 +25,7 @@
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
 ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Java](https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
@@ -128,7 +129,7 @@ docker compose up -d --build
 
 Sau quá trình cài đặt và khởi động (khoảng vài phút):
 
-- **Trang web khách hàng:** Truy cập địa chỉ `http://localhost:3000` trên trình duyệt để sử dụng.
+- **Trang web khách hàng:** Truy cập địa chỉ `http://localhost:5173` trên trình duyệt để sử dụng.
 - **API Server:** Hoạt động mặc định tại `http://localhost:8080`.
 - **Database:** PostgreSQL chạy ở cổng `5433` (Map sang 5432 nội bộ).
 
@@ -143,3 +144,13 @@ Sau quá trình cài đặt và khởi động (khoảng vài phút):
     - Chuyển hướng sang trang **Checkout**.
 4.  **Thanh Toán**:
     - Ở trang Checkout, chọn loại tài khoản/ví thanh toán. Hệ thống xác nhận và hiển thị mã Code tức thời lên màn hình và gửi qua Email đăng ký.
+
+---
+
+## 7. Các Chức năng Hiện tại (Features)
+
+- **Xác thực và Bảo mật:** Mạng lưới bảo mật phân quyền thông qua JSON Web Token (JWT) kết hợp Spring Security Filter Chain điều hướng API, cùng Protected Routes che chắn Router nội bộ phía Client.
+- **Quản lý Giỏ hàng:** Vận hành quy trình lưu trữ qua LocalStorage kết hợp Context API kiểm soát tính toán trạng thái toán học đồng bộ tức thời (Real-time) để tối ưu luồng I/O mạng.
+- **Luồng Thanh toán:** Tích hợp phương pháp phi đồng bộ Event-driven Webhook giải quyết bài toán đối soát biên lai từ cổng trung gian (VNPay, MoMo) về Server.
+- **Xử lý Transaction:** Mọi truy vấn giao dịch tài chính thao tác dựa trên hệ tiêu chuẩn toàn vẹn ACID lưu vào PostgreSQL, đảm bảo kích hoạt xuất kho key tự động ngay lập tức hiển thị trên UI.
+- **Tối ưu UX/UI:** Can thiệp thông số trải nghiệm người dùng bằng kỹ thuật Skeleton Loading làm mờ độ trễ I/O băng thông truyền tải dữ liệu.
