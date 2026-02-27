@@ -1,129 +1,143 @@
-import api from './api';
+import api from "./api";
 
 const productService = {
-    // Lấy danh sách sản phẩm (có phân trang và lọc)
-    getAllProducts: async (page = 0, size = 12, filters = {}) => {
-        const response = await api.get('/products', {
-            params: { 
-                page, 
-                size,
-                query: filters.query || undefined,
-                categoryId: filters.categoryId || undefined,
-                minPrice: typeof filters.minPrice === 'number' ? filters.minPrice : undefined,
-                maxPrice: typeof filters.maxPrice === 'number' ? filters.maxPrice : undefined,
-                sort: filters.sort || undefined
-            }
-        });
-        return response.data;
-    },
+  // Lấy danh sách sản phẩm (có phân trang và lọc)
+  getAllProducts: async (page = 0, size = 12, filters = {}) => {
+    const response = await api.get("/products", {
+      params: {
+        page,
+        size,
+        query: filters.query || undefined,
+        categoryId: filters.categoryId || undefined,
+        minPrice:
+          typeof filters.minPrice === "number" ? filters.minPrice : undefined,
+        maxPrice:
+          typeof filters.maxPrice === "number" ? filters.maxPrice : undefined,
+        sort: filters.sort || undefined,
+      },
+    });
+    return response.data;
+  },
 
-    // Lấy chi tiết sản phẩm
-    getProductById: async (id) => {
-        const response = await api.get(`/products/${id}`);
-        return response.data;
-    },
+  // Lấy chi tiết sản phẩm
+  getProductById: async (id) => {
+    const response = await api.get(`/products/${id}`);
+    return response.data;
+  },
 
-    // Tìm kiếm sản phẩm
-    searchProducts: async (query, page = 0, size = 12) => {
-        const response = await api.get('/products/search', {
-            params: { query, page, size }
-        });
-        return response.data;
-    },
+  // Tìm kiếm sản phẩm
+  searchProducts: async (query, page = 0, size = 12) => {
+    const response = await api.get("/products/search", {
+      params: { query, page, size },
+    });
+    return response.data;
+  },
 
-    // Lấy sản phẩm theo danh mục (ID)
-    getProductsByCategoryId: async (categoryId, page = 0, size = 12) => {
-        const response = await api.get(`/products/category/${categoryId}`, {
-            params: { page, size }
-        });
-        return response.data;
-    },
+  // Lấy sản phẩm theo danh mục (ID)
+  getProductsByCategoryId: async (categoryId, page = 0, size = 12) => {
+    const response = await api.get(`/products/category/${categoryId}`, {
+      params: { page, size },
+    });
+    return response.data;
+  },
 
-    // Admin: Lấy tất cả sản phẩm
-    getAllProductsAdmin: async (page = 0, size = 10, title = '', categoryId = '', status = '') => {
-        const response = await api.get('/admin/products', {
-             params: { 
-                 page, 
-                 size, 
-                 title: title || undefined, 
-                 categoryId: categoryId || undefined, 
-                 status: status || undefined 
-             }
-        });
-        return response.data;
-    },
+  // Admin: Lấy tất cả sản phẩm
+  getAllProductsAdmin: async (
+    page = 0,
+    size = 10,
+    title = "",
+    categoryId = "",
+    status = "",
+  ) => {
+    const response = await api.get("/admin/products", {
+      params: {
+        page,
+        size,
+        title: title || undefined,
+        categoryId: categoryId || undefined,
+        status: status || undefined,
+      },
+    });
+    return response.data;
+  },
 
-    // Admin: Tạo sản phẩm mới
-    createProduct: async (productData) => {
-        const response = await api.post('/admin/products', productData);
-        return response.data;
-    },
+  // Admin: Tạo sản phẩm mới
+  createProduct: async (productData) => {
+    const response = await api.post("/admin/products", productData);
+    return response.data;
+  },
 
-    // Admin: Cập nhật sản phẩm
-    updateProduct: async (id, productData) => {
-        const response = await api.put(`/admin/products/${id}`, productData);
-        return response.data;
-    },
+  // Admin: Cập nhật sản phẩm
+  updateProduct: async (id, productData) => {
+    const response = await api.put(`/admin/products/${id}`, productData);
+    return response.data;
+  },
 
-    // Admin: Xóa sản phẩm
-    deleteProduct: async (id) => {
-        const response = await api.delete(`/admin/products/${id}`);
-        return response.data;
-    },
+  // Admin: Xóa sản phẩm
+  deleteProduct: async (id) => {
+    const response = await api.delete(`/admin/products/${id}`);
+    return response.data;
+  },
 
-    // Admin: Quản lý Key
-    getProductKeys: async (productId) => {
-        const response = await api.get(`/admin/products/${productId}/keys`);
-        return response.data;
-    },
+  // Admin: Quản lý Key
+  getProductKeys: async (productId) => {
+    const response = await api.get(`/admin/products/${productId}/keys`);
+    return response.data;
+  },
 
-    addProductKey: async (productId, keyData) => {
-        const response = await api.post(`/admin/products/${productId}/keys`, keyData);
-        return response.data;
-    },
+  addProductKey: async (productId, keyData) => {
+    const response = await api.post(
+      `/admin/products/${productId}/keys`,
+      keyData,
+    );
+    return response.data;
+  },
 
-    deleteProductKey: async (keyId) => {
-        const response = await api.delete(`/admin/keys/${keyId}`);
-        return response.data;
-    },
+  deleteProductKey: async (keyId) => {
+    const response = await api.delete(`/admin/keys/${keyId}`);
+    return response.data;
+  },
 
-    searchKeys: async (params) => {
-        // params: { page, size, query, productId, status }
-        const response = await api.get('/admin/keys', { params });
-        return response.data;
-    },
+  searchKeys: async (params) => {
+    // params: { page, size, query, productId, status }
+    const response = await api.get("/admin/keys", { params });
+    return response.data;
+  },
 
-    bulkAddKeys: async (bulkData) => {
-        // bulkData: { productId, keyCodes: [] }
-        const response = await api.post('/admin/keys/bulk', bulkData);
-        return response.data;
-    },
+  bulkAddKeys: async (bulkData) => {
+    // bulkData: { productId, keyCodes: [] }
+    const response = await api.post("/admin/keys/bulk", bulkData);
+    return response.data;
+  },
 
-    bulkDeleteProducts: async (ids) => {
-        const response = await api.delete('/admin/products/bulk', { data: ids });
-        return response.data;
-    },
+  bulkDeleteProducts: async (ids) => {
+    const response = await api.delete("/admin/products/bulk", { data: ids });
+    return response.data;
+  },
 
-    bulkUpdateProductStatus: async (ids, status) => {
-        const response = await api.patch('/admin/products/bulk-status', ids, {
-            params: { status }
-        });
-        return response.data;
-    },
+  bulkUpdateProductStatus: async (ids, status) => {
+    const response = await api.patch("/admin/products/bulk-status", ids, {
+      params: { status },
+    });
+    return response.data;
+  },
 
-    // User: Lấy danh sách đánh giá
-    getProductReviews: async (productId, page = 0, size = 10) => {
-        const response = await api.get(`/products/${productId}/reviews`, {
-            params: { page, size }
-        });
-        return response.data;
-    },
+  // User: Lấy danh sách đánh giá
+  getProductReviews: async (productId, page = 0, size = 10) => {
+    const response = await api.get(`/products/${productId}/reviews`, {
+      params: { page, size },
+    });
+    return response.data;
+  },
 
-    // User: Đăng đánh giá
-    createReview: async (productId, reviewData) => {
-        const response = await api.post(`/products/${productId}/reviews`, reviewData);
-        return response.data;
-    }
+  // User: Đăng đánh giá
+  createReview: async (productId, reviewData) => {
+    const response = await api.post(
+      `/products/${productId}/reviews`,
+      reviewData,
+    );
+    return response.data;
+  },
 };
 
 export default productService;
