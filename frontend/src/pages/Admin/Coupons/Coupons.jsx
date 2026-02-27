@@ -1,11 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  FiPlus, FiSearch, FiEdit2, FiTrash2, 
-  FiChevronLeft, FiChevronRight, FiClock, FiDollarSign, FiX, FiSave
-} from 'react-icons/fi';
-import couponService from '../../../services/couponService';
-import './Coupons.css';
-import StatsCard from '../../../components/admin/Dashboard/StatsCard';
+import React, { useState, useEffect } from "react";
+import {
+  FiPlus,
+  FiSearch,
+  FiEdit2,
+  FiTrash2,
+  FiChevronLeft,
+  FiChevronRight,
+  FiClock,
+  FiDollarSign,
+  FiX,
+  FiSave,
+} from "react-icons/fi";
+import couponService from "../../../services/couponService";
+import "./Coupons.css";
+import StatsCard from "../../../components/admin/Dashboard/StatsCard";
 
 const Coupons = () => {
   const [coupons, setCoupons] = useState([]);
@@ -13,18 +21,18 @@ const Coupons = () => {
   const [showModal, setShowModal] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState({
-    code: '',
-    discountType: 'PERCENT',
-    discountValue: '',
-    minOrderAmount: '',
-    maxUsage: '',
-    expiryDate: '',
-    active: true
+    code: "",
+    discountType: "PERCENT",
+    discountValue: "",
+    minOrderAmount: "",
+    maxUsage: "",
+    expiryDate: "",
+    active: true,
   });
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
-    used: 0
+    used: 0,
   });
 
   useEffect(() => {
@@ -36,10 +44,13 @@ const Coupons = () => {
       setLoading(true);
       const data = await couponService.getAllCoupons();
       setCoupons(data);
-      
+
       const total = data.length;
-      const active = data.filter(c => c.active).length;
-      const used = data.reduce((acc, curr) => acc + (curr.currentUsage || 0), 0);
+      const active = data.filter((c) => c.active).length;
+      const used = data.reduce(
+        (acc, curr) => acc + (curr.currentUsage || 0),
+        0,
+      );
       setStats({ total, active, used });
     } catch (error) {
       console.error("Failed to fetch coupons:", error);
@@ -50,9 +61,9 @@ const Coupons = () => {
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: type === 'checkbox' ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -62,10 +73,10 @@ const Coupons = () => {
       code: coupon.code,
       discountType: coupon.discountType,
       discountValue: coupon.discountValue,
-      minOrderAmount: coupon.minOrderAmount || '',
-      maxUsage: coupon.maxUsage || '',
-      expiryDate: coupon.expiryDate ? coupon.expiryDate.split('.')[0] : '', // Format for datetime-local
-      active: coupon.active
+      minOrderAmount: coupon.minOrderAmount || "",
+      maxUsage: coupon.maxUsage || "",
+      expiryDate: coupon.expiryDate ? coupon.expiryDate.split(".")[0] : "", // Format for datetime-local
+      active: coupon.active,
     });
     setShowModal(true);
   };
@@ -101,13 +112,13 @@ const Coupons = () => {
   const resetForm = () => {
     setEditingId(null);
     setFormData({
-      code: '',
-      discountType: 'PERCENT',
-      discountValue: '',
-      minOrderAmount: '',
-      maxUsage: '',
-      expiryDate: '',
-      active: true
+      code: "",
+      discountType: "PERCENT",
+      discountValue: "",
+      minOrderAmount: "",
+      maxUsage: "",
+      expiryDate: "",
+      active: true,
     });
   };
 
@@ -121,7 +132,9 @@ const Coupons = () => {
       <div className="page-header">
         <div>
           <h1 className="page-title">Quản lý Mã Giảm Giá</h1>
-          <p className="page-subtitle">Tạo và quản lý các chương trình khuyến mãi cho khách hàng</p>
+          <p className="page-subtitle">
+            Tạo và quản lý các chương trình khuyến mãi cho khách hàng
+          </p>
         </div>
         <button className="btn-primary" onClick={handleCreateNew}>
           <FiPlus size={20} />
@@ -130,33 +143,36 @@ const Coupons = () => {
       </div>
 
       <div className="stats-grid">
-        <StatsCard 
-          title="Tổng mã" 
-          value={stats.total} 
-          icon={<FiDollarSign />} 
+        <StatsCard
+          title="Tổng mã"
+          value={stats.total}
+          icon={<FiDollarSign />}
           color="blue"
         />
-        <StatsCard 
-          title="Đang hoạt động" 
-          value={stats.active} 
-          icon={<FiClock />} 
+        <StatsCard
+          title="Đang hoạt động"
+          value={stats.active}
+          icon={<FiClock />}
           color="green"
         />
-        <StatsCard 
-          title="Lượt sử dụng" 
-          value={stats.used} 
-          icon={<FiSearch />} 
+        <StatsCard
+          title="Lượt sử dụng"
+          value={stats.used}
+          icon={<FiSearch />}
           color="purple"
         />
       </div>
 
-      <div className="products-table-container mt-6" style={{ marginTop: '2rem' }}>
+      <div
+        className="products-table-container mt-6"
+        style={{ marginTop: "2rem" }}
+      >
         <div className="filters-bar">
           <div className="search-wrapper">
             <FiSearch className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Tìm kiếm mã code..." 
+            <input
+              type="text"
+              placeholder="Tìm kiếm mã code..."
               className="search-input"
             />
           </div>
@@ -183,29 +199,69 @@ const Coupons = () => {
           </thead>
           <tbody>
             {loading ? (
-              <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Đang tải dữ liệu...</td></tr>
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "2rem" }}
+                >
+                  Đang tải dữ liệu...
+                </td>
+              </tr>
             ) : coupons.length === 0 ? (
-              <tr><td colSpan="7" style={{textAlign: 'center', padding: '2rem'}}>Chưa có mã giảm giá nào.</td></tr>
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{ textAlign: "center", padding: "2rem" }}
+                >
+                  Chưa có mã giảm giá nào.
+                </td>
+              </tr>
             ) : (
-              coupons.map(coupon => (
+              coupons.map((coupon) => (
                 <tr key={coupon.id}>
-                  <td><span className="coupon-code">{coupon.code}</span></td>
-                  <td className="font-bold">
-                    {coupon.discountType === 'PERCENT' ? `${coupon.discountValue}%` : `${parseInt(coupon.discountValue).toLocaleString()}đ`}
-                  </td>
-                  <td>{coupon.minOrderAmount ? `${parseInt(coupon.minOrderAmount).toLocaleString()}đ` : '-'}</td>
-                  <td>{coupon.currentUsage} / {coupon.maxUsage || '∞'}</td>
-                  <td>{coupon.expiryDate ? new Date(coupon.expiryDate).toLocaleDateString() : 'Vĩnh viễn'}</td>
                   <td>
-                    <span className={`status-badge ${coupon.active ? 'status-active' : 'status-hidden'}`}>
+                    <span className="coupon-code">{coupon.code}</span>
+                  </td>
+                  <td className="font-bold">
+                    {coupon.discountType === "PERCENT"
+                      ? `${coupon.discountValue}%`
+                      : `${parseInt(coupon.discountValue).toLocaleString()}đ`}
+                  </td>
+                  <td>
+                    {coupon.minOrderAmount
+                      ? `${parseInt(coupon.minOrderAmount).toLocaleString()}đ`
+                      : "-"}
+                  </td>
+                  <td>
+                    {coupon.currentUsage} / {coupon.maxUsage || "∞"}
+                  </td>
+                  <td>
+                    {coupon.expiryDate
+                      ? new Date(coupon.expiryDate).toLocaleDateString()
+                      : "Vĩnh viễn"}
+                  </td>
+                  <td>
+                    <span
+                      className={`status-badge ${coupon.active ? "status-active" : "status-hidden"}`}
+                    >
                       <span className="status-dot"></span>
-                      {coupon.active ? 'Active' : 'Disabled'}
+                      {coupon.active ? "Active" : "Disabled"}
                     </span>
                   </td>
                   <td>
                     <div className="action-btn-group">
-                      <button className="btn-icon" onClick={() => handleEdit(coupon)}><FiEdit2 /></button>
-                      <button onClick={() => handleDelete(coupon.id)} className="btn-icon text-danger"><FiTrash2 /></button>
+                      <button
+                        className="btn-icon"
+                        onClick={() => handleEdit(coupon)}
+                      >
+                        <FiEdit2 />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(coupon.id)}
+                        className="btn-icon text-danger"
+                      >
+                        <FiTrash2 />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -217,29 +273,46 @@ const Coupons = () => {
 
       {showModal && (
         <div className="modal-backdrop" onClick={() => setShowModal(false)}>
-          <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()}
+            style={{ maxWidth: "500px" }}
+          >
             <div className="modal-header">
-              <h2 className="modal-title">{editingId ? 'Chỉnh Sửa Mã' : 'Tạo Mã Mới'}</h2>
-              <button onClick={() => setShowModal(false)} className="close-btn"><FiX size={24} /></button>
+              <h2 className="modal-title">
+                {editingId ? "Chỉnh Sửa Mã" : "Tạo Mã Mới"}
+              </h2>
+              <button onClick={() => setShowModal(false)} className="close-btn">
+                <FiX size={24} />
+              </button>
             </div>
             <form onSubmit={handleSubmit}>
               <div className="modal-body">
                 <div className="form-group">
                   <label className="form-label">Mã Code (VD: SALE50)</label>
-                  <input 
-                    name="code" required
+                  <input
+                    name="code"
+                    required
                     className="form-input text-uppercase font-mono"
-                    style={{ textTransform: 'uppercase' }}
-                    value={formData.code} onChange={handleInputChange}
+                    style={{ textTransform: "uppercase" }}
+                    value={formData.code}
+                    onChange={handleInputChange}
                   />
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "1rem",
+                  }}
+                >
                   <div className="form-group">
                     <label className="form-label">Loại giảm</label>
-                    <select 
+                    <select
                       name="discountType"
                       className="form-select"
-                      value={formData.discountType} onChange={handleInputChange}
+                      value={formData.discountType}
+                      onChange={handleInputChange}
                     >
                       <option value="PERCENT">% Phần trăm</option>
                       <option value="FIXED">Số tiền cố định</option>
@@ -247,51 +320,78 @@ const Coupons = () => {
                   </div>
                   <div className="form-group">
                     <label className="form-label">Giá trị giảm</label>
-                    <input 
-                      name="discountValue" type="number" required
+                    <input
+                      name="discountValue"
+                      type="number"
+                      required
                       className="form-input"
-                      value={formData.discountValue} onChange={handleInputChange}
+                      value={formData.discountValue}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "1fr 1fr",
+                    gap: "1rem",
+                  }}
+                >
                   <div className="form-group">
                     <label className="form-label">Đơn tối thiểu</label>
-                    <input 
-                      name="minOrderAmount" type="number"
+                    <input
+                      name="minOrderAmount"
+                      type="number"
                       className="form-input"
-                      value={formData.minOrderAmount} onChange={handleInputChange}
+                      value={formData.minOrderAmount}
+                      onChange={handleInputChange}
                     />
                   </div>
                   <div className="form-group">
                     <label className="form-label">Lượt dùng tối đa</label>
-                    <input 
-                      name="maxUsage" type="number"
+                    <input
+                      name="maxUsage"
+                      type="number"
                       className="form-input"
-                      value={formData.maxUsage} onChange={handleInputChange}
+                      value={formData.maxUsage}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
                 <div className="form-group">
                   <label className="form-label">Ngày hết hạn</label>
-                  <input 
-                    name="expiryDate" type="datetime-local"
+                  <input
+                    name="expiryDate"
+                    type="datetime-local"
                     className="form-input"
-                    value={formData.expiryDate} onChange={handleInputChange}
+                    value={formData.expiryDate}
+                    onChange={handleInputChange}
                   />
                 </div>
-                <div className="form-group" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <input 
-                    type="checkbox" name="active" id="active"
-                    checked={formData.active} onChange={handleInputChange}
+                <div
+                  className="form-group"
+                  style={{ display: "flex", alignItems: "center", gap: "8px" }}
+                >
+                  <input
+                    type="checkbox"
+                    name="active"
+                    id="active"
+                    checked={formData.active}
+                    onChange={handleInputChange}
                   />
                   <label htmlFor="active">Kích hoạt</label>
                 </div>
               </div>
               <div className="modal-footer">
-                <button type="button" onClick={() => setShowModal(false)} className="btn-outline">Hủy</button>
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="btn-outline"
+                >
+                  Hủy
+                </button>
                 <button type="submit" className="btn-primary">
-                   <FiSave /> {editingId ? 'Cập nhật' : 'Tạo Mã'}
+                  <FiSave /> {editingId ? "Cập nhật" : "Tạo Mã"}
                 </button>
               </div>
             </form>

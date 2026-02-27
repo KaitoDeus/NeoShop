@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { FiX, FiPlus, FiTrash2, FiKey } from 'react-icons/fi';
-import productService from '../../../services/productService';
-import './KeyManagementModal.css';
+import React, { useState, useEffect } from "react";
+import { FiX, FiPlus, FiTrash2, FiKey } from "react-icons/fi";
+import productService from "../../../services/productService";
+import "./KeyManagementModal.css";
 
 const KeyManagementModal = ({ productId, productName, onClose }) => {
   const [keys, setKeys] = useState([]);
-  const [newKey, setNewKey] = useState('');
+  const [newKey, setNewKey] = useState("");
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
 
@@ -30,11 +30,11 @@ const KeyManagementModal = ({ productId, productName, onClose }) => {
   const handleAddKey = async (e) => {
     e.preventDefault();
     if (!newKey.trim()) return;
-    
+
     setLoading(true);
     try {
       await productService.addProductKey(productId, { keyCode: newKey });
-      setNewKey('');
+      setNewKey("");
       fetchKeys(); // Refresh list
     } catch (error) {
       console.error("Failed to add key:", error);
@@ -46,7 +46,7 @@ const KeyManagementModal = ({ productId, productName, onClose }) => {
 
   const handleDeleteKey = async (keyId) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa key này?")) return;
-    
+
     try {
       await productService.deleteProductKey(keyId);
       fetchKeys(); // Refresh list
@@ -58,30 +58,35 @@ const KeyManagementModal = ({ productId, productName, onClose }) => {
 
   return (
     <div className="modal-backdrop" onClick={onClose}>
-      <div className="modal-content key-modal" onClick={e => e.stopPropagation()}>
+      <div
+        className="modal-content key-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <div>
             <h2>Quản Lý Key Sản Phẩm</h2>
             <p className="modal-subtitle">{productName}</p>
           </div>
-          <button className="close-btn" onClick={onClose}><FiX size={24} /></button>
+          <button className="close-btn" onClick={onClose}>
+            <FiX size={24} />
+          </button>
         </div>
-        
+
         <div className="modal-body">
           {/* Form thêm mới */}
           <form className="add-key-form" onSubmit={handleAddKey}>
             <div className="input-with-icon">
               <FiKey className="input-icon" />
-              <input 
-                type="text" 
-                placeholder="Nhập mã key mới (ví dụ: ABCD-1234-EFGH)..." 
+              <input
+                type="text"
+                placeholder="Nhập mã key mới (ví dụ: ABCD-1234-EFGH)..."
                 value={newKey}
                 onChange={(e) => setNewKey(e.target.value)}
                 required
               />
             </div>
             <button type="submit" className="btn-primary" disabled={loading}>
-              <FiPlus /> {loading ? '...' : 'Thêm'}
+              <FiPlus /> {loading ? "..." : "Thêm"}
             </button>
           </form>
 
@@ -102,17 +107,19 @@ const KeyManagementModal = ({ productId, productName, onClose }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {keys.map(k => (
+                  {keys.map((k) => (
                     <tr key={k.id}>
                       <td className="font-mono">{k.keyCode}</td>
                       <td>
-                        <span className={`status-badge ${k.status === 'AVAILABLE' ? 'status-active' : 'status-hidden'}`}>
-                          {k.status === 'AVAILABLE' ? 'Chưa bán' : 'Đã bán'}
+                        <span
+                          className={`status-badge ${k.status === "AVAILABLE" ? "status-active" : "status-hidden"}`}
+                        >
+                          {k.status === "AVAILABLE" ? "Chưa bán" : "Đã bán"}
                         </span>
                       </td>
                       <td>
-                        <button 
-                          className="btn-icon text-danger" 
+                        <button
+                          className="btn-icon text-danger"
                           onClick={() => handleDeleteKey(k.id)}
                           title="Xóa Key"
                         >
@@ -126,9 +133,11 @@ const KeyManagementModal = ({ productId, productName, onClose }) => {
             )}
           </div>
         </div>
-        
+
         <div className="modal-footer">
-          <button className="btn-outline" onClick={onClose}>Đóng</button>
+          <button className="btn-outline" onClick={onClose}>
+            Đóng
+          </button>
         </div>
       </div>
     </div>

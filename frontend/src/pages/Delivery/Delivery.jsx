@@ -1,10 +1,17 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  FiCheck, FiCopy, FiDownload, FiExternalLink, 
-  FiHome, FiShoppingBag, FiInfo, FiMail, FiPrinter 
-} from 'react-icons/fi';
-import './Delivery.css';
+import React from "react";
+import { Link } from "react-router-dom";
+import {
+  FiCheck,
+  FiCopy,
+  FiDownload,
+  FiExternalLink,
+  FiHome,
+  FiShoppingBag,
+  FiInfo,
+  FiMail,
+  FiPrinter,
+} from "react-icons/fi";
+import "./Delivery.css";
 
 const Delivery = () => {
   const mockCode = "W269N-WFGWX-YVC9B-4J6C9-T83GX";
@@ -23,14 +30,16 @@ const Delivery = () => {
           <div className="success-icon-wrapper">
             <FiCheck />
           </div>
-          
+
           <h1 className="delivery-title">Thanh toán thành công!</h1>
           <p className="delivery-subtitle">
             Cảm ơn bạn đã tin tưởng NeoShop. Sản phẩm của bạn đã sẵn sàng.
           </p>
 
           <div className="product-key-section">
-            <span className="product-label-mini">MÃ SẢN PHẨM CỦA BẠN ({productName})</span>
+            <span className="product-label-mini">
+              MÃ SẢN PHẨM CỦA BẠN ({productName})
+            </span>
             <div className="key-display-wrapper">
               <span className="product-code">{mockCode}</span>
               <button className="btn-copy-big" onClick={handleCopy}>
@@ -40,7 +49,9 @@ const Delivery = () => {
           </div>
 
           <div className="activation-guide">
-            <h3 className="guide-title"><FiInfo /> Hướng dẫn kích hoạt</h3>
+            <h3 className="guide-title">
+              <FiInfo /> Hướng dẫn kích hoạt
+            </h3>
             <div className="steps-list">
               <div className="step-item">
                 <div className="step-number">1</div>
@@ -51,13 +62,15 @@ const Delivery = () => {
               <div className="step-item">
                 <div className="step-number">2</div>
                 <div className="step-text">
-                  Chọn <strong>System</strong> &gt; <strong>Activation</strong> &gt; <strong>Change product key</strong>.
+                  Chọn <strong>System</strong> &gt; <strong>Activation</strong>{" "}
+                  &gt; <strong>Change product key</strong>.
                 </div>
               </div>
               <div className="step-item">
                 <div className="step-number">3</div>
                 <div className="step-text">
-                  Nhập mã phía trên và nhấn <strong>Activate</strong> để hoàn tất.
+                  Nhập mã phía trên và nhấn <strong>Activate</strong> để hoàn
+                  tất.
                 </div>
               </div>
             </div>
@@ -76,14 +89,16 @@ const Delivery = () => {
         {/* Footer Info */}
         <div className="order-footer-info">
           <div className="footer-item">
-             <FiMail /> Đã gửi bản sao vào email của bạn
+            <FiMail /> Đã gửi bản sao vào email của bạn
           </div>
-          <div className="footer-item" style={{cursor: 'pointer'}} onClick={() => window.print()}>
-             <FiPrinter /> In hóa đơn
+          <div
+            className="footer-item"
+            style={{ cursor: "pointer" }}
+            onClick={() => window.print()}
+          >
+            <FiPrinter /> In hóa đơn
           </div>
-          <div className="footer-item">
-             Mã đơn hàng: #NEO-99821
-          </div>
+          <div className="footer-item">Mã đơn hàng: #NEO-99821</div>
         </div>
       </div>
     </div>

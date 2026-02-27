@@ -53,7 +53,9 @@
   border-radius: var(--radius-md);
   padding: 1.5rem;
   text-align: center;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 }
 
 .highlight-card:hover {
@@ -66,10 +68,18 @@
   margin-bottom: 0.75rem;
 }
 
-.hl-icon.green { color: #10b981; }
-.hl-icon.blue { color: #3b82f6; }
-.hl-icon.orange { color: #f59e0b; }
-.hl-icon.purple { color: #0ea5e9; }
+.hl-icon.green {
+  color: #10b981;
+}
+.hl-icon.blue {
+  color: #3b82f6;
+}
+.hl-icon.orange {
+  color: #f59e0b;
+}
+.hl-icon.purple {
+  color: #0ea5e9;
+}
 
 .highlight-card h4 {
   font-size: 1rem;
@@ -154,7 +164,7 @@
 }
 
 .info-box li::before {
-  content: '•';
+  content: "•";
   position: absolute;
   left: -1rem;
 }
@@ -272,7 +282,9 @@
   color: white;
   border-radius: var(--radius-md);
   font-weight: 600;
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 
 .btn-primary:hover {
