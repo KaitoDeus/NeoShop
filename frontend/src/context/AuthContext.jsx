@@ -35,13 +35,12 @@ export const AuthProvider = ({ children }) => {
 
       // Tạo object user để lưu frontend
       const userData = {
-        id: data.username, // Tạm dùng username làm ID
-        name: data.username,
-        email: data.email || username, // Ưu tiên email từ server
+        id: data.userId || data.username, // Ưu tiên UUID từ server
+        name: data.fullName || data.username,
+        email: data.email || username,
         username: data.username,
         token: data.token,
         roles: data.roles || [],
-        // Mapping role để giữ tương thích code cũ (check user.role === 'admin')
         role:
           data.roles &&
           (data.roles.includes("ADMIN") || data.roles.includes("ROLE_ADMIN"))
@@ -73,8 +72,8 @@ export const AuthProvider = ({ children }) => {
       const data = response.data;
 
       const userData = {
-        id: data.username,
-        name: data.username,
+        id: data.userId || data.username,
+        name: data.fullName || data.username,
         email: email, // Use email from args
         username: data.username,
         token: data.token,
@@ -117,7 +116,7 @@ export const AuthProvider = ({ children }) => {
       const data = response.data;
 
       const userData = {
-        id: data.username,
+        id: data.userId || data.username,
         name: data.fullName || data.username,
         email: data.email,
         username: data.username,

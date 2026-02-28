@@ -25,6 +25,7 @@ import Keys from "./pages/Admin/Keys/Keys"; // Import Keys
 import Coupons from "./pages/Admin/Coupons/Coupons"; // Import Coupons
 import Categories from "./pages/Admin/Categories/Categories"; // Import Categories
 import Settings from "./pages/Admin/Settings/Settings"; // Re-Import Settings
+import Messages from "./pages/Admin/Messages/Messages"; // Import Messages
 import "./App.css";
 import OrderSuccess from "./pages/OrderSuccess/OrderSuccess";
 import Profile from "./pages/Profile/Profile";
@@ -50,6 +51,7 @@ function App() {
                 <Route path="users" element={<Users />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="settings" element={<Settings />} />
+                <Route path="messages" element={<Messages />} />
               </Route>
             </Route>
 

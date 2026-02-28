@@ -9,6 +9,7 @@ import {
   FiSettings,
   FiLogOut,
   FiHome,
+  FiMessageSquare,
 } from "react-icons/fi";
 import Logo from "../../common/Logo/Logo";
 import "./Sidebar.css";
@@ -22,6 +23,7 @@ const Sidebar = () => {
     { path: "/admin/categories", name: "Danh mục", icon: <FiGrid /> },
     { path: "/admin/keys", name: "Kho Key", icon: <FiKey /> },
     { path: "/admin/coupons", name: "Mã giảm giá", icon: <FiShoppingCart /> },
+    { path: "/admin/messages", name: "Tin nhắn", icon: <FiMessageSquare /> },
     { path: "/admin/users", name: "Người dùng", icon: <FiUsers /> },
     { path: "/admin/stats", name: "Thống kê", icon: <FiBarChart2 /> },
     { path: "/admin/settings", name: "Cấu hình", icon: <FiSettings /> },
