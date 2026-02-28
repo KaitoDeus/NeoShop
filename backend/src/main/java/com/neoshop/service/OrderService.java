@@ -71,7 +71,7 @@ public class OrderService {
 
     order.setTotalAmount(totalAmount);
 
-    // Apply coupon if provided
+    // Áp dụng mã giảm giá nếu có
     if (request.getCouponCode() != null && !request.getCouponCode().isBlank()) {
       Coupon coupon = couponService.validateCoupon(request.getCouponCode(), totalAmount);
       BigDecimal discount = couponService.calculateDiscount(coupon, totalAmount);
@@ -185,7 +185,7 @@ public class OrderService {
         // Trong thực tế, cần có cơ chế xử lý khi thiếu key (thông báo admin, hoàn
         // tiền...)
         throw new RuntimeException(
-            "Not enough keys available for product: " + item.getProduct().getTitle());
+            "Không đủ key cho sản phẩm: " + item.getProduct().getTitle());
       }
 
       for (com.neoshop.model.entity.ProductKey key : availableKeys) {
@@ -194,7 +194,7 @@ public class OrderService {
       }
       productKeyRepository.saveAll(availableKeys);
 
-      // Update stock properly since now it's PAID
+      // Cập nhật lại tồn kho sau khi đã thanh toán
       com.neoshop.model.entity.Product product = item.getProduct();
       product.setStockQuantity((int) productKeyRepository.countByProductIdAndStatus(product.getId(),
           com.neoshop.model.entity.ProductKey.KeyStatus.AVAILABLE));

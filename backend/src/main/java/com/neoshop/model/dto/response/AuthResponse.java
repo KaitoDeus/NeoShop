@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AuthResponse {
+  private java.util.UUID userId;
   private String token;
   private String username;
   private String email;

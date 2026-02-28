@@ -30,7 +30,7 @@ public class ProductKeyService {
       try {
         keyStatus = ProductKey.KeyStatus.valueOf(status.toUpperCase());
       } catch (IllegalArgumentException e) {
-        // Ignore invalid status
+        // Bỏ qua trạng thái không hợp lệ
       }
     }
 
@@ -47,17 +47,15 @@ public class ProductKeyService {
 
   @Transactional
   public ProductKeyResponse addKey(UUID productId, ProductKeyRequest request) {
-    Product product =
-        productRepository
-            .findById(productId)
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+    Product product = productRepository
+        .findById(productId)
+        .orElseThrow(() -> new RuntimeException("Product not found"));
 
-    ProductKey newKey =
-        ProductKey.builder()
-            .product(product)
-            .keyCode(request.getKeyCode())
-            .status(ProductKey.KeyStatus.AVAILABLE)
-            .build();
+    ProductKey newKey = ProductKey.builder()
+        .product(product)
+        .keyCode(request.getKeyCode())
+        .status(ProductKey.KeyStatus.AVAILABLE)
+        .build();
 
     ProductKey savedKey = productKeyRepository.save(newKey);
     updateProductStock(product);
@@ -67,14 +65,14 @@ public class ProductKeyService {
 
   @Transactional
   public List<ProductKeyResponse> bulkAddKeys(BulkKeyRequest request) {
-    Product product =
-        productRepository
-            .findById(request.getProductId())
-            .orElseThrow(() -> new RuntimeException("Product not found"));
+    Product product = productRepository
+        .findById(request.getProductId())
+        .orElseThrow(() -> new RuntimeException("Product not found"));
 
     List<ProductKey> keysToSave = new ArrayList<>();
     for (String keyCode : request.getKeyCodes()) {
-      if (keyCode == null || keyCode.trim().isEmpty()) continue;
+      if (keyCode == null || keyCode.trim().isEmpty())
+        continue;
 
       keysToSave.add(
           ProductKey.builder()
@@ -92,10 +90,9 @@ public class ProductKeyService {
 
   @Transactional
   public void deleteKey(UUID keyId) {
-    ProductKey key =
-        productKeyRepository
-            .findById(keyId)
-            .orElseThrow(() -> new RuntimeException("Key not found"));
+    ProductKey key = productKeyRepository
+        .findById(keyId)
+        .orElseThrow(() -> new RuntimeException("Key not found"));
 
     Product product = key.getProduct();
     productKeyRepository.delete(key);
@@ -103,10 +100,8 @@ public class ProductKeyService {
   }
 
   private void updateProductStock(Product product) {
-    int stock =
-        (int)
-            productKeyRepository.countByProductIdAndStatus(
-                product.getId(), ProductKey.KeyStatus.AVAILABLE);
+    int stock = (int) productKeyRepository.countByProductIdAndStatus(
+        product.getId(), ProductKey.KeyStatus.AVAILABLE);
     product.setStockQuantity(stock);
     productRepository.save(product);
   }

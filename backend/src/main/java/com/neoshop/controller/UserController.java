@@ -11,14 +11,14 @@ import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-// Or Principal
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
-@Tag(name = "User", description = "User Profile Management")
-@SecurityRequirement(name = "bearerAuth") // Assuming Swagger config
+@Tag(name = "User", description = "Quản lý hồ sơ người dùng")
+@SecurityRequirement(name = "bearerAuth")
 public class UserController {
 
   private final UserService userService;
@@ -29,12 +29,8 @@ public class UserController {
     return ResponseEntity.ok(userService.getCurrentUser(principal.getName()));
   }
 
-  @RequestMapping(
-      value = "/profile",
-      method = {RequestMethod.PATCH, RequestMethod.PUT})
-  @Operation(
-      summary = "Update user profile",
-      description = "Update full name, phone number, address, avatar")
+  @RequestMapping(value = "/profile", method = { RequestMethod.PATCH, RequestMethod.PUT })
+  @Operation(summary = "Update user profile", description = "Update full name, phone number, address, avatar")
   public ResponseEntity<AuthResponse> updateProfile(
       @RequestBody UpdateProfileRequest request, Principal principal) {
     return ResponseEntity.ok(userService.updateProfile(principal.getName(), request));
@@ -45,6 +41,6 @@ public class UserController {
   public ResponseEntity<String> changePassword(
       @Valid @RequestBody ChangePasswordRequest request, Principal principal) {
     userService.changePassword(principal.getName(), request);
-    return ResponseEntity.ok("Password changed successfully");
+    return ResponseEntity.ok("Đổi mật khẩu thành công");
   }
 }

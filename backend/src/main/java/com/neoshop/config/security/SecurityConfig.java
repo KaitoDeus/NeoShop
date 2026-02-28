@@ -49,6 +49,7 @@ public class SecurityConfig {
                                                                 "/api/payments/momo/ipn",
                                                                 "/api/payments/momo/return",
                                                                 "/uploads/**",
+                                                                "/ws/**",
                                                                 "/v3/api-docs/**",
                                                                 "/swagger-ui/**",
                                                                 "/swagger-ui.html",

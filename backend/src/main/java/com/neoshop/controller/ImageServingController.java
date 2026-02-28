@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/images")
-@Tag(name = "Image Serving", description = "Serve uploaded images")
+@Tag(name = "Image Serving", description = "Phục vụ ảnh đã tải lên")
 @Slf4j
 public class ImageServingController {
 
@@ -31,7 +31,7 @@ public class ImageServingController {
 
       if (!Files.exists(filePath)) {
         log.warn("Image not found at primary path: {}", filePath);
-        // Fallback to relative path 'uploads'
+        // Thử đường dẫn tương đối 'uploads'
         filePath = Paths.get("uploads").resolve(filename).normalize();
         if (!Files.exists(filePath)) {
           log.error("Image definitely not found: {}", filename);
@@ -45,8 +45,10 @@ public class ImageServingController {
         String contentType = Files.probeContentType(filePath);
         if (contentType == null) {
           contentType = "image/jpeg";
-          if (filename.toLowerCase().endsWith(".png")) contentType = "image/png";
-          else if (filename.toLowerCase().endsWith(".gif")) contentType = "image/gif";
+          if (filename.toLowerCase().endsWith(".png"))
+            contentType = "image/png";
+          else if (filename.toLowerCase().endsWith(".gif"))
+            contentType = "image/gif";
         }
 
         log.info("Serving image: {} with type: {}", filename, contentType);

@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/upload")
-@Tag(name = "Upload", description = "File Upload Management")
+@Tag(name = "Upload", description = "Quản lý tải file lên")
 @RequiredArgsConstructor
 public class FileUploadController {
 
@@ -33,10 +33,8 @@ public class FileUploadController {
   public ResponseEntity<String> uploadImage(
       @RequestParam("file") MultipartFile multipartFile, Principal principal) throws IOException {
 
-    String fileName =
-        StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
-    String fileExtension =
-        fileName.contains(".") ? fileName.substring(fileName.lastIndexOf(".")) : ".jpg";
+    String fileName = StringUtils.cleanPath(Objects.requireNonNull(multipartFile.getOriginalFilename()));
+    String fileExtension = fileName.contains(".") ? fileName.substring(fileName.lastIndexOf(".")) : ".jpg";
     String newFileName = UUID.randomUUID().toString() + fileExtension;
 
     Path uploadPath = Paths.get(uploadDir);
@@ -49,21 +47,20 @@ public class FileUploadController {
       Path filePath = uploadPath.resolve(newFileName);
       Files.copy(inputStream, filePath, StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException ioe) {
-      throw new IOException("Could not save image file: " + fileName, ioe);
+      throw new IOException("Không thể lưu file ảnh: " + fileName, ioe);
     }
 
-    // Return the relative URL to the file
+    // Trả về URL tương đối của file
     String fileUrl = "/api/images/" + newFileName;
 
-    // Save to database
-    ImageUpload imageUpload =
-        ImageUpload.builder()
-            .fileName(newFileName)
-            .fileUrl(fileUrl)
-            .fileType(multipartFile.getContentType())
-            .fileSize(multipartFile.getSize())
-            .uploadedBy(principal != null ? principal.getName() : "anonymous")
-            .build();
+    // Lưu vào database
+    ImageUpload imageUpload = ImageUpload.builder()
+        .fileName(newFileName)
+        .fileUrl(fileUrl)
+        .fileType(multipartFile.getContentType())
+        .fileSize(multipartFile.getSize())
+        .uploadedBy(principal != null ? principal.getName() : "anonymous")
+        .build();
 
     imageUploadRepository.save(imageUpload);
 

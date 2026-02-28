@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Slf4j
 @Service
 public class MoMoService {
 
@@ -37,12 +39,12 @@ public class MoMoService {
 
     private static final String HMAC_SHA256 = "HmacSHA256";
 
-    // Build the hex HMAC SHA256 string
+    // Tạo chuỗi HMAC SHA256 dạng hex
     private String signHmacSHA256(String data, String secretKey) throws Exception {
-        Mac sha256_HMAC = Mac.getInstance(HMAC_SHA256);
-        SecretKeySpec secret_key = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
-        sha256_HMAC.init(secret_key);
-        byte[] hash = sha256_HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
+        Mac sha256HMAC = Mac.getInstance(HMAC_SHA256);
+        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
+        sha256HMAC.init(secretKeySpec);
+        byte[] hash = sha256HMAC.doFinal(data.getBytes(StandardCharsets.UTF_8));
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (byte b : hash) {
             String hex = Integer.toHexString(0xff & b);
@@ -57,13 +59,12 @@ public class MoMoService {
     public String createPaymentUrl(UUID orderId, long amount, String orderInfo) {
         try {
             String requestId = UUID.randomUUID().toString();
-            System.out.println("MoMo createPaymentUrl: redirectUrl = " + redirectUrl);
             String stringOrderId = orderId.toString();
             String requestType = "captureWallet";
             String extraData = "";
             String finalRedirectUrl = redirectUrl;
 
-            // Raw signature template
+            // Chuỗi chữ ký gốc
             String rawSignature = "accessKey=" + accessKey +
                     "&amount=" + amount +
                     "&extraData=" + extraData +
@@ -75,10 +76,10 @@ public class MoMoService {
                     "&requestId=" + requestId +
                     "&requestType=" + requestType;
 
-            // Generate signature
+            // Tạo chữ ký
             String signature = signHmacSHA256(rawSignature, secretKey);
 
-            // Construct JSON request body
+            // Tạo body request JSON
             Map<String, Object> requestBody = new HashMap<>();
             requestBody.put("partnerCode", partnerCode);
             requestBody.put("partnerName", "NeoShop");
@@ -95,13 +96,12 @@ public class MoMoService {
             requestBody.put("extraData", extraData);
             requestBody.put("signature", signature);
 
-            // Setup RestTemplate call
+            // Gửi request POST tới MoMo
             RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
             HttpEntity<Map<String, Object>> entity = new HttpEntity<>(requestBody, headers);
 
-            // Send POST request
             @SuppressWarnings("rawtypes")
             ResponseEntity<Map> response = restTemplate.postForEntity(endpoint, entity, Map.class);
 
@@ -111,10 +111,10 @@ public class MoMoService {
             if (responseBody != null && responseBody.containsKey("payUrl")) {
                 return (String) responseBody.get("payUrl");
             } else {
-                return finalRedirectUrl; // Fail fallback
+                return finalRedirectUrl; // Fallback khi thất bại
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Lỗi tạo URL thanh toán MoMo: {}", e.getMessage());
             return redirectUrl;
         }
     }
@@ -131,7 +131,7 @@ public class MoMoService {
             String orderIdStr = (String) requestBody.get("orderId");
             int resultCode = (Integer) requestBody.get("resultCode");
 
-            // Validate signature here if needed (omitted for brevity)
+            // Xác thực chữ ký tại đây nếu cần (bỏ qua cho sandbox)
 
             UUID orderId = UUID.fromString(orderIdStr);
             if (resultCode == 0) {
@@ -143,7 +143,7 @@ public class MoMoService {
             response.put("status", "success");
             return response;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Lỗi xử lý MoMo IPN: {}", e.getMessage());
             response.put("status", "error");
             return response;
         }

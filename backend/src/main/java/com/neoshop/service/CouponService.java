@@ -23,23 +23,21 @@ public class CouponService {
     if (couponRepository.findByCode(request.getCode()).isPresent()) {
       throw new RuntimeException("Mã giảm giá đã tồn tại: " + request.getCode());
     }
-    Coupon coupon =
-        Coupon.builder()
-            .code(request.getCode())
-            .discountType(request.getDiscountType())
-            .discountValue(request.getDiscountValue())
-            .minOrderAmount(request.getMinOrderAmount())
-            .maxUsage(request.getMaxUsage())
-            .expiryDate(request.getExpiryDate())
-            .active(request.getActive() != null ? request.getActive() : true)
-            .currentUsage(0)
-            .build();
+    Coupon coupon = Coupon.builder()
+        .code(request.getCode())
+        .discountType(request.getDiscountType())
+        .discountValue(request.getDiscountValue())
+        .minOrderAmount(request.getMinOrderAmount())
+        .maxUsage(request.getMaxUsage())
+        .expiryDate(request.getExpiryDate())
+        .active(request.getActive() != null ? request.getActive() : true)
+        .currentUsage(0)
+        .build();
     return couponRepository.save(coupon);
   }
 
   public Coupon updateCoupon(UUID id, com.neoshop.model.dto.request.CouponRequest request) {
-    Coupon coupon =
-        couponRepository.findById(id).orElseThrow(() -> new RuntimeException("Coupon not found"));
+    Coupon coupon = couponRepository.findById(id).orElseThrow(() -> new RuntimeException("Coupon not found"));
 
     coupon.setCode(request.getCode());
     coupon.setDiscountType(request.getDiscountType());
@@ -60,10 +58,9 @@ public class CouponService {
 
   /** Validate a coupon code against an order amount. */
   public Coupon validateCoupon(String code, BigDecimal orderAmount) {
-    Coupon coupon =
-        couponRepository
-            .findByCode(code)
-            .orElseThrow(() -> new RuntimeException("Mã giảm giá không tồn tại"));
+    Coupon coupon = couponRepository
+        .findByCode(code)
+        .orElseThrow(() -> new RuntimeException("Mã giảm giá không tồn tại"));
 
     if (!coupon.getActive()) {
       throw new RuntimeException("Mã giảm giá đã bị vô hiệu hóa");
@@ -93,7 +90,7 @@ public class CouponService {
           .multiply(coupon.getDiscountValue())
           .divide(BigDecimal.valueOf(100), 0, RoundingMode.FLOOR);
     } else {
-      // FIXED discount — cannot exceed order amount
+      // Giảm giá CỐ ĐỊNH — không vượt quá tổng đơn
       return coupon.getDiscountValue().min(orderAmount);
     }
   }

@@ -15,7 +15,8 @@ public class PaymentService {
   private final Random random = new Random();
 
   /**
-   * Mock Payment Gateway — Simulate payment processing. 90% chance of SUCCESS, 10% chance of
+   * Mock Payment Gateway — Simulate payment processing. 90% chance of SUCCESS,
+   * 10% chance of
    * FAILED.
    */
   public PaymentResponse processPayment(PaymentRequest request) {
@@ -28,7 +29,7 @@ public class PaymentService {
     String transactionId = "TXN-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
 
     if (success) {
-      // Update order status to PAID
+      // Cập nhật trạng thái đơn hàng thành PAID
       orderService.updateOrderStatus(request.getOrderId(), "PAID");
 
       return PaymentResponse.builder()
@@ -39,7 +40,7 @@ public class PaymentService {
           .processedAt(LocalDateTime.now())
           .build();
     } else {
-      // Update order status to FAILED
+      // Cập nhật trạng thái đơn hàng thành FAILED
       orderService.updateOrderStatus(request.getOrderId(), "FAILED");
 
       return PaymentResponse.builder()

@@ -48,7 +48,7 @@ public class AdminController {
       @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime startDate,
       @RequestParam(required = false) @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime endDate) {
 
-    // Normalize empty strings to null for repository filtering
+    // Chuẩn hóa chuỗi rỗng thành null cho repository
     String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
     String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
 
@@ -82,7 +82,7 @@ public class AdminController {
     }
     Pageable pageable = PageRequest.of(page, size, sortObj);
 
-    // Convert empty strings to null for consistent repository filtering
+    // Chuẩn hóa chuỗi rỗng thành null cho repository
     String filterTitle = (title != null && title.trim().isEmpty()) ? null : title;
     String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
 
@@ -91,7 +91,7 @@ public class AdminController {
       try {
         categoryUuid = UUID.fromString(categoryId);
       } catch (IllegalArgumentException e) {
-        // Ignore invalid UUID
+        // Bỏ qua UUID không hợp lệ
       }
     }
 
@@ -132,7 +132,7 @@ public class AdminController {
     return ResponseEntity.noContent().build();
   }
 
-  // Product Management
+  // Quản lý Sản phẩm
   @PostMapping("/products")
   @Operation(summary = "Create a new product")
   public ResponseEntity<ProductResponse> createProduct(@Valid @RequestBody ProductRequest request) {
@@ -183,7 +183,7 @@ public class AdminController {
     return ResponseEntity.noContent().build();
   }
 
-  // Product Key Management
+  // Quản lý Key Sản phẩm
   @GetMapping("/keys")
   @Operation(summary = "Search all keys with filters and sorting")
   public ResponseEntity<Page<ProductKeyResponse>> searchKeys(
@@ -193,7 +193,7 @@ public class AdminController {
       @RequestParam(required = false) UUID productId,
       @RequestParam(required = false) String status) {
 
-    // Normalize empty strings to null
+    // Chuẩn hóa chuỗi rỗng thành null
     String filterQuery = (query != null && query.trim().isEmpty()) ? null : query;
     String filterStatus = (status != null && status.trim().isEmpty()) ? null : status;
 

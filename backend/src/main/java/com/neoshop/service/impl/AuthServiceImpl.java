@@ -71,6 +71,7 @@ public class AuthServiceImpl implements AuthService {
     var jwtToken = jwtService.generateToken(userDetails);
 
     return AuthResponse.builder()
+        .userId(user.getId())
         .token(jwtToken)
         .username(user.getUsername())
         .email(user.getEmail())
@@ -107,7 +108,7 @@ public class AuthServiceImpl implements AuthService {
 
     userRepository.save(user);
 
-    // Auto login after register
+    // Tự động đăng nhập sau khi đăng ký
     var userDetails = org.springframework.security.core.userdetails.User.builder()
         .username(user.getUsername())
         .password(user.getPasswordHash())
@@ -117,6 +118,7 @@ public class AuthServiceImpl implements AuthService {
     var jwtToken = jwtService.generateToken(userDetails);
 
     return AuthResponse.builder()
+        .userId(user.getId())
         .token(jwtToken)
         .username(user.getUsername())
         .email(user.getEmail())
@@ -131,7 +133,7 @@ public class AuthServiceImpl implements AuthService {
   @Override
   public AuthResponse googleLogin(GoogleLoginRequest request) {
     try {
-      // Verify Google ID Token
+      // Xác thực Google ID Token
       GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
           new NetHttpTransport(), GsonFactory.getDefaultInstance())
           .setAudience(Collections.singletonList(googleClientId))
@@ -151,16 +153,16 @@ public class AuthServiceImpl implements AuthService {
 
       log.info("Google login: email={}, name={}, googleId={}", email, name, googleId);
 
-      // Find existing user by email or create a new one
+      // Tìm người dùng hiện có theo email hoặc tạo mới
       User user = userRepository.findByEmail(email).orElse(null);
 
       if (user == null) {
-        // Create new user from Google data
+        // Tạo người dùng mới từ dữ liệu Google
         Role userRole = roleRepository
             .findByName("USER")
             .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
 
-        // Generate a unique username from email prefix
+        // Tạo username duy nhất từ tiền tố email
         String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9._-]", "");
         String username = baseUsername;
         int suffix = 1;
@@ -185,16 +187,16 @@ public class AuthServiceImpl implements AuthService {
         userRepository.save(user);
         log.info("Created new user from Google: {}", username);
       } else {
-        // Update existing user's Google info if they haven't linked yet
+        // Cập nhật thông tin Google nếu chưa liên kết
         if (!"GOOGLE".equals(user.getAuthProvider())) {
           user.setAuthProvider("GOOGLE");
           user.setProviderId(googleId);
         }
-        // Update avatar if user doesn't have one
+        // Cập nhật avatar nếu chưa có
         if (user.getAvatar() == null && picture != null) {
           user.setAvatar(picture);
         }
-        // Update fullName if empty
+        // Cập nhật họ tên nếu trống
         if (user.getFullName() == null && name != null) {
           user.setFullName(name);
         }
@@ -203,7 +205,7 @@ public class AuthServiceImpl implements AuthService {
         log.info("Existing user logged in via Google: {}", user.getUsername());
       }
 
-      // Generate JWT
+      // Tạo JWT token
       var userDetails = org.springframework.security.core.userdetails.User.builder()
           .username(user.getUsername())
           .password(user.getPasswordHash())
@@ -213,6 +215,7 @@ public class AuthServiceImpl implements AuthService {
       var jwtToken = jwtService.generateToken(userDetails);
 
       return AuthResponse.builder()
+          .userId(user.getId())
           .token(jwtToken)
           .username(user.getUsername())
           .email(user.getEmail())
@@ -226,7 +229,7 @@ public class AuthServiceImpl implements AuthService {
     } catch (org.springframework.security.authentication.BadCredentialsException e) {
       throw e;
     } catch (Exception e) {
-      log.error("Google login failed", e);
+      log.error("Đăng nhập Google thất bại", e);
       throw new org.springframework.security.authentication.BadCredentialsException(
           "Đăng nhập Google thất bại: " + e.getMessage());
     }

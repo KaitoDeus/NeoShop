@@ -2,7 +2,7 @@ package com.neoshop.service.impl;
 
 import com.neoshop.model.dto.request.ChangePasswordRequest;
 import com.neoshop.model.dto.request.UpdateProfileRequest;
-import com.neoshop.model.dto.response.AuthResponse; // Reusing for user details
+import com.neoshop.model.dto.response.AuthResponse;
 import com.neoshop.model.entity.Role;
 import com.neoshop.model.entity.User;
 import com.neoshop.repository.UserRepository;
@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
         .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
 
     if (!passwordEncoder.matches(request.getOldPassword(), user.getPasswordHash())) {
-      throw new RuntimeException("Old password does not match");
+      throw new RuntimeException("Mật khẩu cũ không đúng");
     }
 
     user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
@@ -91,10 +91,10 @@ public class UserServiceImpl implements UserService {
   public com.neoshop.model.dto.response.UserResponse createUser(
       com.neoshop.model.dto.request.RegisterRequest request) {
     if (userRepository.existsByUsername(request.getUsername())) {
-      throw new RuntimeException("Username already exists");
+      throw new RuntimeException("Tên người dùng đã tồn tại");
     }
     if (userRepository.existsByEmail(request.getEmail())) {
-      throw new RuntimeException("Email already exists");
+      throw new RuntimeException("Email đã tồn tại");
     }
 
     Role userRole = roleRepository
