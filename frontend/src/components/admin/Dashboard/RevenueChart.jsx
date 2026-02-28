@@ -9,6 +9,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import { revenueData as mockRevenueData } from "../../../data/adminMockData";
+import api from "../../../services/api";
 import "./DashboardWidgets.css";
 
 const RevenueChart = () => {
@@ -18,16 +19,11 @@ const RevenueChart = () => {
   useEffect(() => {
     const fetchChart = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await fetch(
-          `/api/admin/dashboard/revenue-chart?days=${days}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        if (res.ok) {
-          const data = await res.json();
-          setChartData(data);
+        const res = await api.get("/admin/dashboard/revenue-chart", {
+          params: { days },
+        });
+        if (res.data && res.data.length > 0) {
+          setChartData(res.data);
         }
       } catch {
         // Fallback to mock data

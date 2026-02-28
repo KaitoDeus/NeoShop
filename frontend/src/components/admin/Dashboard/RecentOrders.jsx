@@ -1,19 +1,77 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { recentOrders } from "../../../data/adminMockData";
+import orderService from "../../../services/orderService";
 import "./DashboardWidgets.css";
 
 const RecentOrders = () => {
+  const [orders, setOrders] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRecentOrders();
+  }, []);
+
+  const fetchRecentOrders = async () => {
+    try {
+      setIsLoading(true);
+      // Lấy 5 đơn hàng mới nhất (page 0, size 5)
+      const data = await orderService.getAllOrders(0, 5);
+      if (data && data.content) {
+        setOrders(data.content);
+      }
+    } catch (error) {
+      console.error("Failed to fetch recent orders:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const getStatusBadge = (status) => {
-    switch (status) {
-      case "success":
+    const s = (status || "").toUpperCase();
+    switch (s) {
+      case "SUCCESS":
+      case "COMPLETED":
         return <span className="badge badge-success">Thành công</span>;
-      case "processing":
+      case "PENDING":
+      case "PROCESSING":
         return <span className="badge badge-warning">Đang xử lý</span>;
-      case "failed":
+      case "FAILED":
+      case "CANCELLED":
         return <span className="badge badge-error">Thất bại</span>;
       default:
         return <span className="badge badge-gray">{status}</span>;
     }
+  };
+
+  const formatDate = (dateStr) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    return d.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const formatCurrency = (amount) => {
+    return `${Number(amount || 0).toLocaleString("vi-VN")} đ`;
+  };
+
+  const getProductName = (order) => {
+    if (order.items && order.items.length > 0) {
+      const first = order.items[0].productTitle;
+      if (order.items.length > 1) {
+        return `${first} (+${order.items.length - 1})`;
+      }
+      return first;
+    }
+    return "—";
+  };
+
+  const getOrderCode = (order) => {
+    // Hiển thị mã đơn rút gọn từ UUID
+    const idStr = String(order.id || "");
+    return `#${idStr.substring(0, 6).toUpperCase()}`;
   };
 
   return (
@@ -38,25 +96,43 @@ const RecentOrders = () => {
             </tr>
           </thead>
           <tbody>
-            {recentOrders.map((order) => (
-              <tr key={order.id}>
-                <td className="font-medium text-primary">{order.id}</td>
-                <td>
-                  <div className="customer-cell">
-                    <img
-                      src={order.customer.avatar}
-                      alt=""
-                      className="customer-avatar"
-                    />
-                    <span>{order.customer.name}</span>
-                  </div>
+            {isLoading ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center", padding: "2rem", color: "#94a3b8" }}>
+                  Đang tải...
                 </td>
-                <td>{order.product}</td>
-                <td className="text-secondary">{order.date}</td>
-                <td>{getStatusBadge(order.status)}</td>
-                <td className="text-right font-bold">{order.total}</td>
               </tr>
-            ))}
+            ) : orders.length === 0 ? (
+              <tr>
+                <td colSpan="6" style={{ textAlign: "center", padding: "2rem", color: "#94a3b8" }}>
+                  Chưa có đơn hàng nào
+                </td>
+              </tr>
+            ) : (
+              orders.map((order) => (
+                <tr key={order.id}>
+                  <td className="font-medium text-primary">
+                    {getOrderCode(order)}
+                  </td>
+                  <td>
+                    <div className="customer-cell">
+                      <img
+                        src={`https://ui-avatars.com/api/?name=${encodeURIComponent(order.fullName || order.username || "U")}&background=random&size=32`}
+                        alt=""
+                        className="customer-avatar"
+                      />
+                      <span>{order.fullName || order.username || "Khách"}</span>
+                    </div>
+                  </td>
+                  <td>{getProductName(order)}</td>
+                  <td className="text-secondary">{formatDate(order.orderDate)}</td>
+                  <td>{getStatusBadge(order.status)}</td>
+                  <td className="text-right font-bold">
+                    {formatCurrency(order.totalAmount)}
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
