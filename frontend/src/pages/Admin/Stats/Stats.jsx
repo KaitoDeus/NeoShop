@@ -10,6 +10,7 @@ import {
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import StatsCard from "../../../components/admin/Dashboard/StatsCard";
 import statsService from "../../../services/statsService";
+import { formatDate } from "../../../utils/formatDate";
 import "./Stats.css";
 
 const Stats = () => {
@@ -62,7 +63,7 @@ const Stats = () => {
     link.setAttribute("href", url);
     link.setAttribute(
       "download",
-      `BaoCao_NeoShop_${new Date().toLocaleDateString()}.csv`,
+      `BaoCao_NeoShop_${formatDate(new Date())}.csv`,
     );
     link.style.visibility = "hidden";
     document.body.appendChild(link);

@@ -12,6 +12,7 @@ import {
   FiSave,
 } from "react-icons/fi";
 import couponService from "../../../services/couponService";
+import { formatDate } from "../../../utils/formatDate";
 import "./Coupons.css";
 import StatsCard from "../../../components/admin/Dashboard/StatsCard";
 
@@ -237,7 +238,7 @@ const Coupons = () => {
                   </td>
                   <td>
                     {coupon.expiryDate
-                      ? new Date(coupon.expiryDate).toLocaleDateString()
+                      ? formatDate(coupon.expiryDate)
                       : "Vĩnh viễn"}
                   </td>
                   <td>

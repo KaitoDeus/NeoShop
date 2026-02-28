@@ -16,6 +16,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import orderService from "../../services/orderService";
 import userService from "../../services/userService";
+import { formatDate } from "../../utils/formatDate";
 import "./Profile.css";
 
 const Profile = () => {
@@ -290,9 +291,7 @@ const Profile = () => {
                         <div className="order-meta">
                           <div className="meta-item">
                             <FiCalendar />{" "}
-                            {new Date(order.orderDate).toLocaleDateString(
-                              "vi-VN",
-                            )}
+                            {formatDate(order.orderDate)}
                           </div>
                           <div className="meta-item">
                             {order.items ? order.items.length : 0} món

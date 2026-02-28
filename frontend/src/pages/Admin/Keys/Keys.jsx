@@ -15,6 +15,7 @@ import {
 } from "react-icons/fi";
 import StatsCard from "../../../components/admin/Dashboard/StatsCard";
 import productService from "../../../services/productService";
+import { formatDate as formatDateVN, formatTime as formatTimeVN } from "../../../utils/formatDate";
 import "./Keys.css";
 
 const Keys = () => {
@@ -141,15 +142,11 @@ const Keys = () => {
     }
   };
 
-  const formatDate = (dateString) => {
+  const formatDateLocal = (dateString) => {
     if (!dateString) return "-";
-    const date = new Date(dateString);
     return {
-      date: date.toLocaleDateString("vi-VN"),
-      time: date.toLocaleTimeString("vi-VN", {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
+      date: formatDateVN(dateString),
+      time: formatTimeVN(dateString),
     };
   };
 
@@ -291,7 +288,7 @@ const Keys = () => {
               </tr>
             ) : (
               keys.map((item) => {
-                const dateTime = formatDate(item.createdAt);
+                const dateTime = formatDateLocal(item.createdAt);
                 return (
                   <tr key={item.id}>
                     <td style={{ color: "#94a3b8", fontSize: "0.75rem" }}>

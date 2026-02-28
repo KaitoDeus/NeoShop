@@ -11,6 +11,7 @@ import {
   FiMail,
 } from "react-icons/fi";
 import orderService from "../../../services/orderService";
+import { formatDateTime } from "../../../utils/formatDate";
 import "./OrderDetailModal.css";
 
 const OrderDetailModal = ({ order, onClose }) => {
@@ -137,7 +138,7 @@ const OrderDetailModal = ({ order, onClose }) => {
             <div className="detail-row">
               <span className="detail-label">Ngày tạo:</span>
               <span className="detail-value text-secondary">
-                {new Date(order.orderDate).toLocaleString("vi-VN")}
+                {formatDateTime(order.orderDate)}
               </span>
             </div>
             <div className="detail-row">

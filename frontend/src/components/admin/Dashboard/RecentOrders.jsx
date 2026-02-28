@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import orderService from "../../../services/orderService";
+import { formatDate } from "../../../utils/formatDate";
 import "./DashboardWidgets.css";
 
 const RecentOrders = () => {
@@ -43,15 +44,6 @@ const RecentOrders = () => {
     }
   };
 
-  const formatDate = (dateStr) => {
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    });
-  };
 
   const formatCurrency = (amount) => {
     return `${Number(amount || 0).toLocaleString("vi-VN")} đ`;

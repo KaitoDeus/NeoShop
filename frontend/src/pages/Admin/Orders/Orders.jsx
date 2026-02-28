@@ -16,6 +16,7 @@ import { useState, useEffect } from "react";
 import StatsCard from "../../../components/admin/Dashboard/StatsCard";
 import { orderStats } from "../../../data/adminMockData"; // Keep stats mock for now or implement stats API later if requested
 import orderService from "../../../services/orderService";
+import { formatDate, formatTime, formatDateTime } from "../../../utils/formatDate";
 import OrderDetailModal from "./OrderDetailModal";
 import ManualOrderModal from "./ManualOrderModal";
 import "./Orders.css";
@@ -176,7 +177,7 @@ const Orders = () => {
     ];
     const rows = orders.map((order) => [
       order.id,
-      new Date(order.orderDate).toLocaleString("vi-VN"),
+      formatDateTime(order.orderDate),
       order.username || "Khách vãng lai",
       order.userEmail || "",
       order.items?.map((i) => `${i.productTitle} x${i.quantity}`).join("; "),
@@ -506,10 +507,10 @@ const Orders = () => {
                   <td>{getStatusBadge(order.status)}</td>
                   <td className="text-secondary">
                     <div>
-                      {new Date(order.orderDate).toLocaleDateString("vi-VN")}
+                      {formatDate(order.orderDate)}
                     </div>
                     <div style={{ fontSize: "0.8rem", color: "#94a3b8" }}>
-                      {new Date(order.orderDate).toLocaleTimeString("vi-VN")}
+                      {formatTime(order.orderDate)}
                     </div>
                   </td>
                   <td>

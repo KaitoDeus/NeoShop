@@ -18,6 +18,7 @@ import {
   FiDownload,
 } from "react-icons/fi";
 import settingsService from "../../../services/settingsService";
+import { formatDateTime } from "../../../utils/formatDate";
 import "./Settings.css";
 
 const Settings = () => {
@@ -509,8 +510,7 @@ const Settings = () => {
             <tbody>
               <tr>
                 <td>
-                  {new Date().toLocaleDateString("vi-VN")}{" "}
-                  {new Date().toLocaleTimeString("vi-VN")}
+                  {formatDateTime(new Date())}
                 </td>
                 <td>4.2 MB</td>
                 <td>Automatic</td>

@@ -19,6 +19,7 @@ import { useCart } from "../../context/CartContext";
 import { formatUSDtoVND } from "../../utils/formatPrice";
 import { getProductCover } from "../../utils/imageHelpers";
 import { useAuth } from "../../context/AuthContext";
+import { formatDate } from "../../utils/formatDate";
 import "./ProductDetail.css";
 
 const ProductDetail = () => {
@@ -459,9 +460,7 @@ const ProductDetail = () => {
                                 marginLeft: "8px",
                               }}
                             >
-                              {new Date(r.createdAt).toLocaleDateString(
-                                "vi-VN",
-                              )}
+                              {formatDate(r.createdAt)}
                             </span>
                           </div>
                         </div>
