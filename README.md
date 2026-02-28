@@ -1,156 +1,237 @@
-# NeoShop
+# NeoShop — Nền tảng Thương mại Điện tử Kỹ thuật số
 
-## Mục Lục
+<div align="center">
 
-1. [Giới Thiệu Đề Tài](#1-giới-thiệu-đề-tài)
-2. [Công nghệ Sử Dụng](#2-công-nghệ-sử-dụng)
-3. [Kiến Trúc Hệ Thống](#3-kiến-trúc-hệ-thống)
-4. [Giao Diện](#4-giao-diện)
-5. [Hướng Dẫn Cài Đặt và Chạy (Local)](#5-hướng-dẫn-cài-đặt-và-chạy-local)
-6. [Hướng Dẫn Sử Dụng](#6-hướng-dẫn-sử-dụng)
-7. [Các Chức năng Hiện tại (Features)](#7-các-chức-năng-hiện-tại-features)
-
----
-
-## 1. Giới Thiệu Đề Tài
-
-**NeoShop** là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm kỹ thuật số (tài khoản Netflix, Spotify, khóa học, phần mềm bản quyền, game Steam, v.v.). Ứng dụng cung cấp giao diện hiện đại, trải nghiệm mua sắm mượt mà cùng quy trình thanh toán nhanh chóng, an toàn.
-
----
-
-## 2. Công nghệ Sử Dụng
-
-![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
-![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
-![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
-![Spring Boot](https://img.shields.io/badge/Spring_Boot-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
-![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![React](https://img.shields.io/badge/React_19-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
+![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL_15-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
+
+</div>
+
+---
+
+## 📖 Mục Lục
+
+1. [Giới Thiệu](#1-giới-thiệu)
+2. [Công Nghệ](#2-công-nghệ)
+3. [Kiến Trúc Hệ Thống](#3-kiến-trúc-hệ-thống)
+4. [Chức Năng](#4-chức-năng)
+5. [Giao Diện](#5-giao-diện)
+6. [Cài Đặt & Chạy](#6-cài-đặt--chạy)
+7. [Cấu Trúc Dự Án](#7-cấu-trúc-dự-án)
+8. [Hướng Dẫn Sử Dụng](#8-hướng-dẫn-sử-dụng)
+
+---
+
+## 1. Giới Thiệu
+
+**NeoShop** là nền tảng thương mại điện tử chuyên cung cấp các sản phẩm kỹ thuật số — tài khoản premium (Netflix, Spotify, YouTube), khóa bản quyền phần mềm (Windows, Office, Adobe), game Steam, và nhiều loại key số khác.
+
+Hệ thống tự động cấp phát mã key ngay sau khi thanh toán thành công, hỗ trợ thanh toán qua VNPay và MoMo, chat hỗ trợ thời gian thực, và giao diện quản trị toàn diện.
+
+---
+
+## 2. Công Nghệ
+
+| Thành phần    | Công nghệ                           | Phiên bản  |
+| :------------ | :---------------------------------- | :--------- |
+| **Frontend**  | React + Vite + Vanilla CSS          | 19.x / 6.x |
+| **Backend**   | Spring Boot + Spring Security + JWT | 3.x        |
+| **Runtime**   | Java (OpenJDK)                      | 21         |
+| **Database**  | PostgreSQL                          | 15         |
+| **Realtime**  | Spring WebSocket + STOMP + SockJS   | —          |
+| **Auth**      | JWT + Google OAuth 2.0 (GIS)        | —          |
+| **Payment**   | VNPay Sandbox + MoMo Sandbox        | —          |
+| **Container** | Docker + Docker Compose             | —          |
+| **CI/CD**     | GitHub Actions                      | —          |
+| **API Docs**  | Swagger / OpenAPI 3                 | —          |
 
 ---
 
 ## 3. Kiến Trúc Hệ Thống
 
-### Các Lớp Logic (Logic Layers)
-
-```text
-+---------------------+       +---------------------+       +---------------------+
-|      FRONTEND       |       |       BACKEND       |       |      DATABASE       |
-| (React / Vite.js)   | <---> | (Spring Boot REST)  | <---> |    (PostgreSQL)     |
-| - Pages             |       | - Controllers       |       | - Tables: Users,    |
-| - Contexts          |       | - Services          |       |   Products, Orders, |
-| - Services          |       | - Repositories      |       |   Categories        |
-+---------------------+       +---------------------+       +---------------------+
+```
+┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
+│      FRONTEND       │     │       BACKEND       │     │      DATABASE       │
+│   React + Vite      │◄───►│  Spring Boot REST   │◄───►│    PostgreSQL 15    │
+│                     │     │  + WebSocket STOMP   │     │                     │
+│ • Pages & Routes    │     │ • Controllers        │     │ • users, roles      │
+│ • Context API       │     │ • Services           │     │ • products, orders  │
+│ • Hooks             │     │ • Repositories (JPA) │     │ • chat_rooms/msgs   │
+│ • Service Layer     │     │ • Security (JWT)     │     │ • coupons, reviews  │
+│   (Axios)           │     │ • WebSocket Config   │     │ • product_keys      │
+└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
+       :5173                       :8080                       :5433
 ```
 
-### Mô Hình Kiến Trúc (Architecture)
+### Luồng Xử Lý Chính
 
-```text
-+-----------------------+           +-----------------------+
-|      Client (Web)     | <-------> |     API Gateway /     |
-|   (Giao diện người    |           |    Spring REST API    |
-|        dùng)          |           |   (Xử lý logic core)  |
-+-----------------------+           +-----------------------+
-          |                                     |
-          | HTTP Requests                       | JPA / Hibernate
-          v                                     v
-+-----------------------+           +-----------------------+
-|  React Router (DOM)   |           |      PostgreSQL       |
-|   (Điều hướng trang)  |           | (Lưu trữ dữ liệu)     |
-+-----------------------+           +-----------------------+
 ```
-
-### Luồng Xử Lý Chính (E-commerce Flow)
-
-```text
-  [ KHÁCH HÀNG ]                      [ HỆ THỐNG NEOSHOP ]
-        |                                     |
-        | (1) Truy cập Web & Tìm kiếm         |
-        |------------------------------------>|
-        |                                     |
-        |   (2) Hiển thị Danh sách SP & Mô tả |
-        |<------------------------------------|
-        |                                     |
-        | (3) Chọn "Thêm vào giỏ" / Mua ngay  |
-        |------------------------------------>|
-        |                                     |---- [ Cập nhật Cart Context ]
-        | (4) Chuyển đến trang Checkout       |
-        |------------------------------------>|
-        |                                     |
-  [ THANH TOÁN ]                              |
-        |                                     |
-        | (5) Nhập mã giảm giá (Nếu có)       |
-        |------------------------------------>|
-        |                                     |
-        | (6) Chọn Phương Thức Thanh Toán     |
-        |     (Thẻ Tín Dụng, Ví Điện Tử...)   |
-        |------------------------------------>|
-        |                                     |
-        | (7) Xác nhận "Hoàn tất thanh toán"  |
-        |------------------------------------>|
-        |                                     |---- [ Xử lý hóa đơn DB ]
-        | (8) Nhận Code Tức Thời              |<----------|
-        |<------------------------------------|
-        |                                     |
+  Khách hàng                              NeoShop Server
+      │                                        │
+      │  (1) Duyệt & Tìm kiếm sản phẩm        │
+      │───────────────────────────────────────► │
+      │                                        │
+      │  (2) Thêm vào giỏ hàng                 │
+      │───────────────────────────────────────► │  ← LocalStorage + Context API
+      │                                        │
+      │  (3) Checkout + Nhập mã giảm giá       │
+      │───────────────────────────────────────► │  ← POST /api/coupons/validate
+      │                                        │
+      │  (4) Thanh toán (VNPay / MoMo)          │
+      │───────────────────────────────────────► │  ← Redirect → Payment Gateway
+      │                                        │
+      │  (5) Callback → Cập nhật trạng thái     │
+      │  ◄──────────────────────────────────── │  ← Webhook IPN + Return URL
+      │                                        │
+      │  (6) Nhận Product Key tức thời          │
+      │  ◄──────────────────────────────────── │  ← Auto-assign key từ kho
+      │                                        │
 ```
 
 ---
 
-## 4. Giao Diện
+## 4. Chức Năng
+
+### 🛒 Dành cho Khách Hàng
+
+- **Duyệt sản phẩm** theo danh mục, tìm kiếm, lọc giá, sắp xếp
+- **Giỏ hàng** đồng bộ tức thời qua Context API + LocalStorage
+- **Thanh toán** qua VNPay, MoMo với cơ chế Webhook IPN đối soát tự động
+- **Mã giảm giá** — nhập coupon tại checkout, hỗ trợ giảm theo % hoặc cố định
+- **Nhận key tức thời** — hệ thống tự động cấp phát mã key từ kho ngay sau thanh toán
+- **Đánh giá sản phẩm** — viết review kèm chấm sao, hiển thị tại trang chi tiết
+- **Chat hỗ trợ** — widget floating gửi/nhận tin nhắn thời gian thực với admin
+- **Đăng nhập Google** — OAuth 2.0 qua Google Identity Services, tự động tạo tài khoản
+- **Quản lý hồ sơ** — cập nhật thông tin cá nhân, đổi avatar, đổi mật khẩu
+
+### 🔧 Dành cho Quản trị viên (Admin)
+
+- **Dashboard** — thống kê doanh thu, đơn hàng, người dùng với biểu đồ tương tác
+- **Quản lý sản phẩm** — CRUD sản phẩm, quản lý danh mục, hành động hàng loạt
+- **Quản lý kho key** — nhập key đơn/hàng loạt, theo dõi trạng thái (Available/Sold)
+- **Quản lý đơn hàng** — lọc, tìm kiếm, tạo đơn thủ công, xuất CSV
+- **Quản lý khách hàng** — CRUD người dùng, phân quyền, kích hoạt/vô hiệu hóa
+- **Mã giảm giá** — tạo/sửa/xoá coupon với các điều kiện áp dụng
+- **Tin nhắn** — trả lời chat từ khách hàng, đánh dấu đã đọc, xoá hội thoại
+- **Cài đặt hệ thống** — cấu hình thương hiệu, thanh toán, bán hàng, bảo mật, SEO
+- **Thống kê nâng cao** — lọc theo khoảng thời gian, biểu đồ doanh thu/chi phí/lợi nhuận
+
+### 🔐 Bảo mật
+
+- JWT Authentication + Spring Security Filter Chain
+- Role-based Access Control (RBAC) — `USER` / `ADMIN`
+- Rate Limiting cho API Authentication
+- CORS cấu hình chặt chẽ
+- Input Validation (`@Valid`) cho tất cả Request DTOs
+- Global Exception Handler (`@ControllerAdvice`)
+- WebSocket Authentication qua JWT Interceptor
+
+---
+
+## 5. Giao Diện
 
 ![Giao diện trang chủ](/frontend/public/homepage.png)
 
 ---
 
-## 5. Hướng Dẫn Cài Đặt và Chạy (Local)
+## 6. Cài Đặt & Chạy
 
-Để chạy dự án này trên máy tính cá nhân, bạn cần cài đặt **Node.js**, **Java (JDK 17+)** và **Docker/Docker Compose**.
+### Yêu cầu
 
-### Bước 1: Clone dự án
+- **Docker** & **Docker Compose** (bắt buộc)
+- **Git** để clone dự án
 
-Mở terminal và chạy lệnh sau để tải mã nguồn về:
+### Bước 1 — Clone dự án
 
 ```bash
 git clone https://github.com/KaitoDeus/NeoShop.git
 cd NeoShop
 ```
 
-### Bước 2: Khởi động qua Docker Compose
+### Bước 2 — Cấu hình biến môi trường
 
-Hệ thống đã được đóng gói sẵn với Docker để tiện triển khai cả Frontend, Backend và Database chỉ bằng một lệnh duy nhất:
+Sao chép file mẫu và điền thông tin:
+
+```bash
+cp .env.example .env
+```
+
+Mở file `.env` và cập nhật các giá trị (VNPay, MoMo, Google OAuth...).
+
+### Bước 3 — Khởi động
 
 ```bash
 docker compose up -d --build
 ```
 
-### Bước 3: Truy cập ứng dụng
+### Bước 4 — Truy cập
 
-Sau quá trình cài đặt và khởi động (khoảng vài phút):
+| Dịch vụ          | URL                                   | Mô tả                       |
+| :--------------- | :------------------------------------ | :-------------------------- |
+| **Frontend**     | http://localhost:5173                 | Giao diện web               |
+| **Backend API**  | http://localhost:8080                 | REST API Server             |
+| **Swagger Docs** | http://localhost:8080/swagger-ui.html | Tài liệu API                |
+| **Database**     | `localhost:5433`                      | PostgreSQL (user: postgres) |
 
-- **Trang web khách hàng:** Truy cập địa chỉ `http://localhost:5173` trên trình duyệt để sử dụng.
-- **API Server:** Hoạt động mặc định tại `http://localhost:8080`.
-- **Database:** PostgreSQL chạy ở cổng `5433` (Map sang 5432 nội bộ).
+### Tài khoản mặc định
 
----
-
-## 6. Hướng Dẫn Sử Dụng
-
-1.  **Duyệt Sản Phẩm**: Tại giao diện chính, bạn có thể xem các danh mục, Banner Deal, các sản phẩm Nổi bật và Tìm kiếm với từ khóa.
-2.  **Xem Chi Tiết**: Ấn vào box sản phẩm để xem giới thiệu kĩ năng ứng dụng, bảo hành, review sản phẩm.
-3.  **Mua Hàng**:
-    - Nhấn **Thêm vào giỏ** hoặc **Mua ngay** ở trang thông tin chi tiết.
-    - Chuyển hướng sang trang **Checkout**.
-4.  **Thanh Toán**:
-    - Ở trang Checkout, chọn loại tài khoản/ví thanh toán. Hệ thống xác nhận và hiển thị mã Code tức thời lên màn hình và gửi qua Email đăng ký.
+| Vai trò | Username | Password   |
+| :------ | :------- | :--------- |
+| Admin   | `admin`  | `admin123` |
 
 ---
 
-## 7. Các Chức năng Hiện tại (Features)
+## 7. Cấu Trúc Dự Án
 
-- **Xác thực và Bảo mật:** Mạng lưới bảo mật phân quyền thông qua JSON Web Token (JWT) kết hợp Spring Security Filter Chain điều hướng API, cùng Protected Routes che chắn Router nội bộ phía Client.
-- **Quản lý Giỏ hàng:** Vận hành quy trình lưu trữ qua LocalStorage kết hợp Context API kiểm soát tính toán trạng thái toán học đồng bộ tức thời (Real-time) để tối ưu luồng I/O mạng.
-- **Luồng Thanh toán:** Tích hợp phương pháp phi đồng bộ Event-driven Webhook giải quyết bài toán đối soát biên lai từ cổng trung gian (VNPay, MoMo) về Server.
-- **Xử lý Transaction:** Mọi truy vấn giao dịch tài chính thao tác dựa trên hệ tiêu chuẩn toàn vẹn ACID lưu vào PostgreSQL, đảm bảo kích hoạt xuất kho key tự động ngay lập tức hiển thị trên UI.
-- **Tối ưu UX/UI:** Can thiệp thông số trải nghiệm người dùng bằng kỹ thuật Skeleton Loading làm mờ độ trễ I/O băng thông truyền tải dữ liệu.
+```
+NeoShop/
+├── backend/                    # Spring Boot Backend
+│   ├── src/main/java/com/neoshop/
+│   │   ├── config/             # Security, WebSocket, Swagger
+│   │   ├── controller/         # REST + WebSocket Controllers
+│   │   ├── model/              # Entity, DTO (Request/Response)
+│   │   ├── repository/         # JPA Repositories
+│   │   └── service/            # Business Logic
+│   └── src/main/resources/
+│       └── application.yml     # Cấu hình ứng dụng
+├── frontend/                   # React + Vite Frontend
+│   ├── src/
+│   │   ├── components/         # UI Components (Navbar, Footer, ChatWidget...)
+│   │   ├── context/            # AuthContext, CartContext
+│   │   ├── hooks/              # Custom Hooks (useChat)
+│   │   ├── pages/              # Trang: Home, Auth, Product, Admin...
+│   │   ├── services/           # API Service Layer (Axios)
+│   │   └── utils/              # Tiện ích (formatDate, formatPrice...)
+│   └── vite.config.js
+├── database/
+│   ├── init/script.sql         # Script khởi tạo DB ~100K dòng
+│   └── migrations/             # Migration scripts
+├── .github/workflows/          # CI/CD Pipeline
+├── docker-compose.yml          # Orchestration
+├── .env.example                # Mẫu biến môi trường
+└── docs/PROGRESS.md            # Tiến trình phát triển
+```
+
+---
+
+## 8. Hướng Dẫn Sử Dụng
+
+### Khách hàng
+
+1. **Duyệt sản phẩm** — Truy cập trang chủ, chọn danh mục hoặc tìm kiếm
+2. **Xem chi tiết** — Nhấn vào sản phẩm để xem mô tả, đánh giá, giá
+3. **Mua hàng** — Nhấn "Thêm vào giỏ" hoặc "Mua ngay"
+4. **Thanh toán** — Chọn VNPay/MoMo, nhập mã giảm giá (nếu có), xác nhận
+5. **Nhận key** — Product key hiển thị ngay tại trang xác nhận đơn hàng
+6. **Chat hỗ trợ** — Nhấn biểu tượng 💬 góc phải để nhắn tin với admin
+
+### Quản trị viên
+
+1. Đăng nhập tại `/auth` với tài khoản admin
+2. Truy cập `/admin` để vào trang quản trị
+3. Sử dụng sidebar để điều hướng giữa các module

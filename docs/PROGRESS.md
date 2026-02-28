@@ -24,7 +24,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🏗️ Giai đoạn 2: Phát triển Backend (Đang thực hiện)
+## 🏗️ Giai đoạn 2: Phát triển Backend (Hoàn thành)
 
 ### 4. Dịch vụ Monolith (Neoshop Backend)
 
@@ -51,7 +51,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🛠️ Giai đoạn 4: Quản lý Nâng cao & Vận hành (Đang thực hiện)
+## 🛠️ Giai đoạn 4: Quản lý Nâng cao & Vận hành (Hoàn thành)
 
 ### 7. Quản lý Kho & Khóa kỹ thuật số
 
@@ -70,7 +70,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🧪 Giai đoạn 5: Kiểm thử Tự động (Chuẩn bị)
+## 🧪 Giai đoạn 5: Kiểm thử Tự động (Hoàn thành)
 
 ### 10. Unit Testing (JUnit 5 + Mockito)
 
@@ -86,7 +86,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🔗 Giai đoạn 6: Tích hợp Frontend ↔ Backend Toàn diện
+## 🔗 Giai đoạn 6: Tích hợp Frontend ↔ Backend Toàn diện (Hoàn thành)
 
 ### 12. Kết nối API Thực cho User-Facing Pages
 
@@ -163,7 +163,7 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🔒 Giai đoạn 7: Tối ưu & Bảo mật
+## 🔒 Giai đoạn 7: Tối ưu & Bảo mật (Hoàn thành)
 
 ### 15. Performance & Caching
 
@@ -185,20 +185,29 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-## 🌐 Giai đoạn 8: Production & Monitoring
+## 💬 Giai đoạn 8: Chat & Hỗ trợ Trực tuyến (Hoàn thành)
 
-### 18. Deploy Production
+### 18. Hệ thống Chat Thời gian thực (WebSocket)
 
-- [x] Deploy **Frontend** lên Vercel / Netlify.
-- [ ] Deploy **Backend** lên Railway / Render.
-- [ ] Cấu hình **Supabase PostgreSQL** cho production database.
-- [ ] Thiết lập **Custom Domain** + SSL.
+- [x] **Backend**: Thiết kế Entity `ChatRoom`, `ChatMessage` với JPA.
+- [x] **Backend**: Cấu hình Spring WebSocket + STOMP + SockJS.
+- [x] **Backend**: API REST quản lý phòng chat, tin nhắn, đánh dấu đã đọc.
+- [x] **Backend**: Xác thực WebSocket qua JWT (Interceptor).
+- [x] **Frontend (User)**: `ChatWidget` floating cho người dùng gửi/nhận tin nhắn.
+- [x] **Frontend (Admin)**: Trang `Messages` quản lý tất cả cuộc hội thoại.
+- [x] Chỉ báo đang nhập (Typing Indicator) thời gian thực.
+- [x] Trạng thái "Đã xem" (Seen) hiển thị trên tin nhắn gần nhất.
+- [x] Đếm tin nhắn chưa đọc (Unread Count) đồng bộ giữa Frontend & Database.
+- [x] Nút "Đánh dấu đã đọc tất cả" cho Admin.
+- [x] Quick Replies (Phản hồi nhanh) cho cả User và Admin.
 
-### 19. Monitoring & Logging
+### 19. Trang Cấu hình (Settings) Nâng cao
 
-- [ ] Tích hợp **Structured Logging** (JSON format).
-- [ ] Health check endpoint cho uptime monitoring.
-- [ ] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
+- [x] Tab **Chung**: Thương hiệu (Logo), Mạng xã hội & Liên hệ hỗ trợ.
+- [x] Tab **Thanh toán**: Cấu hình VNPAY, MoMo, Chuyển khoản ngân hàng (VietQR).
+- [x] Tab **Bán hàng**: Chế độ bảo trì, Thông báo Telegram cho đơn hàng mới.
+- [x] Tab **Bảo mật**: Bật/Tắt đăng nhập Google OAuth 2.0.
+- [x] Tab **SEO**: Từ khóa & Meta cho key kỹ thuật số.
 
 ### 20. OAuth Social Login (Google)
 
@@ -207,9 +216,26 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [x] **Backend**: Tự động tạo tài khoản mới hoặc liên kết tài khoản hiện có khi đăng nhập Google.
 - [x] **Backend**: Thêm trường `auth_provider` và `provider_id` vào Entity `User`.
 - [x] **Frontend**: Tích hợp **Google Identity Services** (GIS) cho luồng đăng nhập/đăng ký.
-- [x] **Frontend**: Xóa nút đăng nhập Facebook, chỉ giữ lại Google OAuth.
+- [x] **Frontend**: Nút "Tiếp tục với Google" trên form đăng nhập/đăng ký.
 - [x] **Frontend**: Thêm `googleLogin` vào `AuthContext` để quản lý state.
 - [x] **Bảo mật**: Endpoint `/api/v1/auth/google` được permit trong `SecurityConfig`.
+
+---
+
+## 🌐 Giai đoạn 9: Production & Monitoring
+
+### 21. Deploy Production
+
+- [x] Deploy **Frontend** lên Vercel / Netlify.
+- [ ] Deploy **Backend** lên Railway / Render.
+- [ ] Cấu hình **Supabase PostgreSQL** cho production database.
+- [ ] Thiết lập **Custom Domain** + SSL.
+
+### 22. Monitoring & Logging
+
+- [ ] Tích hợp **Structured Logging** (JSON format).
+- [ ] Health check endpoint cho uptime monitoring.
+- [ ] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
 
 ---
 
@@ -217,8 +243,9 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 | Thành phần      | Port | Trạng thái          |
 | :-------------- | :--- | :------------------ |
-| **Frontend**    | 3000 | 🟢 Running (Docker) |
+| **Frontend**    | 5173 | 🟢 Running (Docker) |
 | **Backend API** | 8080 | 🟢 Running (Docker) |
+| **Database**    | 5433 | 🟢 Running (Docker) |
 
 ---
 
