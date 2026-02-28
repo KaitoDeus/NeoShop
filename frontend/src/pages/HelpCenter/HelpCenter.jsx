@@ -25,7 +25,7 @@ const FAQ_CATEGORIES = [
     questions: [
       {
         q: "Tôi có thể thanh toán bằng những phương thức nào?",
-        a: "NeoShop hỗ trợ nhiều phương thức thanh toán phổ biến: Thẻ VISA/MasterCard, PayPal, Chuyển khoản ngân hàng nội địa (VietQR), Ví điện tử (MoMo, ZaloPay), và thanh toán bằng Crypto (USDT, BTC, ETH).",
+        a: "NeoShop hỗ trợ nhiều phương thức thanh toán phổ biến: VNPay và ví điện tử MoMo",
       },
       {
         q: "Sau khi thanh toán, tôi sẽ nhận được sản phẩm như thế nào?",

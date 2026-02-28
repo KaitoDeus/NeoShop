@@ -25,7 +25,6 @@ const Footer = () => {
             </p>
             <div className="footer-social">
               <a
-                href="https://facebook.com/neoshop"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Facebook"
@@ -33,7 +32,6 @@ const Footer = () => {
                 <FiFacebook />
               </a>
               <a
-                href="https://instagram.com/neoshop"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Instagram"
@@ -41,7 +39,6 @@ const Footer = () => {
                 <FiInstagram />
               </a>
               <a
-                href="https://twitter.com/neoshop"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Twitter"
@@ -49,7 +46,6 @@ const Footer = () => {
                 <FiTwitter />
               </a>
               <a
-                href="https://youtube.com/neoshop"
                 target="_blank"
                 rel="noreferrer"
                 aria-label="Youtube"
