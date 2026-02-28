@@ -66,3 +66,7 @@ momo:
   endpoint: ${MOMO_ENDPOINT:https://test-payment.momo.vn/v2/gateway/api/create}
   redirectUrl: ${MOMO_REDIRECT_URL:http://localhost:5173/order-success/}
   ipnUrl: ${MOMO_IPN_URL:http://localhost:8080/api/payments/momo/ipn}
+
+# Google OAuth2 Configuration
+google:
+  client-id: ${GOOGLE_CLIENT_ID:your_google_client_id}

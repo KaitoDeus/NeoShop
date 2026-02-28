@@ -110,6 +110,38 @@ export const AuthProvider = ({ children }) => {
     api.defaults.headers.common["Authorization"] = null;
   };
 
+  // Hàm đăng nhập bằng Google
+  const googleLogin = async (credential) => {
+    try {
+      const response = await api.post("/v1/auth/google", { credential });
+      const data = response.data;
+
+      const userData = {
+        id: data.username,
+        name: data.fullName || data.username,
+        email: data.email,
+        username: data.username,
+        token: data.token,
+        roles: data.roles || [],
+        role:
+          data.roles &&
+          (data.roles.includes("ADMIN") || data.roles.includes("ROLE_ADMIN"))
+            ? "admin"
+            : "user",
+        avatar:
+          data.avatar ||
+          `https://ui-avatars.com/api/?name=${data.username}&background=random`,
+      };
+
+      setUser(userData);
+      localStorage.setItem("neoshop_user", JSON.stringify(userData));
+      return userData;
+    } catch (error) {
+      console.error("Google login failed:", error);
+      throw error;
+    }
+  };
+
   // Kiểm tra quyền Admin
   const isAdmin =
     user?.role === "admin" ||
@@ -150,9 +182,10 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
-    updateUser, // Expose this
+    googleLogin,
+    updateUser,
     isAdmin,
-    getAvatar, // Expose this
+    getAvatar,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

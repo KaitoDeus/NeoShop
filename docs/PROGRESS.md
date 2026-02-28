@@ -200,6 +200,17 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 - [ ] Health check endpoint cho uptime monitoring.
 - [ ] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
 
+### 20. OAuth Social Login (Google)
+
+- [x] **Backend**: Tích hợp `google-api-client` để xác thực Google ID Token.
+- [x] **Backend**: API `POST /api/v1/auth/google` nhận credential từ frontend.
+- [x] **Backend**: Tự động tạo tài khoản mới hoặc liên kết tài khoản hiện có khi đăng nhập Google.
+- [x] **Backend**: Thêm trường `auth_provider` và `provider_id` vào Entity `User`.
+- [x] **Frontend**: Tích hợp **Google Identity Services** (GIS) cho luồng đăng nhập/đăng ký.
+- [x] **Frontend**: Xóa nút đăng nhập Facebook, chỉ giữ lại Google OAuth.
+- [x] **Frontend**: Thêm `googleLogin` vào `AuthContext` để quản lý state.
+- [x] **Bảo mật**: Endpoint `/api/v1/auth/google` được permit trong `SecurityConfig`.
+
 ---
 
 ## 🛠️ Trạng thái Vận hành (Local Environment)
@@ -211,4 +222,4 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 
 ---
 
-_Cập nhật lần cuối: 2026-02-23_
+_Cập nhật lần cuối: 2026-02-28_

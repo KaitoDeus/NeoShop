@@ -39,9 +39,9 @@
 
 /* SOCIAL LOGIN */
 .social-login {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
 }
 
@@ -64,16 +64,21 @@
 .social-btn:hover {
   background: #f8fafc;
   border-color: #cbd5e1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
 }
 
-.social-btn.facebook {
-  color: #1877f2;
-  border-color: #e2e8f0;
+.social-btn.full-width {
+  width: 100%;
 }
 
-.social-btn.facebook:hover {
-  background: #f0f9ff;
-  border-color: #1877f2;
+.social-btn.google:hover {
+  border-color: #4285f4;
+  background: #f8fafc;
+}
+
+.social-btn.loading {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* DIVIDER */
@@ -268,11 +273,6 @@
 
   .form-header h2 {
     font-size: 1.5rem;
-  }
-
-  .social-login {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
   }
 
   .form-options {

@@ -23,7 +23,7 @@ public class User {
   @Column(unique = true, nullable = false)
   private String email;
 
-  @Column(name = "password_hash", nullable = false)
+  @Column(name = "password_hash")
   private String passwordHash;
 
   private String fullName;
@@ -34,18 +34,23 @@ public class User {
 
   private String avatar;
 
+  @Column(name = "auth_provider")
+  @Builder.Default
+  private String authProvider = "LOCAL"; // LOCAL, GOOGLE
+
+  @Column(name = "provider_id")
+  private String providerId;
+
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(
-      name = "user_roles",
-      joinColumns = @JoinColumn(name = "user_id"),
-      inverseJoinColumns = @JoinColumn(name = "role_id"))
+  @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
   @Builder.Default
   private java.util.Set<Role> roles = new java.util.HashSet<>();
 
   private LocalDateTime createdAt;
   private LocalDateTime updatedAt;
 
-  @Builder.Default private boolean active = true;
+  @Builder.Default
+  private boolean active = true;
 
   @PrePersist
   protected void onCreate() {

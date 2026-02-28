@@ -1,23 +1,22 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   FiMail,
   FiLock,
   FiUser,
-  FiPhone,
   FiEye,
   FiEyeOff,
-  FiArrowLeft,
   FiCheck,
   FiAlertCircle,
 } from "react-icons/fi";
 import { FcGoogle } from "react-icons/fc";
-import { FaFacebook } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import "./Auth.css";
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || "";
+
 const Auth = () => {
-  const { login, register } = useAuth();
+  const { login, register, googleLogin } = useAuth();
   const navigate = useNavigate();
 
   // Trạng thái view: 'login', 'register', 'forgot'
@@ -28,6 +27,7 @@ const Auth = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   // Form đăng nhập
   const [loginData, setLoginData] = useState({
@@ -47,6 +47,107 @@ const Auth = () => {
 
   // Form quên mật khẩu
   const [forgotEmail, setForgotEmail] = useState("");
+
+  // Google OAuth callback
+  const handleGoogleCallback = useCallback(
+    async (response) => {
+      if (response.credential) {
+        setIsGoogleLoading(true);
+        setMessage({ type: "", text: "" });
+        try {
+          const user = await googleLogin(response.credential);
+          setMessage({
+            type: "success",
+            text: "Đăng nhập Google thành công! Đang chuyển hướng...",
+          });
+          setTimeout(() => {
+            if (user.role === "admin") {
+              navigate("/admin");
+            } else {
+              navigate("/");
+            }
+          }, 1000);
+        } catch (error) {
+          console.error("Google login error:", error);
+          setMessage({
+            type: "error",
+            text:
+              error.response?.data?.message ||
+              "Đăng nhập Google thất bại. Vui lòng thử lại.",
+          });
+          setIsGoogleLoading(false);
+        }
+      }
+    },
+    [googleLogin, navigate],
+  );
+
+  // Initialize Google Identity Services
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "your_google_client_id") {
+      return;
+    }
+
+    const initializeGoogle = () => {
+      if (window.google?.accounts?.id) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+          auto_select: false,
+          cancel_on_tap_outside: true,
+        });
+      }
+    };
+
+    // If the script is already loaded
+    if (window.google?.accounts?.id) {
+      initializeGoogle();
+    } else {
+      // Wait for script to load
+      const checkInterval = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          initializeGoogle();
+          clearInterval(checkInterval);
+        }
+      }, 100);
+
+      // Cleanup after 10 seconds
+      const timeout = setTimeout(() => clearInterval(checkInterval), 10000);
+      return () => {
+        clearInterval(checkInterval);
+        clearTimeout(timeout);
+      };
+    }
+  }, [handleGoogleCallback]);
+
+  // Trigger Google login popup
+  const handleGoogleLogin = () => {
+    if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "your_google_client_id") {
+      setMessage({
+        type: "error",
+        text: "Chưa cấu hình Google Client ID. Vui lòng liên hệ quản trị viên.",
+      });
+      return;
+    }
+
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt((notification) => {
+        if (notification.isNotDisplayed()) {
+          // Fallback: Use the One Tap couldn't display, try popup
+          // This can happen if third-party cookies are blocked
+          setMessage({
+            type: "info",
+            text: "Không thể hiển thị popup Google. Hãy kiểm tra trình duyệt cho phép popup.",
+          });
+        }
+      });
+    } else {
+      setMessage({
+        type: "error",
+        text: "Google Identity Services chưa sẵn sàng. Vui lòng tải lại trang.",
+      });
+    }
+  };
 
   // Các hàm xử lý
   const handleLogin = async (e) => {
@@ -155,10 +256,6 @@ const Auth = () => {
     }, 1500);
   };
 
-  const handleSocialLogin = (provider) => {
-    setMessage({ type: "info", text: `Đang kết nối với ${provider}...` });
-  };
-
   const switchView = (newView) => {
     setView(newView);
     setMessage({ type: "", text: "" });
@@ -175,21 +272,19 @@ const Auth = () => {
               <p>Chào mừng bạn quay lại! Vui lòng đăng nhập.</p>
             </div>
 
-            {/* Social Login */}
+            {/* Social Login - Google Only */}
             <div className="social-login">
               <button
-                className="social-btn google"
-                onClick={() => handleSocialLogin("Google")}
+                className={`social-btn google full-width ${isGoogleLoading ? "loading" : ""}`}
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
               >
                 <FcGoogle size={20} />
-                <span>Google</span>
-              </button>
-              <button
-                className="social-btn facebook"
-                onClick={() => handleSocialLogin("Facebook")}
-              >
-                <FaFacebook size={20} />
-                <span>Facebook</span>
+                <span>
+                  {isGoogleLoading
+                    ? "Đang xử lý..."
+                    : "Tiếp tục với Google"}
+                </span>
               </button>
             </div>
 
@@ -290,21 +385,19 @@ const Auth = () => {
               <p>Tạo tài khoản mới để mua sắm dễ dàng hơn.</p>
             </div>
 
-            {/* Social Register */}
+            {/* Social Register - Google Only */}
             <div className="social-login">
               <button
-                className="social-btn google"
-                onClick={() => handleSocialLogin("Google")}
+                className={`social-btn google full-width ${isGoogleLoading ? "loading" : ""}`}
+                onClick={handleGoogleLogin}
+                disabled={isGoogleLoading}
               >
                 <FcGoogle size={20} />
-                <span>Google</span>
-              </button>
-              <button
-                className="social-btn facebook"
-                onClick={() => handleSocialLogin("Facebook")}
-              >
-                <FaFacebook size={20} />
-                <span>Facebook</span>
+                <span>
+                  {isGoogleLoading
+                    ? "Đang xử lý..."
+                    : "Đăng ký với Google"}
+                </span>
               </button>
             </div>
 

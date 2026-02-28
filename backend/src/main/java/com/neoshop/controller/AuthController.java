@@ -1,5 +1,6 @@
 package com.neoshop.controller;
 
+import com.neoshop.model.dto.request.GoogleLoginRequest;
 import com.neoshop.model.dto.request.LoginRequest;
 import com.neoshop.model.dto.response.AuthResponse;
 import com.neoshop.service.AuthService;
@@ -23,9 +24,7 @@ public class AuthController {
   private final AuthService authService;
 
   @PostMapping("/login")
-  @Operation(
-      summary = "Đăng nhập hệ thống",
-      description = "Trả về JWT Token nếu đăng nhập thành công")
+  @Operation(summary = "Đăng nhập hệ thống", description = "Trả về JWT Token nếu đăng nhập thành công")
   public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request) {
     log.info("Received login request for user: {}", request.getUsername());
     return ResponseEntity.ok(authService.login(request));
@@ -37,5 +36,12 @@ public class AuthController {
       @Valid @RequestBody com.neoshop.model.dto.request.RegisterRequest request) {
     log.info("Received register request for user: {}", request.getUsername());
     return ResponseEntity.ok(authService.register(request));
+  }
+
+  @PostMapping("/google")
+  @Operation(summary = "Đăng nhập bằng Google", description = "Xác thực bằng Google ID Token và trả về JWT Token")
+  public ResponseEntity<AuthResponse> googleLogin(@Valid @RequestBody GoogleLoginRequest request) {
+    log.info("Received Google login request");
+    return ResponseEntity.ok(authService.googleLogin(request));
   }
 }

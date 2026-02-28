@@ -1,6 +1,11 @@
 package com.neoshop.service.impl;
 
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.neoshop.config.security.JwtService;
+import com.neoshop.model.dto.request.GoogleLoginRequest;
 import com.neoshop.model.dto.request.LoginRequest;
 import com.neoshop.model.dto.request.RegisterRequest;
 import com.neoshop.model.dto.response.AuthResponse;
@@ -12,6 +17,7 @@ import com.neoshop.service.AuthService;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
@@ -27,6 +33,9 @@ public class AuthServiceImpl implements AuthService {
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
   private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+
+  @Value("${google.client-id:}")
+  private String googleClientId;
 
   @Override
   public AuthResponse login(LoginRequest request) {
@@ -117,5 +126,109 @@ public class AuthServiceImpl implements AuthService {
         .avatar(user.getAvatar())
         .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
         .build();
+  }
+
+  @Override
+  public AuthResponse googleLogin(GoogleLoginRequest request) {
+    try {
+      // Verify Google ID Token
+      GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(
+          new NetHttpTransport(), GsonFactory.getDefaultInstance())
+          .setAudience(Collections.singletonList(googleClientId))
+          .build();
+
+      GoogleIdToken idToken = verifier.verify(request.getCredential());
+      if (idToken == null) {
+        throw new org.springframework.security.authentication.BadCredentialsException(
+            "Token Google không hợp lệ");
+      }
+
+      GoogleIdToken.Payload payload = idToken.getPayload();
+      String googleId = payload.getSubject();
+      String email = payload.getEmail();
+      String name = (String) payload.get("name");
+      String picture = (String) payload.get("picture");
+
+      log.info("Google login: email={}, name={}, googleId={}", email, name, googleId);
+
+      // Find existing user by email or create a new one
+      User user = userRepository.findByEmail(email).orElse(null);
+
+      if (user == null) {
+        // Create new user from Google data
+        Role userRole = roleRepository
+            .findByName("USER")
+            .orElseGet(() -> roleRepository.save(Role.builder().name("USER").build()));
+
+        // Generate a unique username from email prefix
+        String baseUsername = email.split("@")[0].replaceAll("[^a-zA-Z0-9._-]", "");
+        String username = baseUsername;
+        int suffix = 1;
+        while (userRepository.existsByUsername(username)) {
+          username = baseUsername + suffix;
+          suffix++;
+        }
+
+        user = User.builder()
+            .username(username)
+            .email(email)
+            .passwordHash(passwordEncoder.encode(java.util.UUID.randomUUID().toString()))
+            .fullName(name != null ? name : username)
+            .avatar(picture)
+            .authProvider("GOOGLE")
+            .providerId(googleId)
+            .roles(Collections.singleton(userRole))
+            .createdAt(java.time.LocalDateTime.now())
+            .updatedAt(java.time.LocalDateTime.now())
+            .build();
+
+        userRepository.save(user);
+        log.info("Created new user from Google: {}", username);
+      } else {
+        // Update existing user's Google info if they haven't linked yet
+        if (!"GOOGLE".equals(user.getAuthProvider())) {
+          user.setAuthProvider("GOOGLE");
+          user.setProviderId(googleId);
+        }
+        // Update avatar if user doesn't have one
+        if (user.getAvatar() == null && picture != null) {
+          user.setAvatar(picture);
+        }
+        // Update fullName if empty
+        if (user.getFullName() == null && name != null) {
+          user.setFullName(name);
+        }
+        user.setUpdatedAt(java.time.LocalDateTime.now());
+        userRepository.save(user);
+        log.info("Existing user logged in via Google: {}", user.getUsername());
+      }
+
+      // Generate JWT
+      var userDetails = org.springframework.security.core.userdetails.User.builder()
+          .username(user.getUsername())
+          .password(user.getPasswordHash())
+          .roles(user.getRoles().stream().map(Role::getName).toArray(String[]::new))
+          .build();
+
+      var jwtToken = jwtService.generateToken(userDetails);
+
+      return AuthResponse.builder()
+          .token(jwtToken)
+          .username(user.getUsername())
+          .email(user.getEmail())
+          .fullName(user.getFullName())
+          .phoneNumber(user.getPhoneNumber())
+          .address(user.getAddress())
+          .avatar(user.getAvatar())
+          .roles(user.getRoles().stream().map(Role::getName).collect(Collectors.toSet()))
+          .build();
+
+    } catch (org.springframework.security.authentication.BadCredentialsException e) {
+      throw e;
+    } catch (Exception e) {
+      log.error("Google login failed", e);
+      throw new org.springframework.security.authentication.BadCredentialsException(
+          "Đăng nhập Google thất bại: " + e.getMessage());
+    }
   }
 }
