@@ -2,7 +2,8 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-const WS_URL = "http://localhost:8080/ws";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080/api";
+const WS_URL = API_URL.replace("/api", "/ws");
 
 /**
  * Custom hook for real-time chat via WebSocket (STOMP over SockJS)

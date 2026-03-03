@@ -31,6 +31,9 @@ public class PaymentController {
   private final MoMoService moMoService;
   private final OrderService orderService;
 
+  @org.springframework.beans.factory.annotation.Value("${application.security.frontend-url}")
+  private String frontendUrl;
+
   @PostMapping("/process")
   @Operation(summary = "Xử lý thanh toán cho đơn hàng")
   public ResponseEntity<PaymentResponse> processPayment(
@@ -52,7 +55,7 @@ public class PaymentController {
     // Xử lý IPN tại đây để đảm bảo đơn hàng được cập nhật trước khi chuyển hướng
     vnPayService.processIpn(request, orderService);
 
-    String redirectUrl = "http://localhost:5173";
+    String redirectUrl = frontendUrl;
     String vnpResponseCode = request.getParameter("vnp_ResponseCode");
     redirectUrl += "/order-success/" + orderId + "?vnp_ResponseCode="
         + (vnpResponseCode != null ? vnpResponseCode : "");
@@ -82,7 +85,7 @@ public class PaymentController {
       }
     }
 
-    String redirectUrl = "http://localhost:5173/";
+    String redirectUrl = frontendUrl + "/";
 
     return ResponseEntity.status(HttpStatus.FOUND)
         .location(URI.create(redirectUrl))
