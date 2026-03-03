@@ -3,7 +3,7 @@
   "build": {
     "builder": "DOCKERFILE",
     "dockerfilePath": "backend/Dockerfile",
-    "contextRelativePath": "."
+    "contextRelativePath": "backend"
   },
   "deploy": {
     "startCommand": "java -jar target/neoshop-backend-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod",

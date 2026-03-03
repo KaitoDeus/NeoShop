@@ -33,10 +33,11 @@ spring:
 
 # Swagger / OpenAPI Configuration
 springdoc:
-  swagger-ui:
-    path: /swagger-ui.html
   api-docs:
-    path: /v3/api-docs
+    enabled: ${SPRINGDOC_ENABLED:false}
+  swagger-ui:
+    enabled: ${SPRINGDOC_ENABLED:false}
+    path: /swagger-ui.html
 
 # Health Check & Monitoring
 management:
@@ -82,3 +83,15 @@ momo:
 # Google OAuth2 Configuration
 google:
   client-id: ${GOOGLE_CLIENT_ID:your_google_client_id}
+
+---
+# Development Profile
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    show-sql: true
+
+# Enable Swagger in Dev
+SPRINGDOC_ENABLED: true
