@@ -3,46 +3,34 @@
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
 
-    <!-- Default Console Appender (Standard Text) -->
-    <root level="INFO">
-        <appender-ref ref="CONSOLE"/>
-    </root>
+    <!-- Appender for JSON logging -->
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <fieldNames>
+                <timestamp>timestamp</timestamp>
+                <level>level</level>
+                <thread>thread</thread>
+                <logger>logger</logger>
+                <message>message</message>
+                <stackTrace>stack_trace</stackTrace>
+            </fieldNames>
+        </encoder>
+    </appender>
 
-    <!-- Production Profile: Use JSON Logging -->
-    <springProfile name="prod">
-        <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-                <fieldNames>
-                    <timestamp>timestamp</timestamp>
-                    <level>level</level>
-                    <thread>thread</thread>
-                    <logger>logger</logger>
-                    <message>message</message>
-                    <stackTrace>stack_trace</stackTrace>
-                </fieldNames>
-            </encoder>
-        </appender>
-
-        <root level="INFO">
-            <appender-ref ref="JSON_CONSOLE"/>
-        </root>
-        
-        <!-- Avoid duplicate logs in prod -->
+    <!-- Default Profile (Standard Console) -->
+    <springProfile name="!prod">
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
-        <!-- Actually, we should only use one. Let's override root for prod -->
+    </springProfile>
+
+    <!-- Production Profile (JSON Console) -->
+    <springProfile name="prod">
         <root level="INFO">
-            <appender-ref ref="JSON_CONSOLE" />
+            <appender-ref ref="JSON_CONSOLE"/>
         </root>
     </springProfile>
 
-    <!-- Correcting the logic above for prod profile -->
-    <springProfile name="prod">
-        <root level="INFO">
-            <appender-ref ref="JSON_CONSOLE" />
-        </root>
-        <!-- Remove standard console in prod to avoid double logging -->
-        <logger name="org.springframework" level="INFO"/>
-    </springProfile>
+    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="com.neoshop" level="DEBUG"/>
 </configuration>

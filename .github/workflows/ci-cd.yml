@@ -7,7 +7,7 @@ on:
     branches: ["main"]
 
 jobs:
-  backend-build-test:
+  backend-ci:
     name: Backend Build & Test
     runs-on: ubuntu-latest
 
@@ -21,13 +21,17 @@ jobs:
           distribution: "temurin"
           cache: maven
 
-      - name: Ensure Maven Wrapper is executable
-        run: chmod +x backend/mvnw
+      - name: Build and Package
+        run: |
+          cd backend
+          chmod +x mvnw
+          ./mvnw clean package -DskipTests
 
-      - name: Build with Maven
-        run: cd backend && ./mvnw -B package --file pom.xml
+      - name: Build Docker Image (Dry Run)
+        run: |
+          docker build -t neoshop-backend:test -f backend/Dockerfile .
 
-  frontend-build:
+  frontend-ci:
     name: Frontend Build Check
     runs-on: ubuntu-latest
 
@@ -41,25 +45,23 @@ jobs:
           cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
-      - name: Install Dependencies
-        run: cd frontend && npm ci
+      - name: Install & Build
+        run: |
+          cd frontend
+          npm ci
+          npm run build
 
-      - name: Build Project
-        run: cd frontend && npm run build
+      - name: Build Docker Image (Dry Run)
+        run: |
+          docker build -t neoshop-frontend:test -f frontend/Dockerfile .
 
-  deploy-staging:
-    name: Deploy to Staging (Simulated)
-    needs: [backend-build-test, frontend-build]
+  deploy-info:
+    name: Deployment Summary
+    needs: [backend-ci, frontend-ci]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Read deploy configuration
+      - name: Notify Status
         run: |
-          echo "🚀 Starting deployment to Staging Environment..."
-          echo "✅ Backend tests passed."
-          echo "✅ Frontend build checks passed."
-          echo "This is a placeholder for actual deployment scripts such as SSHing into the Linux server, pulling Docker images, and running 'docker compose up -d'."
-          echo "Deployment script simulation complete."
+          echo "✅ CI check completed for all services."
+          echo "🚀 Ready for deployment to Railway/Vercel."

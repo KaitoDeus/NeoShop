@@ -26,6 +26,9 @@ public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private final RateLimitFilter rateLimitFilter;
 
+        @org.springframework.beans.factory.annotation.Value("${application.cors.allowed-origins:http://localhost:5173}")
+        private java.util.List<String> allowedOrigins;
+
         @PostConstruct
         public void init() {
                 log.info("SecurityConfig initialized and loaded!");
@@ -75,11 +78,7 @@ public class SecurityConfig {
         @Bean
         public org.springframework.web.cors.CorsConfigurationSource corsConfigurationSource() {
                 org.springframework.web.cors.CorsConfiguration configuration = new org.springframework.web.cors.CorsConfiguration();
-                configuration.setAllowedOrigins(
-                                java.util.List.of("http://localhost:5173")); // Allow
-                // known
-                // frontend
-                // ports
+                configuration.setAllowedOrigins(allowedOrigins);
                 configuration.setAllowedMethods(
                                 java.util.List.of("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
                 configuration.setAllowedHeaders(
