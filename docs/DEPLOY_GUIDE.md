@@ -2,45 +2,45 @@
 
 Tài liệu này hướng dẫn các bước để đưa dự án NeoShop lên môi trường Production.
 
-## 1. Cơ sở dữ liệu (Supabase)
+## 1. Cơ sở dữ liệu (Railway PostgreSQL)
 
-Chúng ta sử dụng Supabase để cung cấp PostgreSQL database miễn phí và ổn định.
+Chúng ta sử dụng dịch vụ **PostgreSQL** của chính Railway để đảm bảo độ trễ thấp nhất và dễ dàng quản lý biến môi trường.
 
-1. Truy cập [Supabase](https://supabase.com/) và tạo dự án mới.
-2. Vào phần **Project Settings** > **Database**.
-3. Copy **Connection string** (dạng URI). Nó sẽ có dạng: `postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-ID].supabase.co:5432/postgres`.
-4. Lưu giá trị này vào biến môi trường `SPRING_DATASOURCE_URL` trên Railway.
+1. Trên Railway Dashboard, nhấn **New** > **Database** > **Add PostgreSQL**.
+2. Railway sẽ tự động tạo các biến môi trường: `PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, và `PGDATABASE`.
+3. Backend của chúng ta đã được cấu hình trong `application.yml` để tự động nhận diện các biến này.
 
 ## 2. Triển khai Backend (Railway)
 
-Railway là nền tảng dễ dàng nhất để chạy Spring Boot app từ GitHub.
+Backend được Dockerize (Multi-stage build) và tối ưu cho monorepo.
 
-1. Kết nối tài khoản GitHub với Railway.
-2. Chọn **New Project** > **Deploy from GitHub repo**.
-3. Chọn repo `NeoShop`.
-4. Cấu hình các biến môi trường (Variables):
-   - `SPRING_DATASOURCE_URL`: (Lấy từ Supabase ở bước 1)
-   - `SPRING_DATASOURCE_USERNAME`: `postgres`
-   - `SPRING_DATASOURCE_PASSWORD`: (Mật khẩu DB của bạn)
-   - `SENTRY_DSN`: (Lấy từ Sentry dashboard nếu có)
-   - `JWT_SECRET`: (Tạo một chuỗi ngẫu nhiên dài)
-   - `VNPAY_TMN_CODE`, `VNPAY_HASH_SECRET`: (Thông tin sandbox hoặc thực tế)
-   - `GOOGLE_CLIENT_ID`: (Từ Google Cloud Console)
+1. Kết nối repo GitHub với Railway.
+2. Railway sẽ tự động phát hiện `railway.json` và `backend/Dockerfile`.
+3. Cấu hình các biến môi trường bổ sung (Variables):
+   - `JWT_SECRET`: (Chuỗi ngẫu nhiên dài để bảo mật JWT).
+   - `ALLOWED_ORIGINS`: (URL của Frontend sau khi deploy, ví dụ: `https://neoshop.vercel.app`).
+   - `SPRINGDOC_ENABLED`: `false` (Mặc định là false trên prod để ẩn Swagger).
+   - `SENTRY_DSN`: (Dùng để track lỗi production).
+   - `VNPAY_TMN_CODE`, `MOMO_PARTNER_CODE`, vv. (Cấu hình thanh toán).
 
-## 3. Triển khai Frontend (Vercel/Netlify)
+## 3. Triển khai Frontend (Vercel / Railway)
 
-Frontend được viết bằng React (Vite), rất phù hợp với Vercel.
+Frontend React (Vite) có thể deploy linh hoạt.
 
-1. Đẩy code frontend lên GitHub (nếu chưa).
-2. Trên Vercel, chọn **New Project** và trỏ vào repo `NeoShop`.
-3. Thiết lập **Root Directory** là `frontend`.
-4. Cấu hình biến môi trường:
-   - `VITE_API_BASE_URL`: URL của backend đã deploy trên Railway (ví dụ: `https://neoshop-backend-production.up.railway.app`)
+1. **Vercel**: Trỏ vào thư mục `frontend/`, thiết lập `Install Command` là `npm install` và `Build Command` là `npm run build`.
+2. Biến môi trường:
+   - `VITE_API_BASE_URL`: URL của backend (URL Railway cung cấp).
 
-## 4. Kiểm tra Giám sát (Monitoring)
+## 4. CI/CD & Giám sát (Workflow)
 
-Sau khi deploy thành công, bạn có thể kiểm tra:
+Hệ thống sử dụng GitHub Actions để tự động kiểm tra code:
 
-- **Health Check**: `https://<your-backend-url>/actuator/health`
-- **Logs**: Xem trực tiếp trong tab **Logs** của Railway (sẽ thấy định dạng JSON nếu set profile `prod`).
-- **Sentry**: Kiểm tra dashboard Sentry để xem các Exception nếu có.
+- **Build Check**: Mỗi khi có Pull Request, hệ thống sẽ chạy `dry-run` docker build cho cả backend và frontend để đảm bảo không lỗi context.
+- **Caching**: Sử dụng cache cho Maven và NPM để tăng tốc độ build.
+- **Logs**: Railway sẽ hiển thị logs định dạng JSON (Structured Logging). Bạn có thể dùng Sentry để xem các cảnh báo/lỗi chi tiết.
+- **Health Check**: Endpoint `/api/actuator/health` luôn được mở để Railway monitor trạng thái ứng dụng.
+
+## 5. Lưu ý Bảo mật
+
+- **Swagger**: Bị vô hiệu hóa mặc định trên Production. Để bật (không khuyến khích), set `SPRINGDOC_ENABLED=true`.
+- **CORS**: Chỉ cho phép các domain được định nghĩa trong `ALLOWED_ORIGINS`.
