@@ -1,9 +1,9 @@
 # Stage 1: Development
 FROM node:20-alpine AS dev
 WORKDIR /app
-COPY frontend/package*.json ./
+COPY package*.json ./
 RUN npm install
-COPY frontend/ .
+COPY . .
 EXPOSE 5173
 CMD ["npm", "run", "dev", "--", "--host"]
 

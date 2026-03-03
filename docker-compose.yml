@@ -8,9 +8,9 @@ services:
     env_file:
       - .env
     environment:
-      - POSTGRES_USER=${POSTGRES_USER:-postgres}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-123456}
-      - POSTGRES_DB=${POSTGRES_DB:-neoshop}
+      - POSTGRES_USER=${SPRING_DATASOURCE_USERNAME:-postgres}
+      - POSTGRES_PASSWORD=${SPRING_DATASOURCE_PASSWORD:-postgres}
+      - POSTGRES_DB=neoshop
     ports:
       - "5433:5432"
     volumes:
@@ -33,10 +33,10 @@ services:
       - .env
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL:-jdbc:postgresql://database:5432/neoshop}
-      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
-      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD:-123456}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
     depends_on:
       - database
     extra_hosts:

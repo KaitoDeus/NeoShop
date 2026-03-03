@@ -5,7 +5,7 @@ spring:
   application:
     name: neoshop
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:postgres}}
+    url: ${SPRING_DATASOURCE_URL:${DATABASE_URL:jdbc:postgresql://${PGHOST:localhost}:${PGPORT:5432}/${PGDATABASE:postgres}}}
     username: ${SPRING_DATASOURCE_USERNAME:${PGUSER:postgres}}
     password: ${SPRING_DATASOURCE_PASSWORD:${PGPASSWORD:}}
     driver-class-name: org.postgresql.Driver
@@ -13,11 +13,13 @@ spring:
       connection-timeout: 30000
       maximum-pool-size: 10
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
     show-sql: true
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
         jdbc:
           lob:
