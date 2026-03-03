@@ -38,15 +38,24 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-# Health Check
+# Health Check & Monitoring
 management:
   endpoints:
     web:
       exposure:
-        include: health, info
+        include: health, info, metrics, prometheus
   endpoint:
     health:
       show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+# Sentry Configuration
+sentry:
+  dsn: ${SENTRY_DSN:}
+  traces-sample-rate: 1.0
+  exception-resolver-order: -2147483648
 
 logging:
   level:

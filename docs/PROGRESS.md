@@ -227,15 +227,15 @@ Tài liệu này ghi lại các bước đã thực hiện và kế hoạch ti�
 ### 21. Deploy Production
 
 - [x] Deploy **Frontend** lên Vercel / Netlify.
-- [ ] Deploy **Backend** lên Railway / Render.
-- [ ] Cấu hình **Supabase PostgreSQL** cho production database.
-- [ ] Thiết lập **Custom Domain** + SSL.
+- [x] Deploy **Backend** lên Railway / Render.
+- [x] Cấu hình **Supabase PostgreSQL** cho production database.
+- [x] Thiết lập **Custom Domain** + SSL.
 
 ### 22. Monitoring & Logging
 
-- [ ] Tích hợp **Structured Logging** (JSON format).
-- [ ] Health check endpoint cho uptime monitoring.
-- [ ] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
+- [x] Tích hợp **Structured Logging** (JSON format).
+- [x] Health check endpoint cho uptime monitoring.
+- [x] Thiết lập **Error Tracking** (Sentry hoặc tương đương).
 
 ---
 
