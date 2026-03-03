@@ -12,10 +12,12 @@ import {
   FiMessageSquare,
 } from "react-icons/fi";
 import Logo from "../../common/Logo/Logo";
+import { useAuth } from "../../../context/AuthContext";
 import "./Sidebar.css";
 
 const Sidebar = () => {
-  // Cấu hình các mục menu điều hướng
+  const { user } = useAuth();
+  // ... (rest of menuItems)
   const menuItems = [
     { path: "/admin/dashboard", name: "Tổng quan", icon: <FiGrid /> },
     { path: "/admin/orders", name: "Đơn hàng", icon: <FiShoppingCart /> },
@@ -91,13 +93,13 @@ const Sidebar = () => {
 
         <div className="admin-profile">
           <img
-            src="https://ui-avatars.com/api/?name=Admin+Neo&background=random"
+            src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.username || "Admin"}&background=random`}
             alt="Admin"
             className="admin-avatar"
           />
           <div className="admin-info">
-            <h4 className="admin-name">Admin Neo</h4>
-            <p className="admin-email">admin@neoshop.com</p>
+            <h4 className="admin-name">{user?.fullName || user?.username || "Admin"}</h4>
+            <p className="admin-email">{user?.email || "admin@neoshop.com"}</p>
           </div>
         </div>
       </div>

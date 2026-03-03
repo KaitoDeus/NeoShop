@@ -53,7 +53,7 @@ public class OrderService {
               () -> new RuntimeException("Product not found: " + itemRequest.getProductId()));
 
       if (product.getStockQuantity() < itemRequest.getQuantity()) {
-        throw new RuntimeException("Insufficient stock for product: " + product.getTitle());
+        throw new RuntimeException("Không đủ hàng trong kho cho sản phẩm: " + product.getTitle());
       }
 
       OrderItem orderItem = OrderItem.builder()

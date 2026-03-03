@@ -26,7 +26,7 @@ public class SecurityConfig {
         private final AuthenticationProvider authenticationProvider;
         private final RateLimitFilter rateLimitFilter;
 
-        @org.springframework.beans.factory.annotation.Value("${application.cors.allowed-origins:http://localhost:5173}")
+        @org.springframework.beans.factory.annotation.Value("${application.cors.allowed-origins:${ALLOWED_ORIGINS:http://localhost:5173}}")
         private java.util.List<String> allowedOrigins;
 
         @PostConstruct

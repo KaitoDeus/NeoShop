@@ -71,12 +71,23 @@ public class GlobalExceptionHandler {
     return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
   }
 
+  @ExceptionHandler(RuntimeException.class)
+  public ResponseEntity<ErrorResponse> handleRuntimeException(RuntimeException ex) {
+    log.error("Runtime error: ", ex);
+    ErrorResponse errorResponse = ErrorResponse.builder()
+        .status(HttpStatus.BAD_REQUEST.value())
+        .message(ex.getMessage())
+        .timestamp(LocalDateTime.now())
+        .build();
+    return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+  }
+
   @ExceptionHandler(Exception.class)
   public ResponseEntity<ErrorResponse> handleGlobalException(Exception ex) {
     log.error("Unexpected error occurred: ", ex);
     ErrorResponse errorResponse = ErrorResponse.builder()
         .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-        .message("An unexpected error occurred")
+        .message("An unexpected error occurred: " + ex.getMessage())
         .timestamp(LocalDateTime.now())
         .build();
     return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);

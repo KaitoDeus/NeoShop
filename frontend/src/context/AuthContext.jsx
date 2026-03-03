@@ -173,7 +173,8 @@ export const AuthProvider = ({ children }) => {
       return `https://ui-avatars.com/api/?name=${user?.username || "User"}&background=random`;
     if (url.startsWith("http")) return url;
     // Phục vụ cho ảnh từ backend (relative path)
-    return `http://localhost:8080${url}`;
+    const baseUrl = (import.meta.env.VITE_API_URL || "http://localhost:8080/api").replace("/api", "");
+    return `${baseUrl}${url}`;
   };
 
   const value = {

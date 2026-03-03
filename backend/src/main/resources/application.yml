@@ -35,7 +35,7 @@ spring:
 application:
   security:
     jwt:
-      secret-key: ${JWT_SECRET:REPLACE_WITH_SECURE_JWT_SECRET_IN_PRODUCTION_MIN_64_CHARS_BASE64_STRING}
+      secret-key: ${JWT_SECRET:YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXoxMjM0NTY3ODkwYWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXozMjE=}
       expiration: ${JWT_EXPIRATION:86400000}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:http://localhost:5173}
