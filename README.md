@@ -6,7 +6,7 @@
 ![Vite](https://img.shields.io/badge/Vite_6-646CFF?style=for-the-badge&logo=vite&logoColor=white)
 ![Spring Boot](https://img.shields.io/badge/Spring_Boot_3-6DB33F?style=for-the-badge&logo=spring-boot&logoColor=white)
 ![Java](https://img.shields.io/badge/Java_21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL_15-336791?style=for-the-badge&logo=postgresql&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL_17-336791?style=for-the-badge&logo=postgresql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![WebSocket](https://img.shields.io/badge/WebSocket-010101?style=for-the-badge&logo=socketdotio&logoColor=white)
 
@@ -42,7 +42,7 @@ Hệ thống tự động cấp phát mã key ngay sau khi thanh toán thành c�
 | **Frontend**  | React + Vite + Vanilla CSS          | 19.x / 6.x |
 | **Backend**   | Spring Boot + Spring Security + JWT | 3.x        |
 | **Runtime**   | Java (OpenJDK)                      | 21         |
-| **Database**  | PostgreSQL                          | 15         |
+| **Database**  | PostgreSQL                          | 17         |
 | **Realtime**  | Spring WebSocket + STOMP + SockJS   | —          |
 | **Auth**      | JWT + Google OAuth 2.0 (GIS)        | —          |
 | **Payment**   | VNPay Sandbox + MoMo Sandbox        | —          |
@@ -58,12 +58,12 @@ Hệ thống tự động cấp phát mã key ngay sau khi thanh toán thành c�
 ┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
 │      FRONTEND       │     │       BACKEND       │     │      DATABASE       │
 │   React + Vite      │◄───►│  Spring Boot REST   │◄───►│    PostgreSQL 15    │
-│                     │     │  + WebSocket STOMP   │     │                     │
-│ • Pages & Routes    │     │ • Controllers        │     │ • users, roles      │
-│ • Context API       │     │ • Services           │     │ • products, orders  │
-│ • Hooks             │     │ • Repositories (JPA) │     │ • chat_rooms/msgs   │
-│ • Service Layer     │     │ • Security (JWT)     │     │ • coupons, reviews  │
-│   (Axios)           │     │ • WebSocket Config   │     │ • product_keys      │
+│                     │     │  + WebSocket STOMP  │     │                     │
+│ • Pages & Routes    │     │ • Controllers       │     │ • users, roles      │
+│ • Context API       │     │ • Services          │     │ • products, orders  │
+│ • Hooks             │     │ • Repositories (JPA)│     │ • chat_rooms/msgs   │
+│ • Service Layer     │     │ • Security (JWT)    │     │ • coupons, reviews  │
+│   (Axios)           │     │ • WebSocket Config  │     │ • product_keys      │
 └─────────────────────┘     └─────────────────────┘     └─────────────────────┘
        :5173                       :8080                       :5433
 ```
@@ -73,22 +73,22 @@ Hệ thống tự động cấp phát mã key ngay sau khi thanh toán thành c�
 ```
   Khách hàng                              NeoShop Server
       │                                        │
-      │  (1) Duyệt & Tìm kiếm sản phẩm        │
-      │───────────────────────────────────────► │
+      │  (1) Duyệt & Tìm kiếm sản phẩm         │
+      │───────────────────────────────────────►│
       │                                        │
       │  (2) Thêm vào giỏ hàng                 │
-      │───────────────────────────────────────► │  ← LocalStorage + Context API
+      │───────────────────────────────────────►│  ← LocalStorage + Context API
       │                                        │
       │  (3) Checkout + Nhập mã giảm giá       │
-      │───────────────────────────────────────► │  ← POST /api/coupons/validate
+      │───────────────────────────────────────►│  ← POST /api/coupons/validate
       │                                        │
-      │  (4) Thanh toán (VNPay / MoMo)          │
-      │───────────────────────────────────────► │  ← Redirect → Payment Gateway
+      │  (4) Thanh toán (VNPay / MoMo)         │
+      │───────────────────────────────────────►│  ← Redirect → Payment Gateway
       │                                        │
-      │  (5) Callback → Cập nhật trạng thái     │
+      │  (5) Callback → Cập nhật trạng thái    │
       │  ◄──────────────────────────────────── │  ← Webhook IPN + Return URL
       │                                        │
-      │  (6) Nhận Product Key tức thời          │
+      │  (6) Nhận Product Key tức thời         │
       │  ◄──────────────────────────────────── │  ← Auto-assign key từ kho
       │                                        │
 ```
