@@ -11,6 +11,12 @@ DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS user_roles CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS roles CASCADE;
+DROP TABLE IF EXISTS coupons CASCADE;
+DROP TABLE IF EXISTS image_uploads CASCADE;
+DROP TABLE IF EXISTS reviews CASCADE;
+DROP TABLE IF EXISTS system_settings CASCADE;
+DROP TABLE IF EXISTS chat_messages CASCADE;
+DROP TABLE IF EXISTS chat_rooms CASCADE;
 
 -- Roles & Users
 CREATE TABLE roles (
@@ -27,6 +33,8 @@ CREATE TABLE users (
     phone_number VARCHAR(20),
     address TEXT,
     avatar VARCHAR(255),
+    auth_provider VARCHAR(255) DEFAULT 'LOCAL',
+    provider_id VARCHAR(255),
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW(),
     active BOOLEAN DEFAULT TRUE
@@ -51,23 +59,40 @@ CREATE TABLE products (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title VARCHAR(255) NOT NULL,
     description TEXT,
-    price DECIMAL(19, 2) NOT NULL,
-    sale_price DECIMAL(19, 2),
+    price DECIMAL(38, 2) NOT NULL,
+    sale_price DECIMAL(38, 2),
     category_id UUID REFERENCES categories(id),
     stock_quantity INTEGER DEFAULT 0,
     status VARCHAR(50) DEFAULT 'ACTIVE',
+    average_rating FLOAT DEFAULT 0.0,
+    review_count INTEGER DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Coupons
+CREATE TABLE coupons (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    code VARCHAR(100) UNIQUE NOT NULL,
+    discount_type VARCHAR(50) NOT NULL, -- PERCENT, FIXED
+    discount_value DECIMAL(38, 2) NOT NULL,
+    min_order_amount DECIMAL(38, 2),
+    max_usage INTEGER,
+    current_usage INTEGER DEFAULT 0,
+    expiry_date TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE
 );
 
 -- Orders
 CREATE TABLE orders (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID REFERENCES users(id),
-    total_amount DECIMAL(19, 2) DEFAULT 0,
+    total_amount DECIMAL(38, 2) DEFAULT 0,
     status VARCHAR(50) DEFAULT 'PENDING',
     payment_method VARCHAR(50),
     shipping_address TEXT,
+    coupon_code VARCHAR(255),
+    discount_amount DECIMAL(38, 2) DEFAULT 0,
     order_date TIMESTAMP DEFAULT NOW(),
     updated_at TIMESTAMP DEFAULT NOW()
 );
@@ -77,7 +102,7 @@ CREATE TABLE order_items (
     order_id UUID REFERENCES orders(id) ON DELETE CASCADE,
     product_id UUID REFERENCES products(id),
     quantity INTEGER NOT NULL,
-    unit_price DECIMAL(19, 2) NOT NULL
+    unit_price DECIMAL(38, 2) NOT NULL
 );
 
 -- Digital Products (Keys)
@@ -87,6 +112,59 @@ CREATE TABLE product_keys (
     key_code VARCHAR(255) NOT NULL,
     status VARCHAR(50) DEFAULT 'AVAILABLE', -- AVAILABLE, SOLD, USED
     order_id UUID REFERENCES orders(id),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Reviews
+CREATE TABLE reviews (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID REFERENCES users(id) NOT NULL,
+    product_id UUID REFERENCES products(id) NOT NULL,
+    rating INTEGER NOT NULL,
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT NOW(),
+    updated_at TIMESTAMP DEFAULT NOW()
+);
+
+-- System Settings
+CREATE TABLE system_settings (
+    setting_key VARCHAR(255) PRIMARY KEY,
+    setting_value TEXT
+);
+
+-- Image Uploads
+CREATE TABLE image_uploads (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    file_name VARCHAR(255) NOT NULL,
+    file_url VARCHAR(255) NOT NULL,
+    file_size BIGINT NOT NULL,
+    file_type VARCHAR(255),
+    uploaded_by VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- Chat System
+CREATE TABLE chat_rooms (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL,
+    user_name VARCHAR(255),
+    user_avatar VARCHAR(255),
+    admin_id UUID,
+    unread_count_admin INTEGER DEFAULT 0,
+    unread_count_user INTEGER DEFAULT 0,
+    last_message_preview VARCHAR(500),
+    last_message_at TIMESTAMP DEFAULT NOW(),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE chat_messages (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    chat_room_id UUID NOT NULL REFERENCES chat_rooms(id) ON DELETE CASCADE,
+    sender_id UUID NOT NULL,
+    sender_name VARCHAR(255),
+    sender_avatar VARCHAR(255),
+    content TEXT,
+    seen BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT NOW()
 );
 
@@ -314,7 +392,51 @@ BEGIN
     END LOOP;
 END $$;
 
--- 2.7. Reset Stock Quantity based on ACTUAL Available Keys
+-- 2.7. Coupons & Settings
+INSERT INTO coupons (code, discount_type, discount_value, min_order_amount, max_usage, active) VALUES 
+('NEOSHOP2026', 'PERCENT', 10, 500000, 100, TRUE),
+('WELCOME50', 'FIXED', 50000, 200000, 500, TRUE),
+('FREESHIP', 'FIXED', 15000, 0, 1000, TRUE);
+
+INSERT INTO system_settings (setting_key, setting_value) VALUES 
+('site_name', 'NeoShop Ecommerce'),
+('maintenance_mode', 'false'),
+('api_vnpay_enabled', 'true'),
+('api_momo_enabled', 'true');
+
+-- 2.8. Reviews (Generate random reviews for random products)
+DO $$
+DECLARE
+    u_id UUID;
+    p_id UUID;
+BEGIN
+    FOR i IN 1..500 LOOP
+        SELECT id INTO u_id FROM users ORDER BY random() LIMIT 1;
+        SELECT id INTO p_id FROM products ORDER BY random() LIMIT 1;
+        
+        INSERT INTO reviews (user_id, product_id, rating, comment)
+        VALUES (
+            u_id, 
+            p_id, 
+            (floor(random() * 3) + 3), -- 3 to 5 stars
+            CASE (floor(random()*5))::int 
+                WHEN 0 THEN 'Sản phẩm rất tốt, giao hàng nhanh.' 
+                WHEN 1 THEN 'Chất lượng tuyệt vời, hỗ trợ nhiệt tình.' 
+                WHEN 2 THEN 'Rất hài lòng với dịch vụ của shop.' 
+                WHEN 3 THEN 'Key kích hoạt nhanh chóng, uy tín.'
+                ELSE 'Sẽ tiếp tục ủng hộ shop trong tương lai.' 
+            END
+        );
+    END LOOP;
+END $$;
+
+-- 2.9. Update Product Stats (Rating & Review Count)
+UPDATE products p
+SET 
+  average_rating = (SELECT COALESCE(AVG(rating), 0) FROM reviews r WHERE r.product_id = p.id),
+  review_count = (SELECT COUNT(*) FROM reviews r WHERE r.product_id = p.id);
+
+-- 2.10. Reset Stock Quantity based on ACTUAL Available Keys
 UPDATE products p
 SET stock_quantity = (
     SELECT COUNT(*) 
