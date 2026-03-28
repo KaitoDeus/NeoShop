@@ -29,7 +29,7 @@ jobs:
 
       - name: Build Docker Image (Dry Run)
         run: |
-          docker build -t neoshop-backend:test -f backend/Dockerfile .
+          docker build -t neoshop-backend:test -f backend/Dockerfile backend
 
   frontend-ci:
     name: Frontend Build Check
@@ -53,7 +53,7 @@ jobs:
 
       - name: Build Docker Image (Dry Run)
         run: |
-          docker build -t neoshop-frontend:test -f frontend/Dockerfile .
+          docker build -t neoshop-frontend:test -f frontend/Dockerfile frontend
 
   deploy-info:
     name: Deployment Summary
